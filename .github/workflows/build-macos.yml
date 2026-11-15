@@ -55,7 +55,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG=mac-build
-          if ! gh release view "$TAG" >/dev/null 2>&1; then
+          # 초안 릴리스는 태그가 아직 없어 "release view"로 못 찾으므로 목록에서 이름으로 찾는다
+          if ! gh release list --json tagName --jq '.[].tagName' | grep -qx "$TAG"; then
             gh release create "$TAG" --draft --prerelease --target "$GITHUB_SHA"               --title "macOS 테스트 빌드 (비공개 초안)"               --notes "build-macos 워크플로가 자동으로 올리는 Mac 테스트 빌드입니다. 서명·공증 없음. 공개 릴리스가 아닙니다."
           fi
           gh release upload "$TAG" "Hushpad-macos-${{ matrix.arch }}.zip" --clobber
