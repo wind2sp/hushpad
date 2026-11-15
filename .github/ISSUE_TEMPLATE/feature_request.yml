@@ -1,0 +1,22 @@
+name: 기능 제안 / Feature request
+description: 있으면 좋겠는 기능을 알려 주세요 / Suggest an idea
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 어떤 상황에서 불편한가요? / What problem would it solve?
+      description: 지금 어떻게 하고 있고, 무엇이 번거로운지 / How you do it today and what gets in the way
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: 원하는 모습 / What you'd like
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 주로 쓰는 운영체제 / Main OS
+      options: [Windows, macOS, 둘 다 / Both]

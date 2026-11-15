@@ -1,0 +1,57 @@
+name: 버그 신고 / Bug report
+description: Hushpad가 잘못 동작할 때 알려 주세요 / Something doesn't work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        신고해 주셔서 고마워요. **메모 내용·암호·키 같은 비밀 정보는 절대 적지 마세요.** 보안 문제는 공개 이슈 대신 [SECURITY.md](https://github.com/wind2sp/hushpad/blob/main/SECURITY.md)의 메일로 알려 주세요.
+        Thanks for the report. **Never paste note contents, passphrases or keys.** For security issues, email us instead (see SECURITY.md).
+  - type: input
+    id: version
+    attributes:
+      label: Hushpad 버전 / Version
+      description: 프로그램 정보(⋯ › 프로그램 정보)에 나오는 버전 / Shown in ⋯ › About
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 운영체제 / OS
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS 15 이상 / macOS 15+ (Apple Silicon)
+        - macOS 14 이하 / macOS 14 or earlier (Apple Silicon)
+        - 기타 / Other
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: 화면 언어 / UI language
+      options: [한국어, English, 日本語, 简体中文]
+  - type: textarea
+    id: what
+    attributes:
+      label: 무슨 일이 있었나요? / What happened?
+      description: 무엇을 기대했고 실제로는 어땠는지 / What you expected and what you saw
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 다시 겪는 순서 / Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+  - type: textarea
+    id: log
+    attributes:
+      label: 오류 기록 / Error log (선택 / optional)
+      description: |
+        Windows `%LOCALAPPDATA%\Hushpad\error.log`, macOS `~/Library/Application Support/Hushpad/error.log`에 기록이 있으면 붙여 주세요. 비밀 정보가 없는지 먼저 확인해 주세요.
+        Paste error.log if present. Check it for secrets first.
+      render: text

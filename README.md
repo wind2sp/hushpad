@@ -1,10 +1,47 @@
-# Hushpad — 조용한 비밀 메모장
+<p align="center">
+  <img src="assets/app.png" width="96" height="96" alt="Hushpad 아이콘">
+</p>
 
-**Hushpad(허시패드)** = hush(쉿, 조용히) + pad(메모장).
-임시 기록, 붙여넣기 전 보관, 암호·API 키, HTML·JSON, 스크린샷·짧은 녹화를 한곳에 조용히 담아 둡니다.
-모든 내용은 자동 저장·암호화되고, 창은 다른 프로그램의 캡처·화면 공유에 보이지 않습니다.
+<h1 align="center">Hushpad</h1>
 
-**무료 오픈소스 (GPL-3.0-or-later)** · 홈페이지 https://gdra.mycafe24.com/hushpad/
+<p align="center">
+  <b>조용히 적고, 아무도 못 보게</b><br>
+  Write quietly. Seen by no one.
+</p>
+
+<p align="center">
+  <a href="https://github.com/wind2sp/hushpad/releases/latest"><img src="https://img.shields.io/github/v/release/wind2sp/hushpad?label=release&color=7A3C93" alt="최신 버전"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-7A3C93" alt="라이선스 GPL-3.0-or-later"></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-555" alt="Windows 10, 11">
+  <img src="https://img.shields.io/badge/macOS-Apple%20Silicon-555" alt="macOS Apple Silicon">
+  <a href="https://github.com/wind2sp/hushpad/releases"><img src="https://img.shields.io/github/downloads/wind2sp/hushpad/total?color=E0703F&label=downloads" alt="다운로드 수"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip"><b>⬇ Windows용 받기</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip"><b>⬇ macOS용 받기 (Apple Silicon)</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://gdra.mycafe24.com/hushpad/">홈페이지</a>
+  &nbsp;·&nbsp;
+  <a href="#english-short">English</a>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="website/assets/img/app-dark.png">
+    <img src="website/assets/img/app-light.png" width="860" alt="Hushpad 화면: 왼쪽에 메모 목록과 분류, 오른쪽에 탭으로 연 메모">
+  </picture>
+</p>
+
+**Hushpad(허시패드)** = hush(쉿, 조용히) + pad(메모장). 메모장 탭에 적어 두던 임시 기록, 붙여넣기 전 보관, 암호·API 키, HTML·JSON, 스크린샷·짧은 녹화를 한곳에 조용히 담아 둡니다. 무료 오픈소스(GPL-3.0-or-later)입니다.
+
+- **저장 버튼이 없어요.** 쓰는 즉시 저장되고, 재부팅해도 메모와 열어 둔 탭이 그대로예요.
+- **모든 메모를 암호화해요.** AES-256-GCM으로 암호화된 파일만 보관 폴더에 남아서, 다른 프로그램이나 클라우드가 내용을 읽지 못해요.
+- **Windows에서는 캡처·화면 공유에 창이 안 보여요.** macOS 15 이상에서는 일부 캡처·화면 공유 앱에 보일 수 있어요.
+- **서식 그대로 또는 글자만** 복사하고 붙여요. HTML·JSON용 코드 메모, 스크린샷·짧은 화면 녹화도 메모에 바로 들어가요.
+- **어디서든 단축키로:** Ctrl+Alt+N 새 메모, Ctrl+Alt+M 클립보드를 메모로, Ctrl+Alt+S 스크린샷.
+- **화면 언어:** 한국어 · English · 日本語 · 简体中文.
 
 ## 받기
 | | 파일 | 지원 |
@@ -22,7 +59,7 @@
 - 기본은 **시스템 따라가기**: 운영체제 언어가 위 넷 중 하나면 그 언어, 아니면 영어(번체 중국어도 아직은 영어). 설정 파일의 `"language"`에 저장됩니다.
 - 날짜·"5분 전" 같은 시각도 언어에 맞춰 보입니다. 단축키는 언어와 상관없이 같습니다.
 - 일본어·중국어에서는 그 언어에 맞는 글꼴(Yu Gothic UI·Meiryo / Microsoft YaHei, macOS는 Hiragino Sans / PingFang SC)을 먼저 씁니다.
-- 일본어·중국어에서는 Qt 기본 단추(OK·Cancel 등)도 그 언어로 바뀝니다. 한국어 화면은 예전 그대로입니다.
+- 한국어·일본어·중국어에서는 Qt 기본 단추(OK·Cancel 등)도 그 언어로 바뀝니다.
 
 ## 저장
 - 저장 버튼이 없습니다. 쓰는 즉시(0.6초 뒤) 자동 저장되고, 저장할 때 임시 파일에 쓴 뒤 바꿔치기해서 저장 도중 꺼져도 이전 내용이 남습니다.
@@ -36,7 +73,7 @@
 - **여러 PC에서 같이 쓰기**: 보관 폴더를 Dropbox·OneDrive 안에 두고, 다른 PC에서도 같은 폴더를 고른 다음 같은 암호를 넣으면 됩니다. 다른 PC에서 고친 내용은 3초 안에 반영되고, 양쪽에서 동시에 고치면 이 PC 쪽 내용이 "(충돌 사본)"으로 따로 저장됩니다.
 - 복사한 내용은 Windows 클립보드 기록(Win+V)·클라우드 클립보드에 남지 않습니다(`보안` 메뉴에서 끌 수 있음).
 - **비밀 메모**(🔒): 목록에 첫 줄이 보이지 않고, 복사하면 클립보드 관리 프로그램도 못 보며 30초 뒤 클립보드를 비웁니다.
-- Hushpad 창은 다른 프로그램의 스크린샷·화면 녹화·화면 공유에 보이지 않습니다(`캡처` 메뉴에서 끌 수 있음).
+- Windows에서는 Hushpad 창이 다른 프로그램의 스크린샷·화면 녹화·화면 공유에 보이지 않습니다(`캡처` 메뉴에서 끌 수 있음). macOS는 아래 "macOS"의 한계를 보세요.
 - ⚠ 암호를 잊으면 아무도 되살릴 수 없습니다. `파일 › 내보내기`로 만든 파일은 암호화되지 않은 일반 파일입니다.
 
 ## 두 종류의 메모
@@ -64,7 +101,7 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 - 🎬 **Ctrl+Alt+R**(어디서든) / Ctrl+Shift+R: 영역을 고르면 녹화 시작(최대 3분). 빨간 테두리와 ⏸·⏹ 버튼 막대는 화면에 보이지만 녹화에는 찍히지 않습니다.
   다시 Ctrl+Alt+R 또는 ⏹ 저장으로 끝내면 미리보기 그림이 메모에 들어가고, 두 번 클릭하면 재생됩니다.
   동영상은 암호화되어 보관 폴더 `media\`에 저장되고, 재생할 때는 메모리에서 풀어 재생합니다. 녹화하는 동안만 이 PC의 임시 폴더(`%LOCALAPPDATA%\Hushpad\tmp`)에 암호화 전 파일이 잠깐 생기고, 끝나면 바로 지웁니다(비정상 종료로 남으면 다음 실행 때 지웁니다).
-- Hushpad 창은 캡처에 안 찍히므로 창을 치우지 않고 그대로 찍어도 됩니다.
+- Windows에서는 Hushpad 창이 캡처에 안 찍히므로 창을 치우지 않고 그대로 찍어도 됩니다.
 
 ## 어디서든 쓰는 단축키 (트레이에 있어도 동작)
 | 단축키 | 하는 일 |
@@ -125,7 +162,7 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 
 ## English (short)
 
-Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes save as you type, every note is encrypted (AES-256-GCM, scrypt-derived vault key, cached per device with DPAPI / the macOS Keychain), and the window is hidden from screenshots and screen sharing. Rich notes take images, screenshots and short screen recordings; code notes are for HTML/JSON and keys. The UI comes in Korean, English, Japanese and Simplified Chinese.
+Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes save as you type, every note is encrypted (AES-256-GCM, scrypt-derived vault key, cached per device with DPAPI / the macOS Keychain), and on Windows the window is hidden from screenshots and screen sharing (on macOS 15+ some capture apps may still show it). Rich notes take images, screenshots and short screen recordings; code notes are for HTML/JSON and keys. The UI comes in Korean, English, Japanese and Simplified Chinese.
 
 - Download: [Windows](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip) · [macOS (Apple Silicon)](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip). Portable, no installer, unsigned (Windows: "More info › Run anyway"; macOS: right-click › Open). No Intel Mac build.
 - Run from source: `pip install -r requirements.txt`, then `python hushpad_main.py`. Build: `python build.py`.

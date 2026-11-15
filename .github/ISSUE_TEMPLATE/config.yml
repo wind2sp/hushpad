@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 질문·사용 후기 / Questions and feedback
+    url: https://github.com/wind2sp/hushpad/discussions
+    about: 사용법 질문, 후기, 아이디어 이야기는 Discussions에서 나눠요 / Ask and share in Discussions
+  - name: 보안 문제 신고 / Report a security issue
+    url: https://github.com/wind2sp/hushpad/blob/main/SECURITY.md
+    about: 보안 문제는 공개 이슈로 올리지 말고 메일로 알려 주세요 / Please email instead of opening a public issue
