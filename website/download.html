@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko" data-public="false">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다운로드 — Hushpad</title>
+<meta name="description" content="Hushpad Windows용 다운로드. 설치 방법, 시스템 요구 사항, 파일 확인(SHA-256).">
+<meta name="theme-color" content="#7A3C93">
+<meta property="og:title" content="Hushpad 다운로드">
+<meta property="og:image" content="assets/img/og-image.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="assets/img/icon-64.png" alt="" width="28" height="28">Hushpad</a>
+    <nav>
+      <a href="./#features" class="hide-sm">기능</a>
+      <a href="./#security" class="hide-sm">보안</a>
+      <a href="./#faq" class="hide-sm">자주 묻는 질문</a>
+      <a href="download.html">다운로드</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="dl-card">
+        <img src="assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
+        <h1 style="margin:0;font-size:30px">Hushpad for Windows</h1>
+        <div class="ver">버전 <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">공개 준비 중</span> · 64비트</div>
+
+        <div class="when-public">
+          <a class="btn primary" data-href="downloadUrl" href="#" aria-disabled="true">⬇ <span data-cfg="fileName">Hushpad-win64.zip</span> 받기</a>
+          <div style="margin-top:10px;font-size:14px;color:var(--muted)"><span data-cfg="fileSize"></span>
+            · <a data-href="releaseUrl" href="#">GitHub 릴리스에서 보기</a></div>
+        </div>
+        <div class="when-private">
+          <a class="btn primary" aria-disabled="true" href="#">곧 공개됩니다</a>
+          <p class="notice">지금은 정식 버전을 준비하고 있어요. 공개되면 이 페이지에서 바로 받을 수 있고, 주소는 그대로입니다.</p>
+        </div>
+      </div>
+
+      <div class="req">
+        <div class="box">
+          <h3>설치</h3>
+          <ol>
+            <li>zip 파일을 받아 원하는 곳(예: <code>C:\Program Files\Hushpad</code> 또는 문서 폴더)에 풉니다.</li>
+            <li><code>Hushpad.exe</code>를 실행합니다. 설치 과정은 없어요.</li>
+            <li>처음 실행하면 메모를 보관할 폴더와 암호를 정합니다. 여러 PC에서 쓰려면 Dropbox·OneDrive 안의 폴더를 고르세요.</li>
+          </ol>
+        </div>
+        <div class="box">
+          <h3>“Windows의 PC 보호” 창이 뜨면</h3>
+          <p>새로 나온 프로그램이라 Windows SmartScreen이 경고할 수 있어요. 받은 파일이 아래 SHA-256 값과 같은지 확인한 뒤 “추가 정보 › 실행”을 누르세요.</p>
+        </div>
+        <div class="box">
+          <h3>파일 확인 (SHA-256)</h3>
+          <p>PowerShell에서 <code>Get-FileHash .\파일이름.zip</code> 으로 나온 값과 비교하세요.</p>
+          <code class="sum" id="sha256">공개될 때 표시됩니다</code>
+          <button class="btn small when-public" data-copy="sha256" style="margin-top:8px">값 복사</button>
+        </div>
+        <div class="box">
+          <h3>필요한 환경</h3>
+          <p>Windows 10(2004 이상) 또는 Windows 11, 64비트. 캡처에서 창 숨기기는 Windows 10 2004 이상에서 동작해요. 인터넷 연결은 필요 없습니다.</p>
+        </div>
+        <div class="box">
+          <h3>지울 때</h3>
+          <p>프로그램 폴더를 지우면 됩니다. 메모는 보관 폴더에 그대로 남아 있어요(암호화된 상태). 메모까지 지우려면 보관 폴더도 함께 지우세요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© <span id="year">2026</span> Hushpad</div>
+    <div><a href="./">홈</a> · <a class="when-public" href="https://github.com/wind2sp/hushpad">GitHub</a><span class="when-private">GitHub 공개 준비 중</span></div>
+  </div>
+</footer>
+<script src="assets/js/site.js" defer></script>
+</body>
+</html>

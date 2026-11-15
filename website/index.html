@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ko" data-public="false">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hushpad — 조용한 비밀 메모장</title>
+<meta name="description" content="저장 버튼 없이 자동 저장되고, 모든 메모가 암호화되며, 스크린샷·화면 공유에도 보이지 않는 Windows 메모장. 암호·API 키·HTML·JSON·스크린샷을 한곳에.">
+<meta name="theme-color" content="#7A3C93">
+<meta property="og:title" content="Hushpad — 조용한 비밀 메모장">
+<meta property="og:description" content="자동 저장 · 모든 메모 암호화 · 캡처에 보이지 않는 창. Windows용 메모장.">
+<meta property="og:image" content="assets/img/og-image.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3M12 14.5v2"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.6A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.2 3.9M6.4 6.9C3.9 8.6 2.5 12 2.5 12S6 18.5 12 18.5c1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h1.5l1.5-2h6l1.5 2H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="assets/img/icon-64.png" alt="" width="28" height="28">Hushpad</a>
+    <nav>
+      <a href="#features" class="hide-sm">기능</a>
+      <a href="#security" class="hide-sm">보안</a>
+      <a href="#faq" class="hide-sm">자주 묻는 질문</a>
+      <a href="download.html">다운로드</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <img class="app-icon" src="assets/img/icon-256.png" alt="Hushpad 아이콘" width="96" height="96">
+      <span class="eyebrow">Windows 10·11용 메모장</span>
+      <h1>조용히 적고, <em>아무도 못 보게</em></h1>
+      <p class="lead">저장 버튼 없이 바로 기록되고, 모든 메모는 암호화되어 한 폴더에 모입니다.
+        창은 스크린샷과 화면 공유에도 보이지 않아요. 암호·API 키·HTML·JSON·스크린샷까지 한곳에.</p>
+      <div class="cta">
+        <a class="btn primary" href="download.html">Windows용 다운로드</a>
+        <a class="btn" href="#features">무엇이 다른가요</a>
+      </div>
+      <div class="meta">버전 <span data-cfg="version">1.0.0</span> · 계정·서버·광고 없음 · 인터넷 연결 없이 동작</div>
+      <div class="shot">
+        <img class="light" src="assets/img/app-light.png" alt="Hushpad 화면 — 왼쪽 메모 목록과 분류, 오른쪽 탭으로 열린 메모" width="1280" height="760">
+        <img class="dark" src="assets/img/app-dark.png" alt="Hushpad 어두운 모드 — 코드 메모에 JSON이 색 구분되어 보임" width="1280" height="760" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>메모장을 이렇게 쓰고 있다면</h2>
+        <p>저장 안 해도 남아 있는 탭이 편하지만, 쌓이기 시작하면 이야기가 달라집니다.</p>
+      </div>
+      <div class="pains">
+        <div class="pain"><div class="q">“탭이 너무 많고 제목이 다 비슷해요”</div><div class="a">목록·분류·검색으로 정리하고, 탭에는 만든 시각이 함께 보여요. 미리보기 탭이라 눌러 봐도 탭이 쌓이지 않아요.</div></div>
+        <div class="pain"><div class="q">“컴퓨터가 꺼지면 내용이 날아간 것 같아요”</div><div class="a">쓰는 즉시 디스크에 안전하게 저장하고, 10분마다 이전 버전을 남겨요. 저장 도중 꺼져도 직전 내용이 그대로예요.</div></div>
+        <div class="pain"><div class="q">“암호랑 API 키를 메모장에 적어 둬요”</div><div class="a">모든 메모가 암호화된 파일로만 저장돼요. 비밀 메모는 열 때마다 가려지고, 복사한 뒤 30초면 클립보드에서 지워져요.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>가볍지만 꼭 필요한 것만</h2>
+        <p>Windows 메모장처럼 바로 쓰고, 메모장이 못 하던 일을 조용히 해 줍니다.</p>
+      </div>
+      <div class="grid">
+        <div class="feat"><div class="ic"><svg><use href="#i-save"/></svg></div><h3>저장 버튼이 없어요</h3><p>쓰는 순간 자동 저장. 이름을 안 정해도 만든 날짜·시각으로 정리되고, 모든 메모가 한 폴더에 모여요.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-lock"/></svg></div><h3>모든 메모를 암호화</h3><p>파일을 열어 봐도 알아볼 수 없어요. 다른 프로그램·검색 색인·클라우드가 내용을 읽지 못합니다.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-eye-off"/></svg></div><h3>캡처에 보이지 않는 창</h3><p>스크린샷·화면 녹화·화상회의 화면 공유에 Hushpad 창이 찍히지 않아요. 내 눈에만 보입니다.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-copy"/></svg></div><h3>서식 그대로, 또는 글자만</h3><p>웹에서 복사한 서식을 그대로 붙이고, 내보낼 때는 <kbd>Ctrl+Shift+C</kbd> 한 번이면 글자만. 두 버전을 늘 함께 가지고 있어요.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>HTML·JSON 급할 때</h3><p>코드 메모는 줄 번호·색 구분·자동 들여쓰기, JSON 정리 한 번에. <code>KEY=값</code> 줄에서 값만 복사도 돼요.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>스크린샷·짧은 녹화</h3><p>어디서든 <kbd>Ctrl+Alt+S</kbd> 영역 캡처, <kbd>Ctrl+Alt+R</kbd> 화면 녹화. 결과는 메모에 바로 들어가고 동영상도 암호화돼요.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>분류·합치기·휴지통</h3><p>끌어다 분류하고, 여러 메모를 하나로 합치고, 지운 메모는 휴지통에서 되살려요. 오래 안 본 메모만 모아 정리도.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>내 PC 여러 대에서</h3><p>보관 폴더를 Dropbox·OneDrive 안에 두면 같은 암호로 다른 PC에서도 열려요. 메모 하나가 파일 하나라 충돌이 적어요.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>Ctrl+K 하나로</h3><p>메모 제목·내용과 모든 기능을 한 칸에서 찾아 Enter로 실행. 클립보드를 바로 메모로 저장하는 <kbd>Ctrl+Alt+M</kbd>도 있어요.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="capture">
+    <div class="wrap split">
+      <div>
+        <div class="sec-head" style="text-align:left;margin:0 0 22px">
+          <h2>내 화면에는 보이고, 캡처에는 없어요</h2>
+          <p>화면 공유 중에 메모를 띄워 놓아도, 스크린샷을 찍어도 Hushpad 창 자리는 그 뒤 화면으로 채워집니다.
+            그래서 창을 치우지 않고 그대로 캡처 버튼을 눌러도 돼요.</p>
+        </div>
+        <ul class="checks">
+          <li><svg><use href="#i-check"/></svg><div><b>스크린샷·녹화 도구, 화상회의 공유</b><span>Windows의 캡처 제외 기능(Windows 10 2004 이상)을 씁니다.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>녹화 중 버튼도 찍히지 않아요</b><span>녹화 영역 테두리와 ⏸·⏹ 막대는 화면에만 보입니다.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>필요하면 끌 수 있어요</b><span>메모를 일부러 화면 공유할 때는 메뉴에서 한 번에 해제.</span></div></li>
+        </ul>
+      </div>
+      <div class="capture-demo" aria-hidden="true">
+        <div class="row">
+          <div class="pane"><b>내 모니터</b><div class="ghost">Hushpad 창</div></div>
+          <div class="pane"><b>스크린샷·화면 공유</b><div class="ghost gone">(보이지 않음)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="security">
+    <div class="wrap split">
+      <div>
+        <div class="sec-head" style="text-align:left;margin:0 0 22px">
+          <h2>어떻게 지켜지나요</h2>
+          <p>Hushpad는 서버가 없습니다. 메모는 내가 고른 폴더에만 있고, 그 안의 모든 파일은 암호화되어 있어요.</p>
+        </div>
+        <ul class="checks">
+          <li><svg><use href="#i-check"/></svg><div><b>AES-256-GCM 암호화</b><span>메모·이전 버전·동영상·분류 이름까지 모두 암호화해 저장해요.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>암호에서 만든 열쇠 (scrypt)</b><span>암호를 모르면 파일을 풀 수 없어요. 암호를 잊으면 만든 사람도 되살릴 수 없습니다.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>내 PC에서는 한 번만 입력</b><span>열쇠를 Windows 계정에 묶어(DPAPI) 기억해요. 다른 계정·다른 PC에서는 다시 암호가 필요해요.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>클립보드도 조용히</b><span>복사한 내용은 Windows 클립보드 기록·클라우드 동기화에 남지 않게 표시해요.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>계정·추적·인터넷 연결 없음</b><span>앱도 이 홈페이지도 분석·광고 스크립트를 쓰지 않아요.</span></div></li>
+        </ul>
+      </div>
+      <div class="vault" aria-label="보관 폴더 구조 예시">
+<span class="dim">Documents\Hushpad\</span><br>
+├─ vault.json <span class="dim">— 암호로 감싼 열쇠</span><br>
+├─ notes\<br>
+│ &nbsp;├─ <span class="acc">20261115-143205-a1b2.own</span><br>
+│ &nbsp;└─ <span class="acc">20261115-151740-9c0e.own</span><br>
+├─ history\ <span class="dim">— 이전 버전</span><br>
+└─ media\ <span class="dim">— 녹화한 동영상</span><br><br>
+<span class="dim">$ type notes\20261115-143205-a1b2.own</span><br>
+OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓░█▒▓<br>
+<span class="dim"># 열어 봐도 이렇게만 보여요</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="keys">
+    <div class="wrap">
+      <div class="sec-head"><h2>손에 익는 단축키</h2><p>창이 닫혀 있어도(트레이) 동작하는 단축키가 있어요.</p></div>
+      <div class="keys">
+        <div><span>어디서든 새 메모</span><kbd>Ctrl+Alt+N</kbd></div>
+        <div><span>지금 클립보드를 메모로 저장</span><kbd>Ctrl+Alt+M</kbd></div>
+        <div><span>어디서든 영역 스크린샷</span><kbd>Ctrl+Alt+S</kbd></div>
+        <div><span>어디서든 화면 녹화</span><kbd>Ctrl+Alt+R</kbd></div>
+        <div><span>메모·명령 찾기</span><kbd>Ctrl+K</kbd></div>
+        <div><span>글자만 복사 / 붙여넣기</span><kbd>Ctrl+Shift+C / V</kbd></div>
+        <div><span>잠그기</span><kbd>Ctrl+L</kbd></div>
+        <div><span>이전 버전 보기</span><kbd>Ctrl+Shift+H</kbd></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head"><h2>자주 묻는 질문</h2></div>
+      <div class="faq">
+        <details><summary>Windows 메모장에 열어 둔 탭을 옮길 수 있나요?</summary><p>네. 메뉴 › 파일 › “Windows 메모장 탭 가져오기”로 저장하지 않은 탭까지 복사해 옵니다. Windows 메모장 쪽은 건드리지 않아요.</p></details>
+        <details><summary>암호를 잊으면 어떻게 되나요?</summary><p>되살릴 방법이 없습니다. 암호를 모르면 아무도(만든 사람도) 열 수 없게 만든 것이라서요. 처음 정할 때 안전한 곳에 적어 두세요.</p></details>
+        <details><summary>여러 PC에서 함께 쓰려면?</summary><p>보관 폴더를 Dropbox·OneDrive 같은 동기화 폴더 안에 두고, 다른 PC에서 같은 폴더를 고른 뒤 같은 암호를 넣으면 됩니다. 다른 PC에서 고친 내용은 몇 초 안에 반영되고, 양쪽에서 동시에 고치면 한쪽을 “충돌 사본”으로 따로 남겨요.</p></details>
+        <details><summary>이미지나 동영상도 넣을 수 있나요?</summary><p>서식 메모에는 이미지를 붙여 넣거나 끌어다 놓을 수 있고, 스크린샷과 짧은 화면 녹화(최대 3분)도 바로 들어갑니다. 동영상은 앱 안에서 재생되고 암호화되어 저장돼요.</p></details>
+        <details><summary>인터넷에 무언가를 보내나요?</summary><p>아니요. Hushpad는 계정도 서버도 없고, 실행 중에 인터넷에 연결하지 않습니다.</p></details>
+        <details><summary>어디서 받나요?</summary><p>정식 버전은 GitHub에 공개해서 배포합니다. 이 홈페이지의 다운로드 페이지에서 바로 받을 수 있어요.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© <span id="year">2026</span> Hushpad</div>
+    <div><a href="download.html">다운로드</a> · <a class="when-public" href="https://github.com/wind2sp/hushpad">GitHub</a><span class="when-private">GitHub 공개 준비 중</span></div>
+  </div>
+</footer>
+<script src="assets/js/site.js" defer></script>
+</body>
+</html>
