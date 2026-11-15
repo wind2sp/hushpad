@@ -18,6 +18,12 @@ from . import plat
 from .i18n import fmt_ts
 
 APP_NAME = "Hushpad"
+
+# 프로그램 정보 창에 쓰는 만든 곳
+ABOUT_COMPANY = {"ko": "나인로우파트너스(주) NINEROW partners", "en": "NINEROW partners Co., Ltd.",
+                 "ja": "NINEROW partners Co., Ltd.", "zh": "NINEROW partners Co., Ltd."}
+ABOUT_EMAIL = "wind2sp@9rowpar.com"
+ABOUT_PERSON = {"ko": "황경진", "en": "Kyeongjin Hwang", "ja": "Kyeongjin Hwang", "zh": "Kyeongjin Hwang"}
 APP_ID = "windsp.Hushpad.Notes"
 
 # HUSHPAD_PROFILE 환경 변수를 주면 설정·키·백업을 그 폴더에 둔다 (시험용)

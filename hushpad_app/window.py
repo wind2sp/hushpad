@@ -270,6 +270,7 @@ class MainWindow(QMainWindow):
         self._build_actions()
         self.palette_dlg = CommandPalette(self)
         self._setup_tray()
+        self._init_autostart()
         self.idle_timer = QTimer(self, interval=20000, timeout=self._idle_check)
         self.idle_timer.start()
         self.apply_theme()
@@ -570,6 +571,8 @@ class MainWindow(QMainWindow):
                                  checkable=True, checked=self.cfg["secret_clear_sec"] > 0)
         m.addSeparator()
         self._act(m, tr("act.forget"), self.forget_here)
+        mb.addSeparator()
+        self._act(mb, tr("act.about"), self.show_about)
 
         tb = QToolBar(tr("tb.name"), objectName="TopBar")
         tb.setMovable(False)
@@ -736,6 +739,7 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------ 빠른 메모·트레이·잠금
     def _setup_tray(self):
         self.tray = None
+        self.tray_autostart = None
         if not QSystemTrayIcon.isSystemTrayAvailable():
             return
         self.tray = QSystemTrayIcon(self.windowIcon(), self)
@@ -751,8 +755,16 @@ class MainWindow(QMainWindow):
         m.addAction(lbl("empty.k_shot", "S"), lambda: self.screenshot("region"))
         m.addAction(lbl("tb.record", "R"), self.record_video)
         m.addSeparator()
+        if plat.AUTOSTART_SUPPORTED:
+            self.tray_autostart = m.addAction(tr("act.autostart"))
+            self.tray_autostart.setCheckable(True)
+            self.tray_autostart.setChecked(self._autostart_on())
+            self.tray_autostart.toggled.connect(self._toggle_autostart)
+        m.addAction(tr("act.about"), self.show_about)
+        m.addSeparator()
         m.addAction(tr("act.lock"), self.lock)
         m.addAction(tr("act.quit"), self.quit_app)
+        m.aboutToShow.connect(self._sync_autostart_checks)
         self._tray_menu = m
         self.tray.setContextMenu(m)
         self.tray.activated.connect(
@@ -880,11 +892,47 @@ class MainWindow(QMainWindow):
             done = plat.set_autostart(on)
         except OSError as e:
             self.status(str(e))
-            return
+            done = False
         if not done:
-            self.status(tr("autostart.need_app"))
+            if on:
+                self.status(tr("autostart.need_app"))
+            self._sync_autostart_checks()
             return
-        self.status(tr("autostart.on") if on else tr("autostart.off"))
+        self.cfg["autostart"] = on
+        self._sync_autostart_checks()
+        self._notify(tr("autostart.on") if on else tr("autostart.off"))
+
+    def _sync_autostart_checks(self):
+        """보안 메뉴와 트레이 메뉴의 체크를 실제 등록 상태에 맞춘다."""
+        on = self._autostart_on()
+        for a in (getattr(self, "a_autostart", None), getattr(self, "tray_autostart", None)):
+            if a is not None and a.isChecked() != on:
+                a.blockSignals(True)
+                a.setChecked(on)
+                a.blockSignals(False)
+
+    def _init_autostart(self):
+        """첫 실행 때 '시작할 때 실행'을 켜고, 그 뒤로는 켜져 있으면 프로그램 위치를 새로 적는다
+        (폴더를 옮겨도 자동 실행이 끊기지 않게). 개발용(python) 실행에서는 건드리지 않는다."""
+        import sys
+        if not plat.AUTOSTART_SUPPORTED or not getattr(sys, "frozen", False):
+            return
+        try:
+            if not self.cfg.get("autostart_initialized"):
+                self.cfg["autostart_initialized"] = True
+                self.cfg["autostart"] = bool(plat.set_autostart(True))
+                self.cfg.save()
+                if self.cfg["autostart"]:
+                    QTimer.singleShot(1500, lambda: self._notify(tr("autostart.first")))
+            elif self._autostart_on():
+                plat.set_autostart(True)
+        except Exception:
+            pass
+        self._sync_autostart_checks()
+
+    def show_about(self):
+        from .dialogs import AboutDialog
+        AboutDialog(self, self.windowIcon()).exec()
 
     def copy_text(self, text, msg=""):
         t = self._cur_tab()

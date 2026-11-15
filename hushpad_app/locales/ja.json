@@ -315,5 +315,13 @@
  "lang.restart_msg": "言語を切り替えるには Hushpad の再起動が必要です。開いているメモはすべて保存されます。",
  "lang.restart_now": "今すぐ再起動",
  "lang.later": "後で",
- "st.lang_later": "次回の起動時から新しい言語で表示されます。"
+ "st.lang_later": "次回の起動時から新しい言語で表示されます。",
+ "act.about": "Hushpad について",
+ "about.title": "Hushpad について",
+ "about.tagline": "静かに書いて、誰にも見せない",
+ "about.hint": "どこからでも Ctrl+Alt+N で新規メモ · Ctrl+K で検索",
+ "about.hint@mac": "どこからでも ⌃⌥N で新規メモ · ⌘K で検索",
+ "common.ok": "OK",
+ "autostart.first": "Windows の起動時に Hushpad がトレイで自動起動するよう設定しました。トレイアイコンを右クリックすると解除できます。",
+ "autostart.first@mac": "ログイン時に Hushpad がメニューバーで自動起動するよう設定しました。メニューバーのアイコンから解除できます。"
 }

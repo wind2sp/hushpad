@@ -348,5 +348,13 @@
  "lang.restart_msg": "Hushpad needs to restart to change the language. All open notes will be saved.",
  "lang.restart_now": "Restart now",
  "lang.later": "Later",
- "st.lang_later": "The new language will be used the next time Hushpad starts."
+ "st.lang_later": "The new language will be used the next time Hushpad starts.",
+ "act.about": "About Hushpad",
+ "about.title": "About Hushpad",
+ "about.tagline": "Write quietly. Seen by no one.",
+ "about.hint": "Ctrl+Alt+N new note from anywhere · Ctrl+K search",
+ "about.hint@mac": "⌃⌥N new note from anywhere · ⌘K search",
+ "common.ok": "OK",
+ "autostart.first": "Hushpad will now start in the tray when Windows starts. Right-click the tray icon to turn this off.",
+ "autostart.first@mac": "Hushpad will now open in the menu bar when you log in. Click the menu bar icon to turn this off."
 }

@@ -108,6 +108,53 @@ class SetupDialog(QDialog):
         self.accept()
 
 
+class AboutDialog(QDialog):
+    """프로그램 정보: 아이콘, 이름·버전, 한 줄 소개, 만든 곳."""
+
+    def __init__(self, parent, icon):
+        super().__init__(parent)
+        from . import __version__
+        from .common import ABOUT_COMPANY, ABOUT_EMAIL, ABOUT_PERSON
+        from .i18n import current as current_language
+        self.setWindowTitle(tr("about.title"))
+        self.setWindowIcon(icon)
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(36, 26, 36, 20)
+        lay.setSpacing(6)
+        pic = QLabel(alignment=Qt.AlignCenter)
+        pic.setPixmap(icon.pixmap(72, 72))
+        lay.addWidget(pic)
+        lay.addSpacing(6)
+        name = QLabel(f"Hushpad&nbsp;&nbsp;v{__version__}", alignment=Qt.AlignCenter)
+        name.setTextFormat(Qt.RichText)
+        name.setStyleSheet("font-size: 20px; font-weight: 700;")
+        lay.addWidget(name)
+        sub = QLabel(tr("about.tagline"), alignment=Qt.AlignCenter, objectName="EmptyHint")
+        lay.addWidget(sub)
+        hint = QLabel(tr("about.hint"), alignment=Qt.AlignCenter, objectName="EmptyHint")
+        lay.addWidget(hint)
+        lay.addSpacing(14)
+        company = ABOUT_COMPANY.get(current_language(), ABOUT_COMPANY["en"])
+        person = ABOUT_PERSON.get(current_language(), ABOUT_PERSON["en"])
+        for text in (company, f'<a href="mailto:{ABOUT_EMAIL}">{ABOUT_EMAIL}</a>', person):
+            lb = QLabel(text, alignment=Qt.AlignCenter)
+            lb.setTextFormat(Qt.RichText)
+            lb.setOpenExternalLinks(True)
+            lb.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            lay.addWidget(lb)
+        lay.addSpacing(14)
+        row = QHBoxLayout()
+        row.addStretch(1)
+        ok = QPushButton(tr("common.ok"))
+        ok.setDefault(True)
+        ok.setMinimumWidth(96)
+        ok.clicked.connect(self.accept)
+        row.addWidget(ok)
+        row.addStretch(1)
+        lay.addLayout(row)
+        self.setFixedSize(self.sizeHint().expandedTo(self.minimumSizeHint()))
+
+
 class PassphraseDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
