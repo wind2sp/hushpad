@@ -48,13 +48,16 @@ def ui_families(lang: str | None = None) -> list[str]:
     if plat.IS_MAC:
         return _dedup(["Pretendard"] + _CJK_MAC.get(lang, []) +
                       ["Apple SD Gothic Neo", "Hiragino Sans", "PingFang SC"])
-    return _dedup(["Pretendard"] + _CJK_WIN.get(lang, []) +
+    # 영어·중국어 화면은 라틴 글자를 Segoe UI로: 맑은 고딕은 역슬래시(\)를 ₩로 그린다.
+    # 한국어는 ₩, 일본어는 ¥ 표시가 그 나라의 관례라 각 언어 글꼴을 그대로 쓴다.
+    latin = ["Segoe UI"] if lang in ("en", "zh") else []
+    return _dedup(["Pretendard"] + latin + _CJK_WIN.get(lang, []) +
                   ["Malgun Gothic", "Yu Gothic UI", "Microsoft YaHei UI"])
 
 
 def code_families(lang: str | None = None) -> list[str]:
     mono = ["D2Coding", "Cascadia Mono", "Consolas"] + (["SF Mono", "Menlo"] if plat.IS_MAC else [])
-    return _dedup(mono + ui_families(lang)[1:])
+    return _dedup(mono + [f for f in ui_families(lang) if f not in ("Pretendard", "Segoe UI")])
 
 
 def _css(fams: list[str]) -> str:
