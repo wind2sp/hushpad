@@ -3,6 +3,14 @@ Options -Indexes
 DirectoryIndex index.html
 ErrorDocument 404 /hushpad/404.html
 
+# 상위 폴더(/www)의 WordPress 주소 규칙이 이 폴더에 적용되지 않게 하고, 없는 주소는 우리 404로
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ - [R=404,L]
+</IfModule>
+
 # 안내·원본 파일은 밖에서 열리지 않게
 <FilesMatch "^(README\.txt|make_site_assets\.py|.*\.md)$">
   <IfModule mod_authz_core.c>
