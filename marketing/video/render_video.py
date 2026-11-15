@@ -1,11 +1,13 @@
-"""Hushpad 유튜브 홍보 영상을 코드로 그려 MP4(H.264)로 만든다. 외부 소스·음악 없음.
+"""Hushpad 유튜브 홍보 영상을 코드로 그려 MP4(H.264 + AAC)로 만든다. 외부 소스 없음, 음악은 make_music.py로 직접 합성.
 
 python render_video.py ko            → hushpad_promo_ko.mp4 (한국어 자막 화면에 포함)
 python render_video.py en            → hushpad_promo_en.mp4
 python render_video.py shorts        → shorts_ko.mp4 (1080×1920, 30초 이하)
+python render_video.py shorts_en     → shorts_en.mp4 (영어 UI·영어 화면 글자)
 python render_video.py srt           → subtitles/*.srt (ko·en·ja·zh-Hans)
 python render_video.py thumbs        → thumbnail_ko.png, thumbnail_en.png
-python render_video.py stills ko 3.2 18 …  → qa/still_ko_3.2.png … (인코딩 없이 그 시각 화면만)
+python render_video.py stills ko 3.2 18 …  → qa/still_main_ko_003.2.png … (인코딩 없이 그 시각 화면만; shorts_ko·shorts_en도 됨)
+--silent 를 붙이면 배경 음악 없이 (기본은 music/*.wav를 AAC로 넣음, 먼저 python make_music.py)
 python render_video.py all           → 위 전부
 
 앞서 capture_shots.py로 shots/ko·shots/en 실제 앱 화면을 만들어 두어야 한다.
@@ -81,10 +83,10 @@ TXT = {
             "ja": "探しものは Ctrl+K", "zh-Hans": "要找什么，按 Ctrl+K"},
     "tag":  {"ko": "조용히 적고, 아무도 못 보게", "en": "Write quietly. Seen by no one.",
              "ja": "静かに書いて、\n誰にも見せない", "zh-Hans": "安静记录，\n无人可见"},
-    "soon": {"ko": "곧 공개\nWindows · Mac 버전 준비 중", "en": "Coming soon for Windows and Mac",
-             "ja": "近日公開\nWindows・Mac版を準備中", "zh-Hans": "即将发布\nWindows、Mac 版准备中"},
-    "soon_big": {"ko": "곧 공개", "en": "Coming soon"},
-    "soon_small": {"ko": "Windows · Mac 버전 준비 중", "en": "Windows and Mac versions in the works"},
+    "release": {"ko": "무료 오픈소스 앱이에요\nWindows와 macOS에서 받으세요", "en": "Free and open source, for Windows and macOS.",
+                "ja": "無料のオープンソース\nWindows・macOS対応", "zh-Hans": "免费开源\n支持 Windows、macOS"},
+    "free_big": {"ko": "무료 · 오픈소스", "en": "Free & open source"},
+    "free_small": {"ko": "Windows 10/11 · macOS(Apple Silicon)", "en": "Windows 10/11 · macOS (Apple Silicon)"},
     # 작은 라벨
     "my_screen": {"ko": "내 화면", "en": "Your screen"},
     "their_screen": {"ko": "스크린샷 · 화면 공유", "en": "Screenshot / screen share"},
@@ -416,7 +418,7 @@ def draw_window(p, rect, img, dark=False, zoom=1.0, focus=None, alpha=1.0, img2=
     p.setOpacity(alpha)
     shadow(p, rect, 14 * s, 1.3 * shadow_k, 34 * s, 16 * s)
     path = rrect(p, rect, 14 * s, fill=QColor("#1F1C24") if dark else QColor("#ECE9F0"))
-    p.setClipPath(path)
+    p.setClipPath(path, Qt.IntersectClip)  # 바깥 클립(썸네일의 왼쪽 절반 등)을 지킴
     # 제목 표시줄
     draw_icon(p, QPointF(rect.left() + 24 * s, rect.top() + tb / 2), 20 * s)
     text(p, QRectF(rect.left() + 44 * s, rect.top(), 300 * s, tb), "Hushpad", 15 * s, "#E8E4EE" if dark else "#3B3542",
@@ -563,6 +565,7 @@ def sc_hook(p, L, t, D):
     a = window_alpha(t, T(0.1), T(0.5))
     s = tr("hook")
     if L.portrait:
+        s = s.replace("… ", "…\n")  # 영어 훅은 뜻 단위로 줄바꿈
         tw, th = text_size(s, 68, QFont.Bold, 960)
         r = QRectF(60, 170, 960, th + 10)
         text(p, r.translated(0, 3), s, 68, QColor(0, 0, 0, 120), Qt.AlignHCenter, QFont.Bold, True, a)
@@ -799,7 +802,10 @@ def sc_invisible(p, L, t, D):
     if L.portrait:
         a = window_alpha(t, 0, 0.5)
         text(p, QRectF(60, 150, W - 120, 50), "02 / 07", 34, PEACH2, Qt.AlignHCenter, QFont.Bold, False, a)
-        text(p, QRectF(60, 206, W - 120, 100), tr("t2"), 76, INK, Qt.AlignHCenter, QFont.Bold, False, a)
+        tpx = 76
+        while text_size(tr("t2"), tpx, QFont.Bold)[0] > W - 140 and tpx > 50:  # 영어 제목이 한 줄에 들어가게
+            tpx -= 2
+        text(p, QRectF(60, 206, W - 120, 100), tr("t2"), tpx, INK, Qt.AlignHCenter, QFont.Bold, False, a)
         pl = QRectF(60, 400, 960, 540)
         pr = QRectF(60, 1030, 960, 540)
     else:
@@ -1172,12 +1178,12 @@ def sc_outro(p, L, t, D):
     text(p, ur, lab, 40, PLUM, Qt.AlignCenter, QFont.Bold, False, a2)
     a3 = window_alpha(t, 2.0, 2.5)
     sy = uy + 120
-    lab = tr("soon_big")
+    lab = tr("free_big")
     lw, _ = text_size(lab, 40, QFont.Bold)
     sr = QRectF(W / 2 - lw / 2 - 36, sy, lw + 72, 70)
     rrect(p, sr, 35, fill=col(PEACH2, a3))
     text(p, sr, lab, 40, WHITE, Qt.AlignCenter, QFont.Bold, False, a3)
-    text(p, QRectF(0, sy + 90, W, 50), tr("soon_small"), 32, QColor("#F3E6F7"), Qt.AlignHCenter | Qt.AlignTop,
+    text(p, QRectF(0, sy + 90, W, 50), tr("free_small"), 32, QColor("#F3E6F7"), Qt.AlignHCenter | Qt.AlignTop,
          QFont.Normal, False, a3)
 
 
@@ -1271,7 +1277,7 @@ def captions_timeline(kind="main"):
         elif name == "hotkeys":
             out += [(s + 0.3, s + 6.3 * k - 0.3, "c7a"), (s + 6.3 * k - 0.3, s + d - 0.1, "c7b")]
         elif name == "outro":
-            out += [(s + 0.6, s + 4.0, "tag"), (s + 4.0, s + 6.5, "soon"), (s + 6.5, s + d, "url")]
+            out += [(s + 0.6, s + 4.0, "tag"), (s + 4.0, s + 6.5, "release"), (s + 6.5, s + d, "url")]
         start += d
     return out
 
@@ -1381,10 +1387,30 @@ def thumbnail(lang):
 
 
 # ====================================================================== 인코딩
+AUDIO_SR, AUDIO_CHUNK = 48000, 4800   # 0.1초씩 보냄
+
+
+def read_wav_pcm(path):
+    """16비트 스테레오 48 kHz WAV → bytes (make_music.py가 만든 형식)."""
+    import wave
+    with wave.open(str(path), "rb") as w:
+        if (w.getsampwidth(), w.getnchannels(), w.getframerate()) != (2, 2, AUDIO_SR):
+            raise SystemExit(f"{path}: 48 kHz 16비트 스테레오 WAV가 아님")
+        return w.readframes(w.getnframes())
+
+
 class Encoder(QObject):
-    def __init__(self, renderer, path, app):
+    """QVideoFrameInput(+QAudioBufferInput) → QMediaRecorder(MP4, H.264 + AAC).
+
+    인코딩 메모 (PySide6 6.12, Windows): Qt의 FFmpeg에는 Media Foundation 인코더(h264_mf)만 있고,
+    비트레이트·모드(CBR/ABR/품질) 설정과 상관없이 이 영상에서는 4~5 Mbps 근처에서 멈춘다(품질 100이 상한).
+    대신 원본 프레임과 비교한 PSNR이 약 47 dB라 눈으로는 원본과 구분되지 않는다. H.265를 요청해도 H.264로 돌아감.
+    ConstantQualityEncoding은 소리를 HE-AAC 16 kbps로 만들어 버려서, AverageBitRateEncoding(AAC-LC 192 kbps)을 쓴다.
+    """
+    def __init__(self, renderer, path, app, audio=None):
         super().__init__()
-        from PySide6.QtMultimedia import QMediaCaptureSession, QMediaFormat, QMediaRecorder, QVideoFrameInput
+        from PySide6.QtMultimedia import (QMediaCaptureSession, QMediaFormat, QMediaRecorder, QVideoFrameInput,
+                                          QAudioBufferInput, QAudioFormat)
         self.r, self.path, self.app = renderer, Path(path), app
         self.n = int(round(renderer.dur * FPS))
         self.i = 0
@@ -1396,20 +1422,42 @@ class Encoder(QObject):
         self.session = QMediaCaptureSession()
         self.input = QVideoFrameInput()
         self.session.setVideoFrameInput(self.input)
+        # 소리 (배경 음악 WAV)
+        self.ain = None
+        self.ai, self.na, self.apending = 0, 0, None
+        if audio:
+            self.pcm = read_wav_pcm(audio)
+            frames = min(len(self.pcm) // 4, int(round(renderer.dur * AUDIO_SR)))
+            self.pcm = self.pcm[: frames * 4]
+            self.na = (frames + AUDIO_CHUNK - 1) // AUDIO_CHUNK
+            self.afmt = QAudioFormat()
+            self.afmt.setSampleRate(AUDIO_SR)
+            self.afmt.setChannelCount(2)
+            self.afmt.setSampleFormat(QAudioFormat.Int16)
+            self.ain = QAudioBufferInput()
+            self.session.setAudioBufferInput(self.ain)
         self.rec = QMediaRecorder()
         self.session.setRecorder(self.rec)
         fmt = QMediaFormat(QMediaFormat.MPEG4)
         fmt.setVideoCodec(QMediaFormat.VideoCodec.H264)
+        if self.ain:
+            fmt.setAudioCodec(QMediaFormat.AudioCodec.AAC)
         self.rec.setMediaFormat(fmt)
         self.rec.setQuality(QMediaRecorder.VeryHighQuality)
         self.rec.setEncodingMode(QMediaRecorder.AverageBitRateEncoding)
         self.rec.setVideoBitRate(14_000_000 if renderer.L.W * renderer.L.H >= 1920 * 1080 else 10_000_000)
+        if self.ain:
+            self.rec.setAudioSampleRate(AUDIO_SR)
+            self.rec.setAudioChannelCount(2)
+            self.rec.setAudioBitRate(192_000)
         self.rec.setVideoFrameRate(FPS)
         self.rec.setVideoResolution(renderer.L.W, renderer.L.H)
         self.rec.setOutputLocation(QUrl.fromLocalFile(str(self.path)))
         self.rec.errorOccurred.connect(self._err)
         self.rec.recorderStateChanged.connect(self._state)
         self.input.readyToSendVideoFrame.connect(self.pump)
+        if self.ain:
+            self.ain.readyToSendAudioBuffer.connect(self.pump)
         self.kick = QTimer(self)
         self.kick.setInterval(20)
         self.kick.timeout.connect(self.pump)
@@ -1427,8 +1475,21 @@ class Encoder(QObject):
         from PySide6.QtMultimedia import QVideoFrame
         if self.done:
             return
+        from PySide6.QtCore import QByteArray
+        from PySide6.QtMultimedia import QAudioBuffer
         budget = 6
-        while self.i < self.n and budget > 0:
+        while (self.i < self.n or self.ai < self.na) and budget > 0:
+            # 소리는 영상과 같은 시각까지 앞서 보내 둔다 (시간 순서대로 섞어서)
+            if self.ai < self.na and (self.ai * AUDIO_CHUNK / AUDIO_SR <= self.i / FPS or self.i >= self.n):
+                if self.apending is None:
+                    a = self.ai * AUDIO_CHUNK * 4
+                    self.apending = QAudioBuffer(QByteArray(self.pcm[a:a + AUDIO_CHUNK * 4]), self.afmt,
+                                                 int(self.ai * AUDIO_CHUNK * 1_000_000 / AUDIO_SR))
+                if not self.ain.sendAudioBuffer(self.apending):
+                    return
+                self.apending = None
+                self.ai += 1
+                continue
             if self.pending is None:
                 img = self.r.frame(self.i / FPS)
                 f = QVideoFrame(img)
@@ -1442,7 +1503,7 @@ class Encoder(QObject):
             budget -= 1
             if self.i % 150 == 0:
                 print(f"  {self.path.name}: {self.i}/{self.n}", flush=True)
-        if self.i >= self.n and not self.done:
+        if self.i >= self.n and self.ai >= self.na and not self.done:
             self.done = True
             self.kick.stop()
             self.rec.stop()
@@ -1454,10 +1515,17 @@ class Encoder(QObject):
             self.app.quit()
 
 
+MUSIC = {"main": HERE / "music" / "hushpad_bgm_main.wav", "shorts": HERE / "music" / "hushpad_bgm_shorts.wav"}
+SILENT = False   # --silent 이면 음악 없이
+
+
 def encode(kind, lang, out, app):
     r = Renderer(kind, lang)
-    print(f"render {out.name}: {r.dur:.1f}s, {r.L.W}x{r.L.H}@{FPS}", flush=True)
-    enc = Encoder(r, out, app)
+    audio = None if SILENT else MUSIC[kind]
+    if audio is not None and not audio.exists():
+        raise SystemExit(f"{audio} 없음 — 먼저 python make_music.py 를 실행하세요 (또는 --silent)")
+    print(f"render {out.name}: {r.dur:.1f}s, {r.L.W}x{r.L.H}@{FPS}, audio={audio.name if audio else 'none'}", flush=True)
+    enc = Encoder(r, out, app, audio)
     QTimer.singleShot(0, enc.start)
     app.exec()
     if enc.failed:
@@ -1474,13 +1542,17 @@ def stills(lang, times, kind="main"):
 
 
 def main():
+    global SILENT
     app = QGuiApplication(sys.argv[:1])
-    args = sys.argv[1:] or ["all"]
+    args = [a for a in sys.argv[1:] if a != "--silent"]
+    SILENT = "--silent" in sys.argv[1:]
+    args = args or ["all"]
     cmd = args[0]
     if cmd in ("ko", "en"):
         encode("main", cmd, HERE / f"hushpad_promo_{cmd}.mp4", app)
-    elif cmd == "shorts":
-        encode("shorts", "ko", HERE / "shorts_ko.mp4", app)
+    elif cmd in ("shorts", "shorts_ko", "shorts_en"):
+        lg = "en" if cmd == "shorts_en" else "ko"
+        encode("shorts", lg, HERE / f"shorts_{lg}.mp4", app)
     elif cmd == "srt":
         write_srts()
     elif cmd == "thumbs":
@@ -1490,8 +1562,8 @@ def main():
         kind = "main"
         lang = args[1]
         ts = args[2:]
-        if lang == "shorts":
-            kind, lang = "shorts", "ko"
+        if lang.startswith("shorts"):
+            kind, lang = "shorts", ("en" if lang == "shorts_en" else "ko")
         stills(lang, ts, kind)
     elif cmd == "all":
         write_srts()
@@ -1499,7 +1571,8 @@ def main():
         thumbnail("en")
         for k in ("ko", "en"):
             encode("main", k, HERE / f"hushpad_promo_{k}.mp4", app)
-        encode("shorts", "ko", HERE / "shorts_ko.mp4", app)
+        for k in ("ko", "en"):
+            encode("shorts", k, HERE / f"shorts_{k}.mp4", app)
 
 
 if __name__ == "__main__":

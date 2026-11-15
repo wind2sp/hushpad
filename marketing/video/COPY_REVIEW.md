@@ -44,3 +44,18 @@ ko·en 화면 글자 중 위 항목 말고는 고칠 곳이 없었습니다. 한
 | 머리말 | 앱 UI는 지금 한국어뿐이라… / The app UI is Korean-only for now | 영상 속 앱 화면은 지금의 한국어 버전이라…(앱 안 언어 전환은 준비 중) / The UI shown is the current Korean build | "한국어뿐"이라는 단정 대신 합의한 표현으로 |
 | 장면 03 | (en) Secret notes open covered… 30 s. | Secret notes open hidden. Click to reveal. → …30 seconds. | 바뀐 화면 글자와 맞춤 |
 | 장면 04 | 붙여넣으면 서식 그대로 / 붙여넣으면 글자만 | 붙여 넣으면 … | 바뀐 화면 글자와 맞춤 |
+
+## 공개 문구로 바꿈 (2026-11-16, 영상팀)
+
+앞선 검수 수정은 모두 그대로 두고, "곧 공개" 계열만 공개 문구로 바꿨습니다. `python render_video.py srt`로 다시 만들었고 자막 번호·시각은 그대로(20개, 바뀐 것은 19번 한 개).
+
+| 키 | 언어 | 전 | 후 |
+|---|---|---|---|
+| soon → release (자막 19번) | ko | 곧 공개 / Windows · Mac 버전 준비 중 | 무료 오픈소스 앱이에요 / Windows와 macOS에서 받으세요 |
+| | en | Coming soon for Windows and Mac | Free and open source, / for Windows and macOS. |
+| | ja | 近日公開 / Windows・Mac版を準備中 | 無料のオープンソース / Windows・macOS対応 |
+| | zh-Hans | 即将发布 / Windows、Mac 版准备中 | 免费开源 / 支持 Windows、macOS |
+| soon_big → free_big (아웃트로 알약) | ko / en | 곧 공개 / Coming soon | 무료 · 오픈소스 / Free & open source |
+| soon_small → free_small (아웃트로 한 줄) | ko / en | Windows · Mac 버전 준비 중 / Windows and Mac versions in the works | Windows 10/11 · macOS(Apple Silicon) / Windows 10/11 · macOS (Apple Silicon) |
+
+`youtube.md`의 제목·설명·고정 댓글·쇼츠 제목도 공개 기준(무료·오픈소스, GPL-3.0-or-later, 받는 곳·GitHub 주소, Apple Silicon 전용, UI 4개 언어)으로 다시 썼습니다.

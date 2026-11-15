@@ -8,3 +8,4 @@ build.log
 .claude/
 marketing/video/*.mp4
 marketing/video/qa/
+marketing/video/music/*.wav

@@ -1,6 +1,7 @@
 """Hushpad 실제 화면을 일회용 시험 프로필에서 찍는다 (사용자 실제 데이터는 쓰지 않음).
 
-python capture_shots.py [프로필 폴더]
+python capture_shots.py [en] [ko] [--profile 프로필 폴더]
+  - 언어를 안 주면 en만 다시 찍는다(한국어판은 이미 찍어 둔 shots/ko를 그대로 씀). 앱 UI 언어도 그 언어로 바꿔서 찍는다.
   - 프로필 폴더(기본: %TEMP%\\hushpad_video_profile)를 매번 새로 만들고, 시험 보관 폴더·암호(test-pass-1234)를 만든다.
   - 가짜 예시 메모만 넣는다 (sk-test-… 등). 결과: shots/ko/*.png, shots/en/*.png
   - 창은 화면에 띄우지 않는다 (Qt.WA_DontShowOnScreen + grab).
@@ -14,7 +15,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]                      # C:\build_temp\hushpad
-PROFILE = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(tempfile.gettempdir()) / "hushpad_video_profile"
+_args = sys.argv[1:]
+_prof = None
+if "--profile" in _args:
+    i = _args.index("--profile")
+    _prof = _args[i + 1]
+    del _args[i:i + 2]
+LANGS = [a for a in _args if a in ("ko", "en")] or ["en"]
+PROFILE = Path(_prof) if _prof else Path(tempfile.gettempdir()) / "hushpad_video_profile"
 SCALE = 1.5                                 # 1280×760 창을 1920×1140 픽셀로 선명하게
 
 if PROFILE.exists():
@@ -29,7 +37,7 @@ from PySide6.QtGui import (QIcon, QImage, QPainter, QColor, QFont, QLinearGradie
                            QPainterPath, QPen)
 from PySide6.QtWidgets import QApplication                            # noqa: E402
 
-app = QApplication(sys.argv)
+app = QApplication(sys.argv[:1])
 app.setStyle("Fusion")
 
 from hushpad_app import crypto                    # noqa: E402
@@ -37,6 +45,7 @@ from hushpad_app.common import Config             # noqa: E402
 from hushpad_app.store import Store               # noqa: E402
 from hushpad_app.window import MainWindow         # noqa: E402
 from hushpad_app import capture                   # noqa: E402
+from hushpad_app import i18n                      # noqa: E402
 
 ICON = QIcon(str(ROOT / "assets" / "app.png"))
 W, H = 1280, 760
@@ -114,12 +123,13 @@ def plain(html: str) -> str:
 
 def build(lang: str, out: Path):
     T = TXT[lang]
+    i18n.set_language(lang)                 # 창을 만들기 전에 앱 UI 언어를 정함 (hushpad_main.py와 같은 순서)
     out.mkdir(parents=True, exist_ok=True)
     data = PROFILE / f"data_{lang}"
     data.mkdir()
     key = crypto.create_vault(data, "test-pass-1234")
     crypto.remember_key(crypto.vault_id(data), key)
-    (PROFILE / "config.json").write_text(json.dumps({"data_dir": str(data), "hide_from_capture": False}), "utf-8")
+    (PROFILE / "config.json").write_text(json.dumps({"data_dir": str(data), "hide_from_capture": False, "language": lang}), "utf-8")
     cfg = Config()
     cfg.save = lambda: None
     st = Store(data, key)
@@ -240,7 +250,7 @@ def build(lang: str, out: Path):
 
 
 if __name__ == "__main__":
-    for lang in ("ko", "en"):
+    for lang in LANGS:
         build(lang, HERE / "shots" / lang)
     print("ok", PROFILE)
     os._exit(0)

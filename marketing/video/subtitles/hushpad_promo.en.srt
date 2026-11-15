@@ -79,7 +79,8 @@ Write quietly. Seen by no one.
 
 19
 00:01:14,000 --> 00:01:16,500
-Coming soon for Windows and Mac
+Free and open source,
+for Windows and macOS.
 
 20
 00:01:16,500 --> 00:01:19,000

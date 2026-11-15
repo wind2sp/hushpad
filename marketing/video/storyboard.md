@@ -1,11 +1,11 @@
 # Hushpad 홍보 영상 — 스토리보드 / Storyboard
 
-- 길이 79초 · 1920×1080 · 30fps · 무음(음악은 업로드 때 YouTube 오디오 보관함에서) / 79 s · 1920×1080 · 30 fps · silent
+- 길이 79초 · 1920×1080 · 30fps · 배경 음악은 `make_music.py`로 직접 합성(84 BPM, 약 -18 LUFS) / 79 s · 1920×1080 · 30 fps · original procedural music
 - 화면은 모두 `render_video.py`가 코드로 그림. 앱 화면은 일회용 시험 프로필에서 찍은 **실제 Hushpad 화면**(`capture_shots.py`).
   Everything is drawn by code; app shots are real Hushpad windows grabbed from a throwaway test profile.
-- 영상 속 앱 화면은 지금의 한국어 버전이라 영어판도 앱 메뉴는 한국어(앱은 보기 › 언어에서 영어로 바꿀 수 있음). 영어판은 **자막·제목·라벨만 영어**이고, 화면이 영어 UI라고 말하지 않음.
-  The UI shown is the current Korean build (the app can be switched to English under View › Language), so the English cut shows Korean menus; only captions/titles/labels are English.
-- 예시 데이터는 모두 가짜(`sk-test-…-not-real`, `test-only-Pa55`, `Spring-2026!demo`, "(예시)" 표시). 숫자·후기·"무료" 표현 없음. 다른 회사 제품 이름·로고 없음(훅의 메모장은 직접 그린 일반 창).
+- 한국어판은 한국어 앱 화면, 영어판·영어 쇼츠는 **영어 앱 화면**(capture_shots.py가 `i18n.set_language("en")`으로 찍음)과 영어 예시 메모.
+  The Korean cut shows the Korean UI; the English cut and English Short show the English UI with English sample notes.
+- 예시 데이터는 모두 가짜(`sk-test-…-not-real`, `test-only-Pa55`, `Spring-2026!demo`, "(예시)" 표시). 숫자·후기 없음. "무료·오픈소스"는 공개 후 사실이라 아웃트로·설명에 씀. 다른 회사 제품 이름·로고 없음(훅의 메모장은 직접 그린 일반 창).
 
 ## 훅 문구 후보 / Hook line options
 
@@ -32,12 +32,12 @@ Why A: a moment people recognize instantly, and it sets up the signature "hidden
 | 0:43–0:51 | 05 HTML·JSON 코드 메모 / Code notes | 어두운 테마. HTML 메모(줄 번호·색) → 한 줄 JSON → Ctrl+Alt+J 누름 → 정리된 JSON으로 바뀜 | HTML이나 JSON은 코드 메모에 붙여 두세요 → 한 줄로 엉킨 JSON은 Ctrl+Alt+J로 정리 | Paste HTML or JSON into a code note. → One-line JSON? Ctrl+Alt+J tidies it up. | Ctrl+Shift+N, Ctrl+Alt+J |
 | 0:51–1:00 | 06 스크린샷과 짧은 녹화 / Screenshots and short recordings | 바탕화면이 어두워지고 커서가 영역을 끌어 고름(크기 표시) → 찰칵 → 실제 앱: 메모에 들어간 스크린샷 + 동영상 미리보기. 56.4초 동영상에 빨간 링 "REC ≤ 3:00" | 영역을 끌어서 찍으면 바로 메모에 들어가요 → 3분까지는 화면 녹화도 돼요 | Drag over an area, and the shot lands in your note. → Short screen recordings work too, up to 3 minutes. | Ctrl+Alt+S, Ctrl+Alt+R |
 | 1:00–1:10 | 07 트레이에서도 되는 단축키 / Hotkeys that work from the tray | 바탕화면의 문서에서 한 줄 선택 → Ctrl+Alt+M → 오른쪽 아래 알림 "클립보드를 메모로 저장했어요 / 창은 열리지 않아요" → 실제 앱: 목록 맨 위에 새 메모(링) → Ctrl+K 찾기·명령 창(실제 화면) | Ctrl+Alt+M을 누르면 클립보드가 메모로 저장돼요 → 뭘 찾든 Ctrl+K | Ctrl+Alt+M saves whatever's on your clipboard as a note. → Looking for something? Ctrl+K. | Ctrl+Alt+M, Ctrl+K, Ctrl+Alt+N |
-| 1:10–1:19 | 아웃트로 Outro | 자두색 배경, 아이콘, 태그라인, 주소 알약, "곧 공개", "Windows · Mac 버전 준비 중". 아래쪽 1/3은 종료 화면 요소 자리로 비워 둠 | 조용히 적고, 아무도 못 보게 / gdra.mycafe24.com/hushpad / 곧 공개 / Windows · Mac 버전 준비 중 | Write quietly. Seen by no one. / gdra.mycafe24.com/hushpad / Coming soon / Windows and Mac versions in the works | — |
+| 1:10–1:19 | 아웃트로 Outro | 자두색 배경, 아이콘, 태그라인, 주소 알약, "무료 · 오픈소스" 알약, 지원 OS 한 줄. 아래쪽은 종료 화면 요소 자리로 비워 둠 | 조용히 적고, 아무도 못 보게 / gdra.mycafe24.com/hushpad / 무료 · 오픈소스 / Windows 10/11 · macOS(Apple Silicon) | Write quietly. Seen by no one. / gdra.mycafe24.com/hushpad / Free & open source / Windows 10/11 · macOS (Apple Silicon) | — |
 
 장면 사이는 0.35초 겹쳐 사라지기(cross-fade). 모든 움직임은 cubic ease-in-out / ease-out.
 Scenes cross-fade over 0.35 s; all motion uses cubic easing.
 
-## 쇼츠 / Shorts (shorts_ko.mp4, 1080×1920, 30초)
+## 쇼츠 / Shorts (shorts_ko.mp4 · shorts_en.mp4, 1080×1920, 30초)
 
 | 시간 | 장면 |
 |---|---|
@@ -45,7 +45,12 @@ Scenes cross-fade over 0.35 s; all motion uses cubic easing.
 | 0:06–0:14 | 02 캡처에 안 찍히는 창 — 위 "내 화면", 아래 "스크린샷 · 화면 공유" |
 | 0:14–0:21 | 03 비밀 메모 — 가림막 열기 + 30초 클립보드 비움 |
 | 0:21–0:27 | 01 저장 버튼이 없어요 — 입력 + 디스크 암호화 카드 |
-| 0:27–0:30 | 아웃트로(태그라인, 주소, 곧 공개) |
+| 0:27–0:30 | 아웃트로(태그라인, 주소, 무료 · 오픈소스, 지원 OS) |
+
+## 소리 / Sound
+- 0~3.6초(훅): 낮은 패드 한 화음만 아주 작게. 3.6초 화면이 어두워질 때 음악이 잦아들고 3.75초에 부드러운 "쉬—"(걸러 낸 잡음, 목소리 녹음 아님).
+- 4.95초 로고와 함께 곡 시작: F장조 Fmaj7–Am7–Dm7–B♭maj7 반복, 패드 + 8분음표 플럭 + 베이스(둘째 마디부터). 끝은 Fmaj9로 맺고 마지막 3초 페이드아웃.
+- 쇼츠는 같은 구성을 30초로(훅 시각은 6/7배: 쉬— 3.2초, 곡 시작 4.24초).
 
 ## 글 다듬기 원칙 / Copy rules applied
 - 말하듯 짧게, 어미를 섞음(~돼요/~있어요/~세요/명사형). 번역투("~하는 것이 가능합니다", "~를 통해", "당신의") 없음.
