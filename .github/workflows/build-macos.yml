@@ -36,7 +36,7 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
         run: |
-          python hushpad_main.py --selftest || { cat "$(python -c 'import tempfile;print(tempfile.gettempdir())')/hushpad_selftest.txt"; exit 1; }
+          HUSHPAD_SELFTEST_VERBOSE=1 python -X faulthandler hushpad_main.py --selftest || { cat "$(python -c 'import tempfile;print(tempfile.gettempdir())')/hushpad_selftest.txt"; exit 1; }
 
       - name: Build Hushpad.app (includes self-test of the bundle)
         env:

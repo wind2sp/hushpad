@@ -15,6 +15,8 @@ def run() -> int:
     def check(name, fn, soft=False):
         """soft=True: 실패해도 전체 결과는 통과 (CI처럼 키체인이 없을 수 있는 환경)."""
         nonlocal ok
+        if os.environ.get("HUSHPAD_SELFTEST_VERBOSE"):
+            print(f"... {name}", file=sys.stderr, flush=True)   # 강제 종료돼도 어디까지 왔는지 남김
         try:
             r = fn()
             lines.append(f"PASS {name}" + (f" — {r}" if r else ""))
