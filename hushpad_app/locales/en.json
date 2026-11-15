@@ -356,5 +356,6 @@
  "about.hint@mac": "⌃⌥N new note from anywhere · ⌘K search",
  "common.ok": "OK",
  "autostart.first": "Hushpad will now start in the tray when Windows starts. Right-click the tray icon to turn this off.",
- "autostart.first@mac": "Hushpad will now open in the menu bar when you log in. Click the menu bar icon to turn this off."
+ "autostart.first@mac": "Hushpad will now open in the menu bar when you log in. Click the menu bar icon to turn this off.",
+ "about.license": "Free and open source · GPL-3.0-or-later · <a href=\"{url}\">Source code</a><br>Provided as is, without any warranty."
 }

@@ -323,5 +323,6 @@
  "about.hint@mac": "随时按 ⌃⌥N 新建笔记 · ⌘K 搜索",
  "common.ok": "确定",
  "autostart.first": "Hushpad 将在 Windows 启动时自动在托盘中运行。右键单击托盘图标即可关闭。",
- "autostart.first@mac": "登录时 Hushpad 将在菜单栏中自动打开。点击菜单栏图标即可关闭。"
+ "autostart.first@mac": "登录时 Hushpad 将在菜单栏中自动打开。点击菜单栏图标即可关闭。",
+ "about.license": "免费开源 · GPL-3.0-or-later · <a href=\"{url}\">源代码</a><br>按“原样”提供，不附带任何担保。"
 }

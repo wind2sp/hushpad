@@ -323,5 +323,6 @@
  "about.hint@mac": "어디서든 ⌃⌥N 새 메모 · ⌘K 찾기",
  "common.ok": "확인",
  "autostart.first": "Windows를 켜면 Hushpad가 트레이에서 자동으로 실행돼요. 트레이 아이콘을 오른쪽 클릭하면 끌 수 있어요.",
- "autostart.first@mac": "로그인하면 Hushpad가 메뉴 막대에서 자동으로 실행돼요. 메뉴 막대 아이콘을 클릭해 끌 수 있어요."
+ "autostart.first@mac": "로그인하면 Hushpad가 메뉴 막대에서 자동으로 실행돼요. 메뉴 막대 아이콘을 클릭해 끌 수 있어요.",
+ "about.license": "무료 오픈소스 · GPL-3.0-or-later · <a href=\"{url}\">소스 코드</a><br>어떠한 보증도 없이 있는 그대로 제공됩니다."
 }

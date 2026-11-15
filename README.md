@@ -103,3 +103,10 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 - 필요: Python 3.14, PySide6 6.12 (Essentials + Addons), cryptography, Pillow, PyInstaller — 새 패키지 없음(macOS 기능은 ctypes로 시스템 라이브러리를 직접 부름)
 - 구성: `hushpad_app\` — crypto(암호), store(저장), editors(편집기), capture(캡처·녹화), window(주 창), notepad_import, i18n(번역), plat(OS별 기능)
 - 번역: 화면 문구는 모두 `tr("열쇠")`로 `hushpad_app\locales\{ko,en,ja,zh}.json`에서 가져옵니다. 문구를 더하면 네 파일에 같은 열쇠를 넣으세요(`열쇠@mac`은 macOS에서만 쓰는 문구). 언어별 화면: `docs\i18n\`
+
+## 라이선스
+
+- **무료 오픈소스, [GPL-3.0-or-later](LICENSE)** (GNU 일반 공중 사용 허가서 3판 또는 그 이후 판). 소프트웨어는 "있는 그대로" 제공되며 어떠한 보증도 하지 않습니다. 수정본을 배포할 때는 같은 라이선스로 소스 코드를 함께 공개해야 합니다.
+- © 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors — 자세한 내용은 [NOTICE](NOTICE).
+- Hushpad 이름과 아이콘은 상표입니다. GPL 3판 7조 (e)에 따라 라이선스는 이름·아이콘 사용 권한을 주지 않습니다. 수정본은 다른 이름과 아이콘을 써 주세요.
+- 함께 배포하는 오픈소스(Qt for Python·Qt — LGPL-3.0, cryptography, OpenSSL 등)와 출처는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 있습니다.

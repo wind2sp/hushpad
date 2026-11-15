@@ -142,6 +142,12 @@ class AboutDialog(QDialog):
             lb.setOpenExternalLinks(True)
             lb.setTextInteractionFlags(Qt.TextBrowserInteraction)
             lay.addWidget(lb)
+        lay.addSpacing(8)
+        lic = QLabel(tr("about.license", url="https://github.com/wind2sp/hushpad"), alignment=Qt.AlignCenter,
+                     objectName="EmptyHint")
+        lic.setTextFormat(Qt.RichText)
+        lic.setOpenExternalLinks(True)
+        lay.addWidget(lic)
         lay.addSpacing(14)
         row = QHBoxLayout()
         row.addStretch(1)
