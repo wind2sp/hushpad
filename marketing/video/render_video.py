@@ -59,8 +59,8 @@ TXT = {
             "ja": "ディスクに残るのは\n暗号化されたファイルだけ", "zh-Hans": "磁盘上只留下加密文件"},
     "c2a": {"ko": "내 화면에서는 그대로 보이는데", "en": "You can see it on your screen,",
             "ja": "自分の画面には\nちゃんと見えているのに", "zh-Hans": "你自己的屏幕上看得到，"},
-    "c2b": {"ko": "캡처하거나 화면을 공유하면 안 보여요", "en": "but screenshots and screen shares can't.",
-            "ja": "スクショや画面共有には\n映りません", "zh-Hans": "截图和共享屏幕里\n却没有它"},
+    "c2b": {"ko": "Windows에서는 캡처·화면 공유에 안 보여요", "en": "but on Windows, screenshots and screen shares can't.",
+            "ja": "Windowsでは\nスクショや画面共有に映りません", "zh-Hans": "在 Windows 上，\n截图和共享屏幕里却没有它"},
     "c3a": {"ko": "비밀 메모는 열 때마다 가려져 있어요", "en": "Secret notes open hidden. Click to reveal.",
             "ja": "秘密のメモは\n開くたびに伏せて表示", "zh-Hans": "机密笔记\n每次打开都先遮住"},
     "c3b": {"ko": "복사한 내용은 30초 뒤 클립보드에서 지워져요", "en": "Copy it, and the clipboard clears in 30 seconds.",
@@ -110,10 +110,9 @@ TXT = {
     "toast": {"ko": "클립보드를 메모로 저장했어요", "en": "Saved your clipboard as a note"},
     "toast_sub": {"ko": "창은 열리지 않아요", "en": "The window stays closed"},
     "saved": {"ko": "자동 저장됨", "en": "Auto-saved"},
-    "notepad_title": {"ko": "제목 없음 (3) - 메모", "en": "Untitled (3) - Notes"},
-    "np_tabs": {"ko": ["제목 없음", "제목 없음 (2)", "새 텍스트 문서", "제목 없음 (3)", "메모 (1)"],
-                "en": ["Untitled", "Untitled (2)", "New Text Document", "Untitled (3)", "Note (1)"]},
-    "np_menu": {"ko": ["파일", "편집", "보기"], "en": ["File", "Edit", "View"]},
+    # 훅의 '아무 메모장' — 특정 제품(탭 이름·메뉴·상태 줄)을 흉내 내지 않는 일반 모양
+    "np_tabs": {"ko": ["메모 1", "메모 2", "메모 3", "메모 4", "메모 5"],
+                "en": ["note 1", "note 2", "note 3", "note 4", "note 5"]},
     "np_text": {"ko": ["내일 할 일", "- 견적서 다시 보내기", "- 3시 회의 자료", "", "공유 폴더 비밀번호: Spring-2026!demo", "관리자 계정: test-admin"],
                 "en": ["To do tomorrow", "- resend the quote", "- slides for the 3 PM sync", "", "Shared folder password: Spring-2026!demo", "Admin account: test-admin"]},
     "doc_title": {"ko": "발표 자료 (예시)", "en": "Slides (sample)"},
@@ -672,22 +671,17 @@ def draw_notepad(p, rect, t):
         if x > rect.right() - 300 * s:
             break
     text(p, QRectF(x + 8 * s, rect.top() + 14 * s, 40 * s, 46 * s), "+", 30 * s, "#55555C", Qt.AlignCenter, QFont.Normal, False)
-    # 창 단추
+    # 창 단추: 무늬 없는 회색 점 3개 (어느 OS 것도 아닌 모양)
     gy = rect.top() + 37 * s
-    xr = rect.right() - 34 * s
-    p.setPen(QPen(QColor("#55555C"), 1.6 * s))
-    p.drawLine(QPointF(xr - 8 * s, gy - 8 * s), QPointF(xr + 8 * s, gy + 8 * s))
-    p.drawLine(QPointF(xr - 8 * s, gy + 8 * s), QPointF(xr + 8 * s, gy - 8 * s))
-    p.setBrush(Qt.NoBrush)
-    p.drawRect(QRectF(xr - 66 * s, gy - 8 * s, 16 * s, 16 * s))
-    p.drawLine(QPointF(xr - 126 * s, gy), QPointF(xr - 110 * s, gy))
-    # 메뉴 줄
+    p.setPen(Qt.NoPen)
+    p.setBrush(QColor("#C4C4CB"))
+    for k in range(3):
+        p.drawEllipse(QPointF(rect.right() - (34 + k * 34) * s, gy), 8 * s, 8 * s)
+    # 도구 줄: 글자 없는 회색 아이콘 몇 개
     p.fillRect(QRectF(rect.left(), rect.top() + 72 * s, rect.width(), 46 * s), QColor("#FFFFFF"))
-    mx = rect.left() + 26 * s
-    for m in tr("np_menu"):
-        text(p, QRectF(mx, rect.top() + 72 * s, 120 * s, 46 * s), m, 21 * s, "#2B2B30", Qt.AlignLeft | Qt.AlignVCenter,
-             QFont.Normal, False)
-        mx += text_size(m, 21 * s, QFont.Normal)[0] + 34 * s
+    p.setBrush(QColor("#D9D9DE"))
+    for k in range(4):
+        p.drawRoundedRect(QRectF(rect.left() + (28 + k * 44) * s, rect.top() + 84 * s, 24 * s, 22 * s), 5 * s, 5 * s)
     p.fillRect(QRectF(rect.left(), rect.top() + 118 * s, rect.width(), 1.5 * s), QColor("#E2E2E6"))
     # 본문
     y = rect.top() + 150 * s
@@ -705,10 +699,6 @@ def draw_notepad(p, rect, t):
             if (t * 2) % 1 < 0.55:
                 p.fillRect(QRectF(rect.left() + 34 * s + w + 3 * s, y + 6 * s, 2.5 * s, lh - 12 * s), QColor("#1E1E22"))
         y += lh
-    # 상태 줄
-    p.fillRect(QRectF(rect.left(), rect.bottom() - 40 * s, rect.width(), 40 * s), QColor("#F3F3F5"))
-    text(p, QRectF(rect.left() + 26 * s, rect.bottom() - 40 * s, rect.width() - 52 * s, 40 * s),
-         "Ln 5, Col 38      100%      UTF-8", 18 * s, "#66666E", Qt.AlignRight | Qt.AlignVCenter, QFont.Normal, False)
     p.restore()
     return pw
 
@@ -1372,7 +1362,13 @@ def thumbnail(lang):
     text(p, QRectF(150, 58, 400, 70), "Hushpad", 46, WHITE, Qt.AlignLeft | Qt.AlignVCenter, QFont.Bold, False)
     big = {"ko": ["캡처에", "안 찍히는", "메모장"], "en": ["The notepad", "screenshots", "can't see"]}[lang]
     px = 92 if lang == "ko" else 78
-    y = 200
+    # 대표 주장의 범위: Windows 기준 (macOS 15 이상 일부 앱은 예외라서)
+    tag = {"ko": "Windows에서", "en": "On Windows"}[lang]
+    tgw, _ = text_size(tag, 26, QFont.Bold)
+    tg = QRectF(58, 146, tgw + 36, 44)
+    rrect(p, tg, 22, fill=PEACH)
+    text(p, tg, tag, 26, INK, Qt.AlignCenter, QFont.Bold, False)
+    y = 206
     for i, ln in enumerate(big):
         c = PEACH if i == 1 else WHITE
         text(p, QRectF(60, y + 4, 600, px * 1.3), ln, px, QColor(30, 0, 40, 110), Qt.AlignLeft | Qt.AlignTop, QFont.Black, False)

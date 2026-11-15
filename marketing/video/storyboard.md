@@ -22,7 +22,7 @@ Why A: a moment people recognize instantly, and it sets up the signature "hidden
 
 | 시간 Time | 장면 Scene | 화면 Visual | 화면 글자(ko) | On-screen text (en) | 키 칩 Keys |
 |---|---|---|---|---|---|
-| 0:00–0:03.6 | 훅 Hook | 보라 배경화면 + 직접 그린 일반 메모장. 비슷한 탭 5개(제목 없음, 제목 없음 (2)…), 본문에 가짜 비밀번호. 1.7초에 빨간 "화면 공유 중" 테두리, 2.6초 찰칵 플래시, 비밀번호 줄에 빨간 상자 + "다 보여요" | 화면 공유 중인데, 비밀번호 메모가 떠 있다면? | Sharing your screen… with a password note open? | — |
+| 0:00–0:03.6 | 훅 Hook | 보라 배경화면 + 직접 그린 일반 메모장(특정 제품의 메뉴·상태 줄 없이 회색 점과 아이콘만). 비슷한 탭 5개(메모 1~5 / note 1–5), 본문에 가짜 비밀번호. 1.7초에 빨간 "화면 공유 중" 테두리, 2.6초 찰칵 플래시, 비밀번호 줄에 빨간 상자 + "다 보여요" | 화면 공유 중인데, 비밀번호 메모가 떠 있다면? | Sharing your screen… with a password note open? | — |
 | 0:03.6–0:05 | 쉿 | 화면이 잉크색으로 어두워지고 복숭아색 "쉿." + 퍼지는 원 | 쉿. | Shh. | — |
 | 0:05–0:07 | 로고 Logo | 자두색 그라데이션, 아이콘이 커지며 등장, "Hushpad" | 조용한 비밀 메모장 | A quiet notepad for private notes | — |
 | 0:07–0:16 | 01 저장 버튼이 없어요 / No Save button | 실제 앱: 새 메모에 한 글자씩 입력되는 모습(실제 프레임 48~83장), 확대. 끝나면 상태 표시줄 "저장됨"에 링 + "자동 저장됨". 12.4초부터 디스크 파일 카드(파일 이름 + 16진수 + AES-256) | 저장 버튼은 없어요. 쓰면 바로 저장돼요 → 디스크에는 암호화된 파일로만 남아요 | There's no Save button. It saves as you type. → On disk, every note is AES-256 encrypted. | Ctrl+N |

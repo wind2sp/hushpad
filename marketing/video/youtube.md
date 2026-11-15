@@ -10,18 +10,18 @@
 ---
 
 ## 제목 후보 (한국어, 60자 이하)
-1. **캡처에 안 찍히는 무료 메모장, Hushpad** ← 추천
-2. 화면 공유 중에도 안 보이는 비밀 메모장 | Hushpad
+1. **Windows에서 캡처에 안 찍히는 무료 메모장, Hushpad** ← 추천
+2. Windows 화면 공유에도 안 보이는 비밀 메모장 | Hushpad
 3. 저장 버튼 없는 암호화 메모장 Hushpad, 무료로 공개했어요
 
 ## Title options (English, ≤60 chars)
-1. **Hushpad: the free notepad screenshots can't see** ← pick
-2. A notepad that stays out of your screen shares | Hushpad
-3. Free, open-source notes that stay out of screenshots
+1. **Hushpad: the free notepad Windows screenshots can't see** ← pick
+2. A notepad that stays out of Windows screen shares | Hushpad
+3. Free, open-source notes that stay out of Windows screenshots
 
 ## 번역 제목 (YouTube '제목 및 설명 번역'에 넣을 때)
-- 日本語: スクショに写らない無料メモ帳「Hushpad」
-- 简体中文：截图拍不到的免费记事本 Hushpad
+- 日本語: Windowsのスクショに写らない無料メモ帳「Hushpad」
+- 简体中文：Windows 截图拍不到的免费记事本 Hushpad
 
 ---
 
@@ -32,7 +32,8 @@
 Hushpad(허시패드)는 그런 메모를 조용히 담아 두는 메모장이에요. 무료이고, 소스 코드도 공개되어 있어요.
 
 · 저장 버튼이 없어요. 쓰면 바로 저장되고, 디스크에는 AES-256으로 암호화된 파일만 남아요.
-· Hushpad 창은 스크린샷, 화면 녹화, 화면 공유에 찍히지 않아요. 내 화면에서만 보여요.
+· Windows에서는 Hushpad 창이 스크린샷, 화면 녹화, 화면 공유에 찍히지 않아요. 내 화면에서만 보여요.
+  Mac에서도 창 공유를 막지만, macOS 15 이상에서는 일부 화면 공유 앱에 보일 수 있어요.
 · 비밀 메모는 열 때마다 가려져 있고, 복사한 내용은 30초 뒤 클립보드에서 지워져요.
 · Ctrl+C는 서식 그대로, Ctrl+Shift+C는 글자만 복사해요.
 · HTML이나 JSON은 코드 메모에 넣어 두고, 한 줄로 엉킨 JSON은 Ctrl+Alt+J로 정리해요.
@@ -65,7 +66,8 @@ Ever shared your screen with a password note still open?
 Hushpad is a notepad built for exactly those notes. It's free and open source.
 
 - There's no Save button. It saves as you type, and on disk every note is AES-256 encrypted.
-- The Hushpad window doesn't show up in screenshots, screen recordings, or screen shares. Only you see it.
+- On Windows, the Hushpad window doesn't show up in screenshots, screen recordings, or screen shares. Only you see it.
+  The Mac build blocks window sharing too, but on macOS 15 and later some screen-sharing apps can still see it.
 - Secret notes open hidden, and anything you copy from them is cleared from the clipboard after 30 seconds.
 - Ctrl+C keeps formatting. Ctrl+Shift+C copies just the text.
 - Keep HTML and JSON in code notes. Ctrl+Alt+J tidies up one-line JSON.
@@ -103,7 +105,7 @@ Every note, key, and password in this video is a fake sample. The background mus
 Hushpad는 무료 오픈소스(GPL-3.0-or-later)예요.
 받기: https://gdra.mycafe24.com/hushpad/
 소스 코드: https://github.com/wind2sp/hushpad
-Windows 10/11과 Apple Silicon 맥에서 돌아가요. 인텔 맥용은 아직 없어요.
+Windows 10/11과 Apple Silicon 맥에서 돌아가요. 인텔 맥용은 없어요.
 앱 언어는 한국어·영어·일본어·중국어(간체) 중에 [보기 › 언어]에서 고를 수 있어요.
 써 보다가 불편한 점이 있으면 댓글이나 GitHub 이슈로 알려 주세요.
 ```
@@ -113,7 +115,7 @@ English:
 Hushpad is free and open source (GPL-3.0-or-later).
 Download: https://gdra.mycafe24.com/hushpad/
 Source: https://github.com/wind2sp/hushpad
-It runs on Windows 10/11 and Apple Silicon Macs. No Intel Mac build yet.
+It runs on Windows 10/11 and Apple Silicon Macs. No Intel Mac build.
 The UI comes in English, Korean, Japanese and Simplified Chinese (View › Language).
 If something gets in your way, tell us here or open an issue on GitHub.
 ```
@@ -129,7 +131,7 @@ If something gets in your way, tell us here or open an issue on GitHub.
 - The outro (1:10–1:19) keeps the logo, tagline, URL, "Free & open source" and the OS line in the upper part; put the Subscribe button bottom-left and one video/playlist bottom-right.
 
 ## 쇼츠 / Shorts
-- 한국어 제목: `캡처하면 사라지는 무료 메모장 #Shorts`
-- English title: `The free notepad that vanishes from screenshots #Shorts`
+- 한국어 제목: `Windows에서 캡처하면 사라지는 무료 메모장 #Shorts`
+- English title: `The free notepad that vanishes from Windows screenshots #Shorts`
 - 설명 첫 줄에 받는 곳 주소(https://gdra.mycafe24.com/hushpad/), 둘째 줄에 GitHub 주소, 그리고 본편을 관련 동영상으로 연결하세요.
 - First line of the description: the download link; second line: the GitHub link. Link the main video as the related video.

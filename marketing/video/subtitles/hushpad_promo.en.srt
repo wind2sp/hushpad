@@ -27,7 +27,8 @@ You can see it on your screen,
 
 7
 00:00:21,200 --> 00:00:26,900
-but screenshots and screen shares can't.
+but on Windows,
+screenshots and screen shares can't.
 
 8
 00:00:27,300 --> 00:00:31,400

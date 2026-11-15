@@ -66,12 +66,12 @@ T = {
         "foot": "지금 받기 · " + URL,
         "c1_kicker": "메모장 탭에 암호·API 키 적어 두셨죠?",
         "c1_title": "조용히 적고,\n아무도 못 보게",
-        "c1_sub": "쓰는 대로 저장되고, 파일은 전부 암호화됩니다.\n화면을 공유해도 이 창은 상대에게 안 보여요.",
-        "pills": ["저장 버튼 없음", "AES-256-GCM", "캡처에 안 보임"],
+        "c1_sub": "쓰는 대로 저장되고, 파일은 전부 암호화됩니다.\nWindows에서는 화면을 공유해도 이 창이 상대에게 안 보여요.",
+        "pills": ["저장 버튼 없음", "AES-256-GCM", "Windows 캡처에 안 보임"],
         "cards": [
             ("01 · 자동 저장", "저장 버튼이\n없어요", "쓰는 동안 알아서 저장됩니다. 제목이 없어도\n만든 시각으로 구분되고, 모두 한 폴더에 모여요."),
             ("02 · 암호화", "모든 메모를\n암호화해요", "파일은 AES-256-GCM으로 잠겨 있어요.\n클라우드에 올라가도 내용은 읽히지 않습니다."),
-            ("03 · 대표 기능", "캡처에\n안 보이는 창", "화상회의에서 화면을 공유해도\n상대에게는 Hushpad 창이 보이지 않습니다."),
+            ("03 · 대표 기능", "캡처에\n안 보이는 창", "Windows에서는 화상회의로 화면을 공유해도\n상대에게 Hushpad 창이 보이지 않습니다."),
             ("04 · 복사", "서식 그대로,\n또는 글자만", "웹에서 복사한 표와 글꼴은 그대로 남고,\nCtrl+Shift+C로 복사하면 글자만 나갑니다."),
             ("05 · 코드 메모", "HTML·JSON\n급할 때", "줄 번호가 붙고, 엉킨 JSON은 단축키로 정리돼요.\nAPI_KEY=… 줄에서는 값만 골라 복사할 수 있습니다."),
             ("06 · 캡처", "스크린샷·녹화가\n바로 메모로", "Ctrl+Alt+S로 찍은 화면은 열린 메모에 바로 들어가요.\n짧은 화면 녹화는 Ctrl+Alt+R."),
@@ -83,9 +83,10 @@ T = {
         "cipher_cmd": "> type notes\\20261115-091200-a1b2.own",
         "cipher_note": "# 열어 봐도 이렇게만 보여요",
         "veil": "비밀 메모는 열 때마다 가려져요",
-        "crypto_chips": ["AES-256-GCM", "scrypt 열쇠", "Windows 계정에 묶음"],
+        "crypto_chips": ["AES-256-GCM", "scrypt 열쇠", "Windows 계정에 묶음", "Mac 키체인에 묶음"],
         "mon_a": "내 모니터", "mon_b": "스크린샷 · 화면 공유",
         "mon_gone": "창 자리엔 뒤 화면이 찍혀요",
+        "cap_foot": "* macOS 15 이상에서는 일부 화면 공유 앱에 창이 보일 수 있어요.",
         "cap_points": ["창을 치우지 않고 그대로 캡처해도 돼요", "일부러 보여 줄 때는 메뉴에서 끄면 됩니다"],
         "copy_a": ("Ctrl+C", "서식 그대로"), "copy_b": ("Ctrl+Shift+C", "글자만"),
         "plain_lines": ["출장 준비 체크리스트", "11월 20일(목) 부산 · KTX 07:30", "노트북 충전기 · 발표 자료 최종본"],
@@ -109,7 +110,7 @@ T = {
                      ("4개 언어 지원", None)],
         "cta_btn": "지금 받기",
         "langs": [("한국어", "ko"), ("English", "en"), ("日本語", "ja"), ("简体中文", "zh")],
-        "link_sub": "저장 버튼 없이 쓰고 전부 암호화되는 메모장.\n화면을 공유해도 창이 보이지 않아요.",
+        "link_sub": "저장 버튼 없이 쓰고 전부 암호화되는 메모장.\nWindows에서는 화면을 공유해도 창이 안 보여요.",
         "story_kicker": "쉿.",
         "story_hint": "넘겨서 보기 →",
     },
@@ -119,12 +120,12 @@ T = {
         "foot": "Get it free · " + URL,
         "c1_kicker": "Passwords and API keys in Notepad tabs?",
         "c1_title": "Write quietly.\nSeen by no one.",
-        "c1_sub": "It saves as you type and encrypts every file.\nShare your screen, and the window just isn't there.",
-        "pills": ["No save button", "AES-256-GCM", "Invisible to capture"],
+        "c1_sub": "It saves as you type and encrypts every file.\nOn Windows, share your screen and the window just isn't there.",
+        "pills": ["No save button", "AES-256-GCM", "Hidden from capture on Windows"],
         "cards": [
             ("01 · Auto-save", "There's no\nsave button", "Saved as you type. Untitled notes are sorted\nby when you made them, all in one folder."),
             ("02 · Encryption", "Every note\nis encrypted", "Files are sealed with AES-256-GCM. Your cloud\nsync can copy them. It can't read them."),
-            ("03 · Key feature","Invisible to\nscreen capture", "Share your screen on a call and the Hushpad\nwindow doesn't show up for anyone else."),
+            ("03 · Key feature","Invisible to\nscreen capture", "On Windows, share your screen on a call and the\nHushpad window doesn't show up for anyone else."),
             ("04 · Copy", "Keep the format,\nor just the text", "Pasted formatting stays as it is.\nCtrl+Shift+C copies plain text only."),
             ("05 · Code notes", "HTML & JSON\nin a hurry", "Line numbers, and one shortcut to tidy messy JSON.\nRight-click API_KEY=… to copy just the value."),
             ("06 · Capture", "Screenshots and clips\nland in a note", "Ctrl+Alt+S grabs an area, Ctrl+Alt+R records.\nThe recording frame never shows in the video."),
@@ -135,9 +136,10 @@ T = {
         "cipher_cmd": "> type notes\\20261115-091200-a1b2.own",
         "cipher_note": "# this is all anyone else sees",
         "veil": "Secret notes stay veiled until you click",
-        "crypto_chips": ["AES-256-GCM", "scrypt key", "per-Windows-user key"],
+        "crypto_chips": ["AES-256-GCM", "scrypt key", "per-Windows-user key", "Keychain on Mac"],
         "mon_a": "Your monitor", "mon_b": "Screenshot · screen share",
         "mon_gone": "window area shows what's behind",
+        "cap_foot": "* On macOS 15 and later, some screen-sharing apps can still show the window.",
         "cap_points": ["Capture without moving the window first", "Turn it off in one click when you do want to share"],
         "copy_a": ("Ctrl+C", "with formatting"), "copy_b": ("Ctrl+Shift+C", "plain text"),
         "plain_lines": ["Business trip checklist", "Thu, Nov 20 Busan · KTX 07:30", "Laptop charger · final slide deck"],
@@ -160,7 +162,7 @@ T = {
                      ("4 UI languages", None)],
         "cta_btn": "Get it free",
         "langs": [("한국어", "ko"), ("English", "en"), ("日本語", "ja"), ("简体中文", "zh")],
-        "link_sub": "No save button, every file encrypted,\nand hidden when you share your screen.",
+        "link_sub": "No save button, every file encrypted,\nand hidden from screen shares on Windows.",
         "story_kicker": "Shh.",
         "story_hint": "Swipe →",
     },
@@ -404,11 +406,12 @@ def vis_crypto(c: Card):
     d.text((x0, y1 + veil.height + 18), c.t["veil"], font=c.f(22), fill=MUTED)
     cx = x0 + 600
     y = y1 + 6
+    step = 78 if len(c.t["crypto_chips"]) <= 3 else 64
     for s in c.t["crypto_chips"]:
         ex = pill(d, (cx, y), s, c.f(24, True), PLUM, (238, 226, 245))
         if ex > W - M:
             WARN.append(f"{c.lang} crypto chip overflow: {s} {ex}")
-        y += 78
+        y += step
 
 
 def desktop(c: Card, w, h, with_window: bool):
@@ -631,7 +634,11 @@ def card_pillar(lang, i):
     c = Card(lang, dark=dark)
     c.header(i + 2)
     k, t, s = T[lang]["cards"][i]
-    c.titleblock(k, t, s)
+    y = c.titleblock(k, t, s)
+    if i == 2:   # capture card: the macOS caveat sits right under the claim
+        y = text_block(c.d, (M, y + 12), c.t["cap_foot"], c.f(22), c.mut, max_w=COLW, label="cap_foot")
+        if y > VIS_TOP + 6:
+            WARN.append(f"{lang} cap_foot runs into the visual: {y}")
     VIS[i](c)
     c.footer()
     return c

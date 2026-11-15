@@ -41,6 +41,9 @@ from hushpad_app.common import Config  # noqa: E402
 from hushpad_app.store import Store  # noqa: E402
 from hushpad_app.window import MainWindow  # noqa: E402
 
+# Don't grab global hotkeys: if Hushpad is already running they clash and the status bar shows an error.
+MainWindow._register_hotkeys = lambda self: None
+
 cfg = Config()
 cfg.save = lambda: None
 cfg["language"] = LANG
@@ -76,7 +79,7 @@ S = {
         meet_link="회의 링크 https://meet.example.test/abc-defg-hij\n",
         clip="“배송은 영업일 기준 2~3일 걸립니다.”\n",
         clip_find="배송은",
-        stock={},
+        stock={"택배": ("택배 송장 번호 (예시) 0000-1111-2222", "<p>택배 송장 번호 (예시) 0000-1111-2222</p>")},
     ),
     "en": dict(
         mark="Business trip checklist",
@@ -102,7 +105,8 @@ S = {
         meet_link="Meeting link https://meet.example.test/abc-defg-hij\n",
         clip="“Delivery takes 2–3 business days.”\n",
         clip_find="Delivery takes",
-        stock={"택배": ("Parcel tracking no. 6894-2231-0045", "<p>Parcel tracking no. 6894-2231-0045</p>"),
+        stock={"택배": ("Parcel tracking no. (sample) 0000-1111-2222",
+                       "<p>Parcel tracking no. (sample) 0000-1111-2222</p>"),
                "주간 회의": ("Weekly meeting\nThis week's to-do: pre-release check, tidy up the docs\n"
                           "Reproduce the login error\nDraft the release notes",
                           "<h2>Weekly meeting</h2><p>This week's <b>to-do</b>: pre-release check, tidy up the docs</p>"
@@ -143,9 +147,14 @@ def fake_screenshot_png() -> str:
 def seed():
     if any(MARK in n.text for n in st.notes.values()):
         return
-    # a day ago, so the list shows "n hours ago" whatever time it is run (not future "just now")
-    today = time.time() - 24 * 3600
-    at = lambda h, m: today + h * 3600 + m * 60
+    # All sample notes are dated today, so "Today" matches "All notes" whenever this runs.
+    # The 08:00-15:00 sample schedule is squeezed into the time since midnight (at most 7 hours,
+    # always in the past), so the list shows "n min/hours ago" and never a future time.
+    now = time.time()
+    midnight = time.mktime(time.localtime(now)[:3] + (0, 0, 0, 0, 0, -1))
+    span = max(10 * 60, min(7 * 3600, (now - midnight - 10 * 60) / 1.05))
+    at = lambda h, m: now - span + span * ((h * 60 + m) - 8 * 60) / (7 * 60)  # noqa: E731
+    edit_gap = span / 60
     for old, new in S["rename"].items():
         if old in st.all_categories():
             st.rename_category(old, new)
@@ -154,15 +163,14 @@ def seed():
         if c not in st.all_categories():
             st.add_category(c)
     # replace the stock notes' text (secret note: clearly fake, brand-free values)
-    for n in list(st.notes.values()):
+    for k, n in enumerate(sorted(st.notes.values(), key=lambda n: n.id)):
+        n.created = at(8, 5 + k * 9)      # the profile's own notes: earliest today
         if n.secret:
             n.text = S["secret"]
-            st.save(n)
-            continue
         for start, (text, html) in S["stock"].items():
             if n.text.startswith(start):
                 n.text, n.html = text, html
-                st.save(n)
+        st.save(n)
     work, dev, trip = S["cats"]
     st.create("text", dev, title="", created=at(9, 12), text=(
         S["env_head"] +
@@ -180,7 +188,7 @@ def seed():
     st.create("rich", work, created=at(13, 26), text=S["bug_title"], html=S["bug"].format(img=fake_screenshot_png()))
     st.create("text", work, created=at(14, 3), text=S["meet_link"])
     for n in list(st.notes.values()):   # spread "last edited" over the day instead of all "just now"
-        n.updated = n.created + 600
+        n.updated = n.created + edit_gap
         st.save(n, touch=False, snapshot=False)
     # what Ctrl+Alt+M produces for plain copied text: a text note, created "just now"
     st.create("text", "", text=S["clip"])
