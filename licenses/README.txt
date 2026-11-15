@@ -14,9 +14,11 @@ Python-PSF-2.0.txt            Python runtime (PSF License and the licenses of co
 PyInstaller-COPYING.txt       PyInstaller bootloader (GPL-2.0-or-later with bootloader exception)
 Python-incorporated-software.txt  Licenses of code included in the Python runtime (expat, mpdecimal,
                               mimalloc, HACL*, libffi, OpenSSL, zstd and others)
-Qt-third-party.txt            Third-party code inside the Qt libraries (FreeType, libjpeg/IJG, libpng, zlib,
-                              PCRE2) with the IJG and FreeType acknowledgements
+Qt-third-party.txt            Third-party code inside the Qt libraries and plugins: copyright notice and full
+                              license text for each component (from Qt 6.12.0 qt_attribution.json), with the
+                              IJG and FreeType acknowledgements
 zstd-BSD-3-Clause.txt         Zstandard (libzstd on macOS, _zstd on Windows)
 
-The texts were copied unmodified from the official distributions of each component (the Python
-text is the HTML documentation page converted to plain text).
+The texts were copied unmodified from the official distributions or source repositories of each
+component (the Python text is the HTML documentation page converted to plain text, plus the HACL*
+license header from the CPython 3.14.3 sources).

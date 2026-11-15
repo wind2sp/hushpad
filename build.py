@@ -65,7 +65,7 @@ def main():
 PRUNE_PATTERNS = ("*VirtualKeyboard*", "*virtualkeyboard*", "Qt6Qml*", "Qt6Quick*", "QtQml*", "QtQuick*",
                   "opengl32sw.dll",
                   # 쓰지 않는 그림 형식·플랫폼·터치 플러그인 (배포물과 라이선스 목록을 줄임)
-                  "*qtiff*", "*qwebp*", "*qtga*", "*qwbmp*", "*qicns*", "*qdirect2d*", "*qminimal*",
+                  "*qtiff*", "*qtga*", "*qwbmp*", "*qicns*", "*qdirect2d*", "*qminimal*",
                   "*qtuiotouchplugin*",
                   # Qt 네트워크 TLS용 OpenSSL 사본 (Hushpad는 네트워크를 쓰지 않음. Python의 libssl-3.dll은 남김)
                   "libssl-3-x64.dll", "libcrypto-3-x64.dll")
@@ -92,6 +92,9 @@ def prune(root: Path) -> int:
             else:
                 f.unlink()
             n += 1
+    for plugins in [p for p in root.rglob("plugins") if p.is_dir()]:   # 비게 된 플러그인 폴더 정리
+        for d in [d for d in plugins.iterdir() if d.is_dir() and not d.is_symlink() and not any(d.iterdir())]:
+            d.rmdir()
     return n
 
 
