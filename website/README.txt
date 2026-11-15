@@ -7,12 +7,35 @@ Hushpad 공식 홈페이지 (정적 사이트) — 다른 제품 홈페이지와
 
 
 [운영]
-config.json   버전·공개 여부·다운로드 주소·저작권. 정식 공개 때 이 파일만 고쳐서 다시 올리면 됩니다(모든 언어가 이 파일 하나를 씀).
-              "public": true, "downloadUrl": GitHub 릴리스 zip 주소, "fileSize", "sha256",
-              "releaseDate": 언어와 상관없는 날짜로 (예: "2026-12-01"). 공개 전에는 페이지의 언어별 "공개 준비 중" 문구가 보이고
-              releaseDate 값은 쓰지 않습니다.
-              "copyright": 바닥글 저작권 줄 (기본 "© 2026 NINEROW partners Co., Ltd.").
-              public이 true가 되면 바닥글의 "GitHub 저장소"·"이슈 신고"가 repoUrl(·/issues) 링크로 바뀝니다.
+config.json   버전·공개 여부·다운로드 파일·저작권. 정식 공개 때 이 파일만 고쳐서 다시 올리면 됩니다(모든 언어가 이 파일 하나를 씀).
+  {
+    "version": "1.0.0",
+    "releaseDate": "",            공개 날짜(언어와 상관없는 형식, 예: "2026-12-01"). public=false면 쓰지 않고 언어별 "공개 준비 중"이 보임
+    "public": false,              true가 되면 다운로드 단추·크기·SHA-256·릴리스 링크·바닥글 GitHub 링크가 보임
+    "repoUrl": "https://github.com/wind2sp/hushpad",           바닥글: 저장소 / 이슈(+/issues) / 라이선스(+/blob/main/LICENSE)
+    "releaseUrl": "https://github.com/wind2sp/hushpad/releases/latest",
+    "copyright": "© 2026 NINEROW partners Co., Ltd. and Hushpad contributors",
+    "downloads": {
+      "win": { "url": ".../releases/latest/download/Hushpad-win64.zip",       "fileName": "Hushpad-win64.zip",       "size": "", "sha256": "" },
+      "mac": { "url": ".../releases/latest/download/Hushpad-macos-arm64.zip", "fileName": "Hushpad-macos-arm64.zip", "size": "", "sha256": "" }
+    }
+  }
+  - 파일 이름에 버전이 없어서 /releases/latest/download/... 주소는 새 릴리스가 나와도 그대로 맞습니다.
+  - size는 보이는 그대로의 글자(예: "48.2 MB"). 비어 있으면 표시하지 않습니다.
+  - sha256이 비어 있으면 "공개될 때 표시됩니다"가 보이고 복사 단추는 숨습니다.
+  - Mac은 Apple Silicon(arm64)용 하나뿐입니다. Intel Mac용은 없다고 페이지에 적혀 있습니다.
+  다운로드 페이지는 방문자 OS(navigator.userAgentData / platform)를 보고 그 카드를 강조합니다(Mac이면 Mac 카드가 앞으로).
+  Apple Silicon과 Intel Mac은 브라우저에서 확실히 구분할 수 없으므로 Mac이면 모두 Mac 카드를 강조하고, 카드에 "Intel Mac은 지원하지 않습니다"를 적어 둡니다.
+
+정식 공개 순서:
+  1) GitHub 저장소를 공개로 바꾸고, 릴리스에 Hushpad-win64.zip · Hushpad-macos-arm64.zip 두 파일을 올립니다(Latest로 표시).
+  2) 두 파일의 크기와 SHA-256을 구합니다.
+       Windows: Get-FileHash .\Hushpad-win64.zip      macOS: shasum -a 256 Hushpad-macos-arm64.zip
+  3) config.json: "public": true, "releaseDate", downloads.win/mac 의 "size"·"sha256" 을 채웁니다.
+  4) config.json 하나만 /www/hushpad/ 에 다시 올립니다. (HTML은 다시 만들 필요 없음)
+  5) 브라우저에서 /hushpad/download.html 을 열어 단추가 GitHub 주소로 가는지, 값 복사가 되는지 확인합니다.
+  새 버전을 낼 때는 "version"·"releaseDate"·size·sha256만 바꾸면 됩니다.
+
 index.html, download.html, en/ ja/ zh/   ← build-i18n.mjs가 만든 결과물 (직접 고치지 않음)
 404.html      손으로 쓴 파일. 모든 언어 링크, 경로는 /hushpad/ 절대 경로.
 assets/       css·js·그림 (외부 CDN·글꼴·분석 스크립트 없음)
@@ -41,8 +64,8 @@ assets/       css·js·그림 (외부 CDN·글꼴·분석 스크립트 없음)
   → assets/js/lang.js 의 LANGS 에 es 추가 → 404.html 링크 추가 → 생성 → es/ 폴더 올리기.
 
 번역 원칙: ko 문구는 승인된 원문. 다른 언어는 직역이 아니라 자연스러운 제품 문구로.
-  "무료"라고 쓰지 않습니다(가격 미정). 앱 화면은 지금 한국어뿐이므로 en/ja/zh 다운로드 페이지에 그 사실을 한 줄(dl.uiNote)로 적고,
-  앱 메뉴 이름을 인용할 때는 실제 한국어 메뉴 이름 + 괄호 번역으로 씁니다.
+  Hushpad는 무료 오픈소스(GPL-3.0-or-later)입니다. 앱 화면은 한국어·영어·일본어·간체 중국어를 지원하므로
+  앱 메뉴 이름을 인용할 때는 그 언어판 앱의 실제 메뉴 이름(hushpad_app/locales/*.json)을 씁니다.
 
 언어 자동 선택 규칙(assets/js/lang.js):
   - 루트(한국어) 페이지에 처음 온 방문자만 navigator.languages로 한 번 고릅니다: ko → 그대로, ja/zh/en → 해당 폴더, 그 밖 → en.
@@ -62,7 +85,12 @@ assets/       css·js·그림 (외부 CDN·글꼴·분석 스크립트 없음)
 
 [그림 다시 만들기]
 앱 아이콘을 바꾸면:  python website/make_site_assets.py   (favicon, icon-*.png, og-image.png)
-앱 화면 그림(app-light.png, app-dark.png)은 테스트 메모로 찍은 것입니다(한국어 화면 — en/ja/zh 대체 텍스트에 그렇게 적음).
+앱 화면 그림은 시험용 프로필(가짜 메모)로 찍은 것입니다. 언어마다 그 언어 화면입니다:
+  app-light.png·app-dark.png(한국어), app-light-en/-ja/-zh.png·app-dark-en/-ja/-zh.png.
+  페이지는 i18n의 index.shotSuffix("" / "-en" / "-ja" / "-zh")로 골라 씁니다.
+  다시 찍을 때: 시험용 프로필을 언어마다 새로 복사 → 복사본 config.json의 data_dir을 그 복사본의 data로 → HUSHPAD_PROFILE=<복사본>.
+  창을 만들기 전에 hushpad_app.i18n.set_language(<언어>)를 부르고, 예시 메모·분류 이름을 그 언어로 바꾼 뒤
+  Qt.WA_DontShowOnScreen + grab()으로 1280×760을 찍습니다(실제 보관 폴더는 절대 쓰지 않음).
 
 
 [다국어 작업에서 적용한 교훈 — 다른 제품 홈페이지를 만들며 겪은 시행착오에서]
@@ -77,7 +105,7 @@ assets/       css·js·그림 (외부 CDN·글꼴·분석 스크립트 없음)
   6. CJK 줄바꿈: keep-all은 한국어에만. 일본어·중국어에 keep-all을 걸면 띄어쓰기가 없어 문장이 통째로 넘침 →
      word-break: normal + line-break: strict, 일본어 제목은 auto-phrase(지원 브라우저). 375px 폭에서 가로 넘침 없음 확인.
   7. 언어별 글꼴 스택(외부 글꼴 없이 시스템 글꼴): ja "Hiragino Sans","Yu Gothic UI","Meiryo" / zh "PingFang SC","Microsoft YaHei".
-  8. 앱 UI 언어를 사실대로: 앱이 한국어뿐이라는 것을 숨기지 않음(다운로드 페이지 한 줄, FAQ의 메뉴 이름 인용).
+  8. 앱 UI 언어를 사실대로: 지원하는 4개 언어와 바꾸는 메뉴를 다운로드 페이지(dl.uiNote)·FAQ에 적음. 화면 그림도 언어별로.
   9. CSS·JS 캐시: ?v=ASSET_VERSION. 생성 원본 폴더·스크립트는 .htaccess로 차단.
   10. (이번에 새로 발견) 일본어 글꼴은 \ 를 ¥ 로 그려 C:\ 경로가 깨져 보임 → code 글꼴을 Cascadia Mono/Consolas로 고정.
   11. charset 메타는 <head> 맨 앞(1024바이트 안)에 — 긴 한국어·일본어 메타가 앞에 오면 인코딩 판별이 늦어질 수 있음.

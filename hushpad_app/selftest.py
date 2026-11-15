@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 def run() -> int:
+    os.environ["HUSHPAD_NO_AUTOSTART"] = "1"   # 점검이 시작 프로그램(레지스트리·LaunchAgent)을 건드리지 않게
     out = Path(tempfile.gettempdir()) / "hushpad_selftest.txt"
     lines, ok = [], True
 
@@ -218,7 +219,30 @@ def run() -> int:
         assert len(st.notes) == before + 1
         w.close()
         return "rich/plain/image paste, JSON, merge"
+    from . import plat as _plat
+    try:
+        _auto_before = _plat.autostart_enabled()
+    except Exception:
+        _auto_before = None
     check("editors", editors)
+
+    def autostart_untouched():
+        try:
+            now = _plat.autostart_enabled()
+        except Exception:
+            now = None
+        assert now == _auto_before, f"self-test changed start-at-login: {_auto_before} -> {now}"
+        return "start-at-login not touched"
+    check("autostart untouched by self-test", autostart_untouched)
+
+    def legal_files():
+        for n in ("LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"):
+            pth = resource(n)
+            assert pth.is_file() and pth.stat().st_size > 100, f"missing {n}"
+        lic = resource("licenses")
+        assert lic.is_dir() and any(lic.iterdir()), "missing licenses/"
+        return "LICENSE, NOTICE, notices, licenses/"
+    check("license files bundled", legal_files)
 
     def recorder_backend():
         from PySide6.QtMultimedia import QMediaRecorder, QMediaFormat  # noqa

@@ -1,8 +1,8 @@
 # Hushpad 홍보 키트 (SNS 카드·문구)
 
 > 아직 아무 곳에도 게시하지 않았습니다. 여기 있는 이미지와 글은 모두 초안이고, 올리기 전에 메인 개발자가 확인합니다.
-> 원칙: 구현된 기능만 씁니다. 가격은 정하지 않았으니 "무료"라고 쓰지 않습니다. 사용자 수·후기·다른 제품 이름은 쓰지 않습니다.
-> 공개 전이라 모든 행동 유도는 홈페이지 https://gdra.mycafe24.com/hushpad/ ("곧 공개")로 보냅니다.
+> 원칙: 구현된 기능만 씁니다. Hushpad는 무료 오픈소스(GPL-3.0-or-later)입니다. 사용자 수·후기·다른 제품 이름은 쓰지 않습니다.
+> 모든 행동 유도는 홈페이지 https://gdra.mycafe24.com/hushpad/ ("지금 받기" · "Get it free")로 보냅니다. 파일은 GitHub 릴리스로 배포합니다.
 > `video/` 폴더는 영상 팀 자리입니다. 이 키트는 그 폴더를 건드리지 않습니다.
 
 ## 핵심 메시지
@@ -12,7 +12,7 @@
 | 태그라인 | 조용히 적고, 아무도 못 보게 | Write quietly. Seen by no one. |
 | 문제 | 메모장 탭에 암호·API 키·HTML·JSON을 쌓아 둔다. 탭 제목이 비슷하고, 꺼지면 날아간 것 같고, 화면 공유 때 그대로 보인다 | Notepad tabs full of keys and snippets: look-alike titles, lost after a crash, exposed when you share your screen |
 | 대표 기능 | 캡처·화면 공유에 안 보이는 창 | Invisible to screenshots and screen shares |
-| 플랫폼·배포 | Windows 10·11, Mac 버전 준비 중 · 설치 없는 포터블 앱 · 앱 안 언어 전환 준비 중 | Windows 10 & 11, Mac coming · portable, no installer · language switch coming |
+| 플랫폼·배포 | Windows 10·11 · Apple Silicon(M1 이후) Mac(Intel Mac용 없음) · 무료 오픈소스(GPL-3.0-or-later) · Windows판은 설치 없는 포터블 앱 · 앱 화면 4개 언어 | Windows 10 & 11 · Apple silicon Macs (no Intel build) · free and open source (GPL-3.0-or-later) · portable on Windows · app UI in 4 languages |
 | 색 | 플럼 #7A3C93 → #9B4DB5, 피치 #FFB38A / #E0703F, 잉크 #1C1A1F, 배경 #F5F4F7 | |
 
 ## 파일 구성
@@ -27,7 +27,8 @@
 | `copy.md` | — | 한국어·영어 문구 전부: 한 줄 소개, 헤드라인, 설명, 카드 캡션, 인스타·스레드·X·블로그·메이커 글·보도자료·해시태그·15초 대본 |
 | `make_cards.py` | — | 카드 12장 × 2개 언어를 다시 만드는 생성기 (Pillow) |
 | `shots/render_shots.py` | — | 카드에 들어가는 실제 앱 화면을 시험용 프로필로 찍는 스크립트 |
-| `shots/*.png` | 1280×780 | 실제 앱 화면 (가짜 예시 메모만 들어 있음) |
+| `shots/*.png` | 1280×780 | 실제 앱 화면, 한국어 UI (가짜 예시 메모만 들어 있음) |
+| `shots/en/*.png` | 1280×780 | 같은 화면의 영어 UI + 영어 예시 메모 (영어 카드용) |
 
 ### 카드 순서
 
@@ -41,7 +42,7 @@
 | 06 | ⑤ HTML·JSON 급할 때 | 실제 코드 메모(.env, JSON) + "이 줄 값만 복사" |
 | 07 | ⑥ 스크린샷·녹화가 바로 메모로 | 스크린샷이 들어간 실제 메모 + 녹화 테두리 그림 |
 | 08 | ⑦ Ctrl+Alt+M 클립보드를 메모로 | 알림 + 맨 위에 들어온 실제 목록 |
-| 09 | 마무리: 곧 공개, Windows·Mac 준비 중, 포터블, 계정·서버 없음, 언어 전환 준비 중, 홈페이지 주소 | 아이콘 |
+| 09 | 마무리: 무료·오픈소스, Windows·macOS(Apple Silicon), 포터블, 계정·서버 없음, 4개 언어, "지금 받기" + 홈페이지 주소 | 아이콘 |
 
 브리프는 7~8장이었지만 기능을 한 장에 하나씩 넣다 보니 표지·마무리를 더해 9장이 됐습니다. 인스타그램 캐러셀은 20장까지 올릴 수 있습니다. 줄이려면 05와 06을 빼고 7장으로 써도 흐름이 이어집니다.
 
@@ -83,16 +84,20 @@ python marketing\make_cards.py --lang ko  # 한 언어만
 ```powershell
 $env:HUSHPAD_PROFILE = "C:\...\복사한_프로필"
 python marketing\shots\render_shots.py marketing\shots
+# 영어 카드용: 프로필을 새로 복사해 HUSHPAD_PROFILE을 바꾼 뒤 (예시 메모·분류 이름이 영어로 들어감)
+python marketing\shots\render_shots.py marketing\shots\en --lang en
 python marketing\make_cards.py
 ```
 
 - `render_shots.py`는 `HUSHPAD_PROFILE`이 없으면 실행을 거부합니다. 실제 보관 폴더를 가리키게 하지 마세요.
-- 처음 실행할 때 가짜 예시 메모를 넣습니다: `sk-test-…` 키, `my-shop.test` 주소, 출장 체크리스트, 로그인 오류 화면(그림도 Pillow로 그린 가짜). 예시를 바꾸려면 프로필을 새로 복사한 뒤 `seed()`를 고치세요.
-- "방금/9시간 전" 같은 상대 시각은 찍는 시각에 따라 달라집니다.
+- 처음 실행할 때 가짜 예시 메모를 넣습니다: `sk-test-…` 키, `my-shop.test` 주소, 출장 체크리스트, 로그인 오류 화면(그림도 Pillow로 그린 가짜). 언어별 문구는 `render_shots.py`의 `S`에 있습니다. 예시를 바꾸려면 프로필을 새로 복사한 뒤 고치세요.
+- `--lang en`은 창을 만들기 전에 앱 언어를 영어로 정하고, 시험용 프로필에 원래 있던 한국어 메모·분류 이름도 영어로 바꿉니다.
+- 예시 메모는 하루 전 시각으로 만들어서 목록에 "어제 …"처럼 보입니다. 클립보드 메모만 "방금"입니다.
+- `make_cards.py`는 한국어 카드에 `shots/`, 영어 카드에 `shots/en/`을 씁니다. 자르는 좌표는 같습니다.
 
 ## 확인하지 못한 것
 
 - 카드 08의 알림 모양은 그림으로 그린 것입니다. 문구("클립보드를 메모로 저장했어요 (23자)")는 앱 코드에 있는 그대로지만, 실제 Windows 알림 모양과는 다릅니다.
 - 카드 04의 "내 모니터 / 스크린샷" 비교와 카드 07의 녹화 테두리는 설명용 그림입니다. 실제로 캡처에서 빠지는지는 앱 쪽 점검 결과를 믿고 썼고, 이 키트에서 다시 시험하지 않았습니다.
-- 영어 카드의 앱 화면은 지금의 한국어 화면입니다. 카드 09 아래에 그렇다고 적어 두었습니다.
-- Mac 버전, 언어 전환은 "준비 중"으로만 씁니다. 날짜는 쓰지 않았습니다.
+- Mac 앱 화면은 찍지 않았습니다. 카드의 화면은 모두 Windows판입니다.
+- macOS 15 이상에서 일부 화면 공유 프로그램이 창 숨기기를 무시할 수 있다는 점은 `copy.md`의 긴 글(긴 설명·메이커 소개글)에만 적었습니다. 카드 04는 Windows 기준 설명입니다.

@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ダウンロード — Hushpad</title>
-<meta name="description" content="Hushpad Windows 版のダウンロード。インストール方法、動作環境、ファイルの確認（SHA-256）。">
+<meta name="description" content="Hushpad を無料でダウンロード。Windows 10・11（64 ビット）と Apple シリコン搭載 Mac に対応。初回起動の手順、動作環境、ファイルの確認（SHA-256）。">
 <meta property="og:title" content="Hushpad をダウンロード">
-<meta property="og:description" content="Hushpad Windows 版のダウンロード。インストール方法、動作環境、ファイルの確認（SHA-256）。">
+<meta property="og:description" content="Hushpad を無料でダウンロード。Windows 10・11（64 ビット）と Apple シリコン搭載 Mac に対応。初回起動の手順、動作環境、ファイルの確認（SHA-256）。">
 <meta name="theme-color" content="#7A3C93">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hushpad">
@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
-<link rel="stylesheet" href="../assets/css/site.css?v=3">
-<script src="../assets/js/lang.js?v=3"></script>
+<link rel="stylesheet" href="../assets/css/site.css?v=4">
+<script src="../assets/js/lang.js?v=4"></script>
 </head>
 <body>
 <a class="skip" href="#main">本文へスキップ</a>
@@ -62,47 +62,68 @@
     <div class="wrap">
       <div class="dl-card">
         <img src="../assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
-        <h1 style="margin:0;font-size:30px">Hushpad for Windows</h1>
-        <div class="ver">バージョン <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">公開準備中</span> · 64 ビット</div>
+        <h1 style="margin:0;font-size:30px">Hushpad をダウンロード</h1>
+        <div class="ver">バージョン <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">公開準備中</span> · 無料 · GPL-3.0-or-later</div>
 
-        <div class="when-public">
-          <a class="btn primary" data-href="downloadUrl" href="#" aria-disabled="true">⬇ <span data-cfg="fileName">Hushpad-win64.zip</span> をダウンロード</a>
-          <div style="margin-top:10px;font-size:14px;color:var(--muted)"><span data-cfg="fileSize"></span>
-            · <a data-href="releaseUrl" href="#">GitHub のリリースで見る</a></div>
+        <div class="os-grid">
+          <div class="os" data-os-card="win">
+            <span class="you">お使いのコンピュータ</span>
+            <h2>Windows</h2>
+            <p class="os-req">Windows 10（バージョン 2004 以降）・11、64 ビット</p>
+            <div class="when-public">
+              <a class="btn primary" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ Windows 版をダウンロード</a>
+              <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-win" data-dl-sha="win">公開時に表示されます</code>
+              <button class="btn small" type="button" data-copy="sha-win" data-copied="コピーしました" hidden>値をコピー</button>
+            </div>
+            <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">まもなく公開</a></div>
+          </div>
+          <div class="os" data-os-card="mac">
+            <span class="you">お使いのコンピュータ</span>
+            <h2>macOS</h2>
+            <p class="os-req">Apple シリコン搭載 Mac（M1 以降）</p>
+            <div class="when-public">
+              <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ Mac 版をダウンロード</a>
+              <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
+              <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-mac" data-dl-sha="mac">公開時に表示されます</code>
+              <button class="btn small" type="button" data-copy="sha-mac" data-copied="コピーしました" hidden>値をコピー</button>
+            </div>
+            <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">まもなく公開</a></div>
+            <p class="os-note">Intel プロセッサ搭載の Mac には対応していません。</p>
+          </div>
         </div>
-        <div class="when-private">
-          <a class="btn primary" aria-disabled="true" href="#">まもなく公開</a>
-          <p class="notice">現在、正式版を準備しています。公開されたらこのページから直接ダウンロードでき、アドレスも変わりません。</p>
-        </div>
-        <p class="ui-note">アプリは日本語・英語・韓国語・簡体字中国語に対応しています。言語は［表示］›［言語］でいつでも切り替えられます。</p>
+
+        <p class="notice when-private">現在、正式版を準備しています。公開されたらこのページから直接ダウンロードでき、アドレスも変わりません。</p>
+        <p class="release-link when-public"><a data-href="releaseUrl" href="https://github.com/wind2sp/hushpad/releases/latest">GitHub のリリースで見る</a></p>
+        <p class="ui-note">アプリは日本語・英語・韓国語・簡体字中国語に対応し、最初はシステムの言語で起動します。言語はメニュー（⋯）›［表示］›［言語］でいつでも切り替えられます。</p>
       </div>
 
       <div class="req">
-        <div class="box">
-          <h3>インストール</h3>
-          <ol>
-            <li>zip ファイルをダウンロードし、好きな場所（例：<code>C:\Program Files\Hushpad</code> やドキュメントフォルダー）に展開します。</li>
-            <li><code>Hushpad.exe</code> を実行します。インストール作業は必要ありません。</li>
-            <li>初回起動時に、メモを保管するフォルダーとパスワードを決めます。複数の PC で使う場合は、Dropbox や OneDrive 内のフォルダーを選んでください。</li>
-          </ol>
+        <div class="box" data-os-box="win">
+          <h3>Windows での初回起動</h3>
+          <ol><li>zip ファイルをダウンロードし、好きな場所（例：ドキュメントフォルダー）に展開します。インストール作業は必要ありません。</li><li>展開した <code>Hushpad</code> フォルダーの <code>Hushpad.exe</code> を実行します。</li><li>「Windows によって PC が保護されました」と表示されたら、「詳細情報 › 実行」をクリックしてください。コード署名をしていない新しいアプリのため、SmartScreen が警告することがあります。気になる場合は、先に下の方法で SHA-256 値を確認してください。</li><li>メモを保管するフォルダーとパスワードを決めます。複数の PC で使う場合は、Dropbox や OneDrive 内のフォルダーを選んでください。</li></ol>
+        </div>
+        <div class="box" data-os-box="mac">
+          <h3>Mac での初回起動</h3>
+          <ol><li>zip ファイルをダウンロードして展開し、<code>Hushpad.app</code> を「アプリケーション」フォルダーに移します。</li><li>初回だけは、Finder で Hushpad.app を右クリック（または Control キーを押しながらクリック）して「開く」を選び、警告画面でもう一度「開く」をクリックします。Apple の署名・公証を受けていないアプリのため、ダブルクリックでは開けません。「開く」ボタンが出ない場合は、システム設定 › プライバシーとセキュリティで「このまま開く」をクリックしてください。</li><li>初めてスクリーンショットや画面録画をするとき、macOS が画面収録の許可を求めます。システム設定 › プライバシーとセキュリティの画面収録の項目で Hushpad をオンにし、アプリを再起動してください。</li><li>メモを保管するフォルダーとパスワードを決めます。どこからでも使えるショートカットは ⌃⌥N（新規メモ）、⌃⌥M（クリップボードをメモに）、⌃⌥S（スクリーンショット）、⌃⌥R（画面録画）です。</li></ol>
         </div>
         <div class="box">
-          <h3>「Windows によって PC が保護されました」と表示されたら</h3>
-          <p>新しいアプリのため、Windows SmartScreen が警告を表示することがあります。ダウンロードしたファイルが下の SHA-256 値と一致することを確認してから、「詳細情報 › 実行」をクリックしてください。</p>
-        </div>
-        <div class="box">
-          <h3>ファイルの確認（SHA-256）</h3>
-          <p>PowerShell で <code>Get-FileHash .\ファイル名.zip</code> を実行し、表示された値と比べてください。</p>
-          <code class="sum" id="sha256">公開時に表示されます</code>
-          <button class="btn small when-public" type="button" data-copy="sha256" data-copied="コピーしました" style="margin-top:8px">値をコピー</button>
+          <h3>起動時に自動で実行</h3>
+          <p>初回起動のあとは、Windows の起動時（Mac ではログイン時）に Hushpad がトレイ（Mac ではメニューバー）で自動的に起動します。メモは書いたそばから暗号化して保存するので、再起動してもそのまま残ります。自動起動は、トレイ（メニューバー）のアイコンのメニューか［セキュリティ］メニューでオフにできます。</p>
         </div>
         <div class="box">
           <h3>動作環境</h3>
-          <p>Windows 10（バージョン 2004 以降）または Windows 11、64 ビット。キャプチャからウィンドウを隠す機能は Windows 10 バージョン 2004 以降で動作します。インターネット接続は不要です。</p>
+          <ul><li><b>Windows</b>：Windows 10（バージョン 2004 以降）または Windows 11、64 ビット。キャプチャからウィンドウを隠す機能は Windows 10 バージョン 2004 以降で動作します。</li><li><b>Mac</b>：Apple シリコン搭載 Mac（M1 以降）。Intel プロセッサ搭載の Mac 用は提供していません。</li><li>インターネット接続は不要です。</li></ul>
+        </div>
+        <div class="box">
+          <h3>ファイルの確認（SHA-256）</h3>
+          <p>ダウンロードしたファイルの値を、上の SHA-256 値と比べてください。Windows では PowerShell で <code>Get-FileHash .\Hushpad-win64.zip</code>、Mac ではターミナルで <code>shasum -a 256 Hushpad-macos-arm64.zip</code> を実行します。</p>
         </div>
         <div class="box">
           <h3>アンインストール</h3>
-          <p>プログラムのフォルダーを削除するだけです。メモは保管フォルダーにそのまま残ります（暗号化された状態）。メモも消す場合は、保管フォルダーも一緒に削除してください。</p>
+          <p>自動起動をオンにしている場合は、先にトレイ（メニューバー）のアイコンからオフにしたうえで、プログラムのフォルダー（Mac では Hushpad.app）を削除してください。メモは保管フォルダーにそのまま残ります（暗号化された状態）。メモも消す場合は、保管フォルダーも一緒に削除してください。</p>
         </div>
       </div>
     </div>
@@ -114,7 +135,7 @@
     <div class="ft">
       <div>
         <div class="ft-brand"><img src="../assets/img/icon-64.png" alt="" width="28" height="28" loading="lazy">Hushpad</div>
-        <p>静かに書いて、誰にも見せない。保存ボタンなしで自動保存し、すべてのメモを暗号化する Windows 用メモ帳です。</p>
+        <p>静かに書いて、誰にも見せない。保存ボタンなしで自動保存し、すべてのメモを暗号化する Windows・macOS 用メモ帳です。</p>
         <p class="name-line"><b>hush</b>（しーっ、静かに）＋ <b>pad</b>（メモ帳）。静かに書き留めておく、秘密のメモ帳という意味です。</p>
       </div>
       <div>
@@ -126,17 +147,19 @@
         <ul>
           <li><a data-repo="" data-on-text="GitHub リポジトリ">GitHub リポジトリ（公開準備中）</a></li>
           <li><a data-repo="/issues" data-on-text="不具合の報告">不具合の報告（公開後）</a></li>
+          <li><a data-repo="/blob/main/LICENSE" data-on-text="ライセンス全文">ライセンス全文（公開後）</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd.</span></p>
-      <p><strong>商標</strong> Windows は Microsoft Corporation の商標です。Hushpad は Microsoft と提携しておらず、支援も受けていません。</p>
-      <p><strong>使用しているオープンソース</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.</p>
+      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. and Hushpad contributors</span></p>
+      <p><strong>ライセンス</strong> Hushpad は GPL-3.0-or-later で配布する無料のオープンソースソフトウェアです。現状のまま提供され、いかなる保証もありません。</p>
+      <p><strong>商標</strong> Hushpad の名前とアイコンは NINEROW partners Co., Ltd. の商標です。改変版を配布する場合は、別の名前とアイコンを使ってください。Windows は Microsoft Corporation の、macOS は Apple Inc. の商標です。Hushpad は Microsoft・Apple と提携しておらず、支援も受けていません。</p>
+      <p><strong>使用しているオープンソース</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. 全体の一覧はリポジトリの THIRD_PARTY_NOTICES.md にあります。</p>
       <p><strong>プライバシー</strong> Hushpad アプリとこのサイトは、アカウント・アクセス解析・広告スクリプトを使用しません。</p>
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=3" defer></script>
+<script src="../assets/js/site.js?v=4" defer></script>
 </body>
 </html>

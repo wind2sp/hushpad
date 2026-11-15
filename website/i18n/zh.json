@@ -17,7 +17,7 @@
       "download": "下载"
     },
     "footer": {
-      "tagline": "安静记录，无人可见。一款不用手动保存、所有笔记都加密存放的 Windows 记事本。",
+      "tagline": "安静记录，无人可见。一款不用手动保存、所有笔记都加密存放的 Windows / macOS 记事本。",
       "nameLine": "<b>hush</b>（嘘，安静）+ <b>pad</b>（记事本），意为安静记录的私密记事本。",
       "exploreH": "浏览",
       "projectH": "项目",
@@ -26,27 +26,31 @@
       "issuesOn": "问题反馈",
       "issuesOff": "问题反馈（公开后）",
       "tmH": "商标",
-      "tm": "Windows 是 Microsoft Corporation 的商标。Hushpad 与 Microsoft 无任何关联，也未获得其赞助。",
+      "tm": "Hushpad 名称和图标是 NINEROW partners Co., Ltd. 的商标，发布修改版时请使用其他名称和图标。Windows 是 Microsoft Corporation 的商标，macOS 是 Apple Inc. 的商标。Hushpad 与 Microsoft、Apple 均无关联，也未获得其赞助。",
       "ossH": "使用的开源软件",
-      "oss": "Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.",
+      "oss": "Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller。完整列表见代码仓库中的 THIRD_PARTY_NOTICES.md。",
       "privacyH": "隐私",
-      "privacy": "Hushpad 应用和本网站均不使用账户、分析或广告脚本。"
+      "privacy": "Hushpad 应用和本网站均不使用账户、分析或广告脚本。",
+      "licenseOn": "许可证全文",
+      "licenseOff": "许可证全文（公开后）",
+      "licenseH": "许可证",
+      "license": "Hushpad 是以 GPL-3.0-or-later 发布的免费开源软件，按“原样”提供，不附带任何担保。"
     }
   },
   "index": {
-    "title": "Hushpad — 安静又私密的 Windows 记事本",
-    "description": "自动保存、所有笔记加密的 Windows 记事本，窗口不会出现在截图和屏幕共享中。密码、API 密钥、HTML、JSON、截图，都能放在一处。",
+    "title": "Hushpad — 安静又私密的记事本",
+    "description": "自动保存、所有笔记加密的 Windows / macOS 记事本，窗口不会出现在截图和屏幕共享中。密码、API 密钥、HTML、JSON、截图，都能放在一处。免费开源。",
     "ogTitle": "Hushpad — 安静又私密的记事本",
-    "ogDescription": "自动保存 · 所有笔记加密 · 截图拍不到的窗口。适用于 Windows 的记事本。",
+    "ogDescription": "自动保存 · 所有笔记加密 · 截图拍不到的窗口。免费开源的 Windows / macOS 记事本。",
     "iconAlt": "Hushpad 图标",
-    "eyebrow": "适用于 Windows 10 / 11 的记事本",
+    "eyebrow": "适用于 Windows / macOS 的记事本",
     "h1": "安静记录，<em>无人可见</em>",
     "lead": "无需点击保存，输入即记录；所有笔记加密后集中存放在一个文件夹中。窗口不会出现在截图和屏幕共享里。密码、API 密钥、HTML、JSON 乃至截图，都能放在一处。",
-    "ctaDownload": "下载 Windows 版",
+    "ctaDownload": "免费下载",
     "ctaMore": "有何不同",
     "metaVersion": "版本",
-    "metaRest": "无需账户 · 无服务器 · 无广告 · 离线运行",
-    "shotLightAlt": "Hushpad 界面 — 左侧是笔记列表和分类，右侧以标签页打开笔记（韩语界面）",
+    "metaRest": "免费开源（GPL-3.0-or-later）",
+    "shotLightAlt": "Hushpad 界面 — 左侧是笔记列表和分类，右侧以标签页打开笔记",
     "shotDarkAlt": "Hushpad 深色模式 — 代码笔记中的 JSON 以不同颜色显示",
     "pains": {
       "h2": "如果你也这样用记事本",
@@ -102,7 +106,7 @@
       "h2": "你的屏幕上看得见，截图里却没有",
       "p": "共享屏幕时开着笔记也好，截图也好，Hushpad 窗口所在的位置都会被后面的画面填上。所以不必挪开窗口，直接截图就行。",
       "b1": "截图与录屏工具、视频会议共享",
-      "s1": "使用 Windows 自带的捕获排除功能（Windows 10 版本 2004 及以上）。",
+      "s1": "在 Windows 上使用系统自带的捕获排除功能（Windows 10 版本 2004 及以上），在 macOS 上关闭窗口共享。",
       "b2": "录制时的按钮也不会被录进去",
       "s2": "录制区域的边框和 ⏸ ⏹ 控制条只显示在你的屏幕上。",
       "b3": "需要时可以关闭",
@@ -120,7 +124,7 @@
       "b2": "由密码派生的密钥（scrypt）",
       "s2": "不知道密码就无法解密文件。忘记密码的话，连开发者也无法恢复。",
       "b3": "在自己的电脑上只需输入一次",
-      "s3": "密钥会与你的 Windows 账户绑定（DPAPI）并记住。换个账户或换台电脑，就需要重新输入密码。",
+      "s3": "密钥在 Windows 上与你的账户绑定（DPAPI），在 macOS 上保存在登录钥匙串中。换个账户或换台电脑，就需要重新输入密码。",
       "b4": "剪贴板也安安静静",
       "s4": "复制的内容会加上标记，不会留在 Windows 剪贴板历史记录和云同步中。",
       "b5": "无账户、无追踪、无需联网",
@@ -133,7 +137,7 @@
     },
     "keys": {
       "h2": "顺手的快捷键",
-      "p": "有些快捷键即使窗口已关闭（在托盘中）也能使用。",
+      "p": "有些快捷键即使窗口已关闭（在托盘中，Mac 上为菜单栏）也能使用。在 Mac 上，Ctrl+Alt 换成 ⌃⌥（Control+Option），应用内的 Ctrl 换成 ⌘。",
       "k1": "随时新建笔记",
       "k2": "把当前剪贴板存为笔记",
       "k3": "随时区域截图",
@@ -147,12 +151,24 @@
       "h2": "常见问题",
       "items": [
         {
+          "q": "在哪里下载？",
+          "a": "在本网站的<a href=\"download.html\">下载页面</a>获取。文件通过 GitHub Releases 发布，分为 Windows 10 / 11（64 位）版和搭载 Apple 芯片（M1 及更新）的 Mac 版两种。不支持搭载 Intel 处理器的 Mac。"
+        },
+        {
+          "q": "免费吗？开源吗？",
+          "a": "都是。Hushpad 免费使用，源代码以 GPL-3.0-or-later 许可证在 GitHub 上公开，任何人都可以查看、修改和再发布。但发布修改版时，需要以相同许可证公开源代码，并改用不同于 Hushpad 的名称和图标。"
+        },
+        {
           "q": "能把 Windows 记事本里打开的标签页搬过来吗？",
-          "a": "可以。在“菜单 › 文件 › 导入 Windows 记事本标签页”中，连未保存的标签页也能复制过来，Windows 记事本本身不受影响。"
+          "a": "可以。在 Windows 版的“菜单 › 文件 › 导入 Windows 记事本标签页”中，连未保存的标签页也能复制过来，Windows 记事本本身不受影响。"
         },
         {
           "q": "忘记密码怎么办？",
           "a": "无法找回。Hushpad 的设计就是不知道密码，任何人（包括开发者）都打不开。首次设置时，请把密码记在安全的地方。"
+        },
+        {
+          "q": "重启电脑后笔记还在吗？",
+          "a": "在。笔记一边输入一边加密写入磁盘，重启后依然保留。首次运行后，Hushpad 会在 Windows 启动时（Mac 上为登录时）自动在托盘（Mac 上为菜单栏）中运行。如不需要，可在托盘图标的菜单或“安全”菜单中关闭。"
         },
         {
           "q": "如何在多台电脑上使用？",
@@ -167,50 +183,76 @@
           "a": "不会。Hushpad 没有账户也没有服务器，运行时不会连接互联网。"
         },
         {
-          "q": "在哪里下载？",
-          "a": "正式版通过 GitHub 公开发布。发布后，可以直接在本网站的下载页面获取。"
+          "q": "在 Mac 上也不会被截图拍到吗？",
+          "a": "在 macOS 上，Hushpad 通过关闭窗口共享来隐藏窗口。不过在 macOS 15 及以上版本中，部分使用 ScreenCaptureKit 的截图和屏幕共享应用会忽略这一设置，仍可能拍到窗口。在 Mac 上共享屏幕前，请先自行确认。"
+        },
+        {
+          "q": "可以更改应用的界面语言吗？",
+          "a": "支持简体中文、英语、日语和韩语，首次启动时跟随系统语言。可随时在“菜单（⋯）› 视图 › 语言”中切换。"
         }
       ]
-    }
+    },
+    "metaPlatforms": "Windows 10 / 11 · 搭载 Apple 芯片的 Mac · 无需账户 · 无服务器 · 无广告 · 离线运行",
+    "shotSuffix": "-zh"
   },
   "dl": {
     "title": "下载 — Hushpad",
-    "description": "下载 Hushpad Windows 版。安装方法、系统要求及文件校验（SHA-256）。",
+    "description": "免费下载 Hushpad，支持 Windows 10 / 11（64 位）和搭载 Apple 芯片的 Mac。首次运行步骤、系统要求及文件校验（SHA-256）。",
     "ogTitle": "下载 Hushpad",
-    "h1": "Hushpad for Windows",
+    "h1": "下载 Hushpad",
     "version": "版本",
     "releasePending": "即将发布",
-    "bits": "64 位",
-    "getBefore": "下载 ",
-    "getAfter": "",
-    "viewRelease": "在 GitHub Releases 查看",
+    "license": "免费 · GPL-3.0-or-later",
+    "yourOs": "当前设备",
     "soon": "即将发布",
     "notice": "正式版正在准备中。发布后即可在本页面直接下载，网址保持不变。",
-    "uiNote": "<p class=\"ui-note\">应用支持简体中文、英语、日语和韩语，可随时在“视图 › 语言”中切换。</p>",
-    "install": {
-      "h": "安装",
-      "s1": "下载 zip 文件，解压到任意位置（例如 <code>C:\\Program Files\\Hushpad</code> 或“文档”文件夹）。",
-      "s2": "运行 <code>Hushpad.exe</code>，无需安装。",
-      "s3": "首次运行时，选择存放笔记的文件夹并设置密码。如需在多台电脑上使用，请选择 Dropbox 或 OneDrive 中的文件夹。"
+    "viewRelease": "在 GitHub Releases 查看",
+    "uiNote": "应用支持简体中文、英语、日语和韩语，首次启动时跟随系统语言，可随时在“菜单（⋯）› 视图 › 语言”中切换。",
+    "win": {
+      "req": "Windows 10（版本 2004 及以上）/ 11，64 位",
+      "get": "下载 Windows 版",
+      "firstH": "在 Windows 上首次运行",
+      "first": [
+        "下载 zip 文件，解压到任意位置（例如“文档”文件夹），无需安装。",
+        "打开解压出的 <code>Hushpad</code> 文件夹，运行 <code>Hushpad.exe</code>。",
+        "如果出现“Windows 已保护你的电脑”，请点击“更多信息 › 仍要运行”。Hushpad 尚未进行代码签名，SmartScreen 可能会发出警告。如不放心，可先按下方方法核对 SHA-256 值。",
+        "选择存放笔记的文件夹并设置密码。如需在多台电脑上使用，请选择 Dropbox 或 OneDrive 中的文件夹。"
+      ]
     },
-    "smart": {
-      "h": "如果出现“Windows 已保护你的电脑”",
-      "p": "由于是新发布的程序，Windows SmartScreen 可能会发出警告。请先确认下载的文件与下方 SHA-256 值一致，再点击“更多信息 › 仍要运行”。"
+    "mac": {
+      "req": "搭载 Apple 芯片的 Mac（M1 及更新）",
+      "get": "下载 Mac 版",
+      "note": "不支持搭载 Intel 处理器的 Mac。",
+      "firstH": "在 Mac 上首次打开",
+      "first": [
+        "下载并解压 zip 文件，把 <code>Hushpad.app</code> 移到“应用程序”文件夹。",
+        "第一次打开时，请在访达中右键点按（或按住 Control 键点按）Hushpad.app，选择“打开”，再在警告窗口中点击“打开”。该应用未经 Apple 签名和公证，直接双击无法打开。如果没有“打开”按钮，请前往“系统设置 › 隐私与安全性”，点击“仍要打开”。",
+        "第一次截图或录屏时，macOS 会请求屏幕录制权限。请在“系统设置 › 隐私与安全性”的屏幕录制设置中打开 Hushpad，然后重新启动应用。",
+        "选择存放笔记的文件夹并设置密码。全局快捷键为 ⌃⌥N（新建笔记）、⌃⌥M（剪贴板存为笔记）、⌃⌥S（截图）和 ⌃⌥R（录屏）。"
+      ]
+    },
+    "auto": {
+      "h": "开机自动运行",
+      "p": "首次运行后，Hushpad 会在 Windows 启动时（Mac 上为登录时）自动在托盘（Mac 上为菜单栏）中运行。笔记一边输入一边加密保存，重启电脑后依然保留。可在托盘（菜单栏）图标的菜单或“安全”菜单中关闭自动运行。"
+    },
+    "req": {
+      "h": "系统要求",
+      "items": [
+        "<b>Windows</b>：Windows 10（版本 2004 及以上）或 Windows 11，64 位。在截图中隐藏窗口需要 Windows 10 版本 2004 及以上。",
+        "<b>Mac</b>：搭载 Apple 芯片（M1 及更新）的 Mac。不提供 Intel 处理器 Mac 的版本。",
+        "无需联网。"
+      ]
     },
     "hash": {
       "h": "校验文件（SHA-256）",
-      "p": "在 PowerShell 中运行 <code>Get-FileHash .\\文件名.zip</code>，将结果与此值比对。",
+      "p": "请将下载文件的校验值与上方的 SHA-256 值比对。Windows 上在 PowerShell 中运行 <code>Get-FileHash .\\Hushpad-win64.zip</code>，Mac 上在“终端”中运行 <code>shasum -a 256 Hushpad-macos-arm64.zip</code>。",
       "pending": "发布时显示",
       "copy": "复制",
       "copied": "已复制"
     },
-    "req": {
-      "h": "系统要求",
-      "p": "Windows 10（版本 2004 及以上）或 Windows 11，64 位。在截图中隐藏窗口需要 Windows 10 版本 2004 及以上。无需联网。"
-    },
     "remove": {
       "h": "卸载",
-      "p": "删除程序文件夹即可。笔记仍保留在存储文件夹中（保持加密）。如需一并删除笔记，请同时删除存储文件夹。"
+      "p": "如果开启了自动运行，请先在托盘（菜单栏）图标中关闭，再删除程序文件夹（Mac 上为 Hushpad.app）。笔记仍保留在存储文件夹中（保持加密）。如需一并删除笔记，请同时删除存储文件夹。"
     }
   }
 }

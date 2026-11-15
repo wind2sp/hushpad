@@ -179,6 +179,29 @@ code.sum { display: block; margin-top: 8px; font: 12.5px/1.5 "Cascadia Mono", Co
   background: var(--bg); border: 1px solid var(--line2); border-radius: 8px; padding: 10px; color: var(--text2); }
 
 .ui-note { margin: 16px 0 0; font-size: 14px; color: var(--muted); }
+/* 다운로드: OS별 카드. site.js가 <html data-os>를 정하면 그 OS 카드를 강조하고 앞으로 */
+.os-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; text-align: left; }
+.os { position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0;
+  border: 1px solid var(--line); border-radius: 14px; padding: 20px; background: var(--bg2); }
+.os h2 { margin: 0; font-size: 20px; }
+.os .os-req { margin: -4px 0 4px; font-size: 14px; color: var(--text2); }
+.os .os-note { margin: 0; font-size: 13.5px; color: var(--muted); }
+.os .btn { justify-content: center; }
+.os .when-public, .os .when-private { display: flex; flex-direction: column; gap: 8px; }
+.os .file { font-size: 13.5px; color: var(--muted); overflow-wrap: anywhere; }
+.os .sum-label { font-size: 12.5px; font-weight: 600; color: var(--text2); margin-top: 2px; }
+.os code.sum { margin-top: 0; }
+.os .btn.small { align-self: flex-start; }
+.os .btn[hidden] { display: none; }
+.os .you { display: none; align-self: flex-start; font-size: 12px; font-weight: 600; color: var(--accent-ink);
+  background: var(--tint); border-radius: 999px; padding: 2px 10px; }
+[data-os="win"] .os[data-os-card="win"], [data-os="mac"] .os[data-os-card="mac"] { border: 2px solid var(--accent); padding: 19px; }
+[data-os="win"] .os[data-os-card="win"] .you, [data-os="mac"] .os[data-os-card="mac"] .you { display: inline-block; }
+[data-os="mac"] .os[data-os-card="mac"], [data-os="mac"] .box[data-os-box="mac"] { order: -1; }
+.release-link { margin: 16px 0 0; font-size: 14px; }
+.req ul { margin: 6px 0 0; padding-left: 20px; }
+.req li + li { margin-top: 4px; }
+.hero .meta + .meta { margin-top: 4px; }
 
 /* 바닥글 */
 footer { padding: 48px 0 40px; color: var(--muted); font-size: 14px; line-height: 1.7; border-top: 1px solid var(--line2); }
@@ -208,5 +231,6 @@ footer a { color: var(--text2); }
   section { padding: 56px 0; }
   .hero { padding-top: 48px; }
   .dl-card { padding: 24px 18px; }
+  .os-grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

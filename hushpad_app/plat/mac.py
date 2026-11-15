@@ -132,10 +132,8 @@ def key_remember(vid: str, key: bytes) -> None:
     try:
         # 'security -i'로 표준 입력에 명령을 넘겨 키가 프로세스 목록(ps)에 보이지 않게 한다
         r = _security(["-i"], stdin=cmd)
-        if r.returncode == 0 and key_recall(vid) == key:
-            return
-        _security(["add-generic-password", "-U", "-s", _service(), "-a", vid, "-l", "Hushpad vault key",
-                   "-w", secret])
+        # 실패해도 키를 명령줄(argv)로 넘기는 예비 방법은 쓰지 않는다 — 다음 실행 때 암호를 다시 물을 뿐
+        return
     except Exception:
         pass
 

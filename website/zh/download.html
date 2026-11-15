@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>下载 — Hushpad</title>
-<meta name="description" content="下载 Hushpad Windows 版。安装方法、系统要求及文件校验（SHA-256）。">
+<meta name="description" content="免费下载 Hushpad，支持 Windows 10 / 11（64 位）和搭载 Apple 芯片的 Mac。首次运行步骤、系统要求及文件校验（SHA-256）。">
 <meta property="og:title" content="下载 Hushpad">
-<meta property="og:description" content="下载 Hushpad Windows 版。安装方法、系统要求及文件校验（SHA-256）。">
+<meta property="og:description" content="免费下载 Hushpad，支持 Windows 10 / 11（64 位）和搭载 Apple 芯片的 Mac。首次运行步骤、系统要求及文件校验（SHA-256）。">
 <meta name="theme-color" content="#7A3C93">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hushpad">
@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
-<link rel="stylesheet" href="../assets/css/site.css?v=3">
-<script src="../assets/js/lang.js?v=3"></script>
+<link rel="stylesheet" href="../assets/css/site.css?v=4">
+<script src="../assets/js/lang.js?v=4"></script>
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -62,47 +62,68 @@
     <div class="wrap">
       <div class="dl-card">
         <img src="../assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
-        <h1 style="margin:0;font-size:30px">Hushpad for Windows</h1>
-        <div class="ver">版本 <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">即将发布</span> · 64 位</div>
+        <h1 style="margin:0;font-size:30px">下载 Hushpad</h1>
+        <div class="ver">版本 <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">即将发布</span> · 免费 · GPL-3.0-or-later</div>
 
-        <div class="when-public">
-          <a class="btn primary" data-href="downloadUrl" href="#" aria-disabled="true">⬇ 下载 <span data-cfg="fileName">Hushpad-win64.zip</span></a>
-          <div style="margin-top:10px;font-size:14px;color:var(--muted)"><span data-cfg="fileSize"></span>
-            · <a data-href="releaseUrl" href="#">在 GitHub Releases 查看</a></div>
+        <div class="os-grid">
+          <div class="os" data-os-card="win">
+            <span class="you">当前设备</span>
+            <h2>Windows</h2>
+            <p class="os-req">Windows 10（版本 2004 及以上）/ 11，64 位</p>
+            <div class="when-public">
+              <a class="btn primary" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ 下载 Windows 版</a>
+              <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-win" data-dl-sha="win">发布时显示</code>
+              <button class="btn small" type="button" data-copy="sha-win" data-copied="已复制" hidden>复制</button>
+            </div>
+            <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">即将发布</a></div>
+          </div>
+          <div class="os" data-os-card="mac">
+            <span class="you">当前设备</span>
+            <h2>macOS</h2>
+            <p class="os-req">搭载 Apple 芯片的 Mac（M1 及更新）</p>
+            <div class="when-public">
+              <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ 下载 Mac 版</a>
+              <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
+              <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-mac" data-dl-sha="mac">发布时显示</code>
+              <button class="btn small" type="button" data-copy="sha-mac" data-copied="已复制" hidden>复制</button>
+            </div>
+            <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">即将发布</a></div>
+            <p class="os-note">不支持搭载 Intel 处理器的 Mac。</p>
+          </div>
         </div>
-        <div class="when-private">
-          <a class="btn primary" aria-disabled="true" href="#">即将发布</a>
-          <p class="notice">正式版正在准备中。发布后即可在本页面直接下载，网址保持不变。</p>
-        </div>
-        <p class="ui-note">应用支持简体中文、英语、日语和韩语，可随时在“视图 › 语言”中切换。</p>
+
+        <p class="notice when-private">正式版正在准备中。发布后即可在本页面直接下载，网址保持不变。</p>
+        <p class="release-link when-public"><a data-href="releaseUrl" href="https://github.com/wind2sp/hushpad/releases/latest">在 GitHub Releases 查看</a></p>
+        <p class="ui-note">应用支持简体中文、英语、日语和韩语，首次启动时跟随系统语言，可随时在“菜单（⋯）› 视图 › 语言”中切换。</p>
       </div>
 
       <div class="req">
-        <div class="box">
-          <h3>安装</h3>
-          <ol>
-            <li>下载 zip 文件，解压到任意位置（例如 <code>C:\Program Files\Hushpad</code> 或“文档”文件夹）。</li>
-            <li>运行 <code>Hushpad.exe</code>，无需安装。</li>
-            <li>首次运行时，选择存放笔记的文件夹并设置密码。如需在多台电脑上使用，请选择 Dropbox 或 OneDrive 中的文件夹。</li>
-          </ol>
+        <div class="box" data-os-box="win">
+          <h3>在 Windows 上首次运行</h3>
+          <ol><li>下载 zip 文件，解压到任意位置（例如“文档”文件夹），无需安装。</li><li>打开解压出的 <code>Hushpad</code> 文件夹，运行 <code>Hushpad.exe</code>。</li><li>如果出现“Windows 已保护你的电脑”，请点击“更多信息 › 仍要运行”。Hushpad 尚未进行代码签名，SmartScreen 可能会发出警告。如不放心，可先按下方方法核对 SHA-256 值。</li><li>选择存放笔记的文件夹并设置密码。如需在多台电脑上使用，请选择 Dropbox 或 OneDrive 中的文件夹。</li></ol>
+        </div>
+        <div class="box" data-os-box="mac">
+          <h3>在 Mac 上首次打开</h3>
+          <ol><li>下载并解压 zip 文件，把 <code>Hushpad.app</code> 移到“应用程序”文件夹。</li><li>第一次打开时，请在访达中右键点按（或按住 Control 键点按）Hushpad.app，选择“打开”，再在警告窗口中点击“打开”。该应用未经 Apple 签名和公证，直接双击无法打开。如果没有“打开”按钮，请前往“系统设置 › 隐私与安全性”，点击“仍要打开”。</li><li>第一次截图或录屏时，macOS 会请求屏幕录制权限。请在“系统设置 › 隐私与安全性”的屏幕录制设置中打开 Hushpad，然后重新启动应用。</li><li>选择存放笔记的文件夹并设置密码。全局快捷键为 ⌃⌥N（新建笔记）、⌃⌥M（剪贴板存为笔记）、⌃⌥S（截图）和 ⌃⌥R（录屏）。</li></ol>
         </div>
         <div class="box">
-          <h3>如果出现“Windows 已保护你的电脑”</h3>
-          <p>由于是新发布的程序，Windows SmartScreen 可能会发出警告。请先确认下载的文件与下方 SHA-256 值一致，再点击“更多信息 › 仍要运行”。</p>
-        </div>
-        <div class="box">
-          <h3>校验文件（SHA-256）</h3>
-          <p>在 PowerShell 中运行 <code>Get-FileHash .\文件名.zip</code>，将结果与此值比对。</p>
-          <code class="sum" id="sha256">发布时显示</code>
-          <button class="btn small when-public" type="button" data-copy="sha256" data-copied="已复制" style="margin-top:8px">复制</button>
+          <h3>开机自动运行</h3>
+          <p>首次运行后，Hushpad 会在 Windows 启动时（Mac 上为登录时）自动在托盘（Mac 上为菜单栏）中运行。笔记一边输入一边加密保存，重启电脑后依然保留。可在托盘（菜单栏）图标的菜单或“安全”菜单中关闭自动运行。</p>
         </div>
         <div class="box">
           <h3>系统要求</h3>
-          <p>Windows 10（版本 2004 及以上）或 Windows 11，64 位。在截图中隐藏窗口需要 Windows 10 版本 2004 及以上。无需联网。</p>
+          <ul><li><b>Windows</b>：Windows 10（版本 2004 及以上）或 Windows 11，64 位。在截图中隐藏窗口需要 Windows 10 版本 2004 及以上。</li><li><b>Mac</b>：搭载 Apple 芯片（M1 及更新）的 Mac。不提供 Intel 处理器 Mac 的版本。</li><li>无需联网。</li></ul>
+        </div>
+        <div class="box">
+          <h3>校验文件（SHA-256）</h3>
+          <p>请将下载文件的校验值与上方的 SHA-256 值比对。Windows 上在 PowerShell 中运行 <code>Get-FileHash .\Hushpad-win64.zip</code>，Mac 上在“终端”中运行 <code>shasum -a 256 Hushpad-macos-arm64.zip</code>。</p>
         </div>
         <div class="box">
           <h3>卸载</h3>
-          <p>删除程序文件夹即可。笔记仍保留在存储文件夹中（保持加密）。如需一并删除笔记，请同时删除存储文件夹。</p>
+          <p>如果开启了自动运行，请先在托盘（菜单栏）图标中关闭，再删除程序文件夹（Mac 上为 Hushpad.app）。笔记仍保留在存储文件夹中（保持加密）。如需一并删除笔记，请同时删除存储文件夹。</p>
         </div>
       </div>
     </div>
@@ -114,7 +135,7 @@
     <div class="ft">
       <div>
         <div class="ft-brand"><img src="../assets/img/icon-64.png" alt="" width="28" height="28" loading="lazy">Hushpad</div>
-        <p>安静记录，无人可见。一款不用手动保存、所有笔记都加密存放的 Windows 记事本。</p>
+        <p>安静记录，无人可见。一款不用手动保存、所有笔记都加密存放的 Windows / macOS 记事本。</p>
         <p class="name-line"><b>hush</b>（嘘，安静）+ <b>pad</b>（记事本），意为安静记录的私密记事本。</p>
       </div>
       <div>
@@ -126,17 +147,19 @@
         <ul>
           <li><a data-repo="" data-on-text="GitHub 仓库">GitHub 仓库（即将公开）</a></li>
           <li><a data-repo="/issues" data-on-text="问题反馈">问题反馈（公开后）</a></li>
+          <li><a data-repo="/blob/main/LICENSE" data-on-text="许可证全文">许可证全文（公开后）</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd.</span></p>
-      <p><strong>商标</strong> Windows 是 Microsoft Corporation 的商标。Hushpad 与 Microsoft 无任何关联，也未获得其赞助。</p>
-      <p><strong>使用的开源软件</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.</p>
+      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. and Hushpad contributors</span></p>
+      <p><strong>许可证</strong> Hushpad 是以 GPL-3.0-or-later 发布的免费开源软件，按“原样”提供，不附带任何担保。</p>
+      <p><strong>商标</strong> Hushpad 名称和图标是 NINEROW partners Co., Ltd. 的商标，发布修改版时请使用其他名称和图标。Windows 是 Microsoft Corporation 的商标，macOS 是 Apple Inc. 的商标。Hushpad 与 Microsoft、Apple 均无关联，也未获得其赞助。</p>
+      <p><strong>使用的开源软件</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller。完整列表见代码仓库中的 THIRD_PARTY_NOTICES.md。</p>
       <p><strong>隐私</strong> Hushpad 应用和本网站均不使用账户、分析或广告脚本。</p>
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=3" defer></script>
+<script src="../assets/js/site.js?v=4" defer></script>
 </body>
 </html>

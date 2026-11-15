@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hushpad — 조용한 비밀 메모장</title>
-<meta name="description" content="저장 버튼 없이 자동으로 저장되고 모든 메모가 암호화되는 Windows 메모장. 창은 스크린샷과 화면 공유에도 찍히지 않습니다. 암호·API 키·HTML·JSON·스크린샷을 한곳에.">
+<meta name="description" content="저장 버튼 없이 자동으로 저장되고 모든 메모가 암호화되는 Windows·macOS용 메모장. 창은 스크린샷과 화면 공유에도 찍히지 않습니다. 암호·API 키·HTML·JSON·스크린샷을 한곳에. 무료 오픈소스입니다.">
 <meta property="og:title" content="Hushpad — 조용한 비밀 메모장">
-<meta property="og:description" content="자동 저장 · 모든 메모 암호화 · 캡처에 보이지 않는 창. Windows용 메모장.">
+<meta property="og:description" content="자동 저장 · 모든 메모 암호화 · 캡처에 보이지 않는 창. Windows·macOS용 무료 오픈소스 메모장.">
 <meta name="theme-color" content="#7A3C93">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hushpad">
@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<link rel="stylesheet" href="assets/css/site.css?v=3">
-<script src="assets/js/lang.js?v=3"></script>
+<link rel="stylesheet" href="assets/css/site.css?v=4">
+<script src="assets/js/lang.js?v=4"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -76,15 +76,16 @@
   <section class="hero">
     <div class="wrap">
       <img class="app-icon" src="assets/img/icon-256.png" alt="Hushpad 아이콘" width="96" height="96">
-      <span class="eyebrow">Windows 10·11용 메모장</span>
+      <span class="eyebrow">Windows·macOS용 메모장</span>
       <h1>조용히 적고, <em>아무도 못 보게</em></h1>
       <p class="lead">저장 버튼을 누르지 않아도 쓰는 대로 남고, 모든 메모는 암호화되어 한 폴더에 모입니다.
         창은 스크린샷과 화면 공유에도 찍히지 않아요. 암호·API 키·HTML·JSON·스크린샷까지 한곳에.</p>
       <div class="cta">
-        <a class="btn primary" href="download.html">Windows용 다운로드</a>
+        <a class="btn primary" href="download.html">무료로 받기</a>
         <a class="btn" href="#features">무엇이 다른가요</a>
       </div>
-      <div class="meta">버전 <span data-cfg="version">1.0.0</span> · 계정·서버·광고 없음 · 인터넷 연결 없이 동작</div>
+      <div class="meta">버전 <span data-cfg="version">1.0.0</span> · 무료 오픈소스 (GPL-3.0-or-later)</div>
+      <div class="meta">Windows 10·11 · Apple Silicon Mac · 계정·서버·광고 없음 · 인터넷 연결 없이 동작</div>
       <div class="shot">
         <img class="light" src="assets/img/app-light.png" alt="Hushpad 화면 — 왼쪽 메모 목록과 분류, 오른쪽 탭으로 열린 메모" width="1280" height="760">
         <img class="dark" src="assets/img/app-dark.png" alt="Hushpad 어두운 모드 — 코드 메모의 JSON이 색으로 구분되어 보임" width="1280" height="760" loading="lazy">
@@ -135,7 +136,7 @@
             그래서 창을 치우지 않고 그대로 캡처해도 돼요.</p>
         </div>
         <ul class="checks">
-          <li><svg><use href="#i-check"/></svg><div><b>스크린샷·녹화 도구, 화상회의 공유</b><span>Windows의 캡처 제외 기능(Windows 10 2004 이상)을 씁니다.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>스크린샷·녹화 도구, 화상회의 공유</b><span>Windows는 캡처 제외 기능(Windows 10 2004 이상)을, macOS는 창 공유 끔 설정을 씁니다.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>녹화 중에 쓰는 버튼도 찍히지 않아요</b><span>녹화 영역 테두리와 ⏸·⏹ 막대는 화면에만 보입니다.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>필요하면 끌 수 있어요</b><span>화면 공유로 메모를 일부러 보여 줄 때는 메뉴에서 한 번만 누르면 됩니다.</span></div></li>
         </ul>
@@ -159,7 +160,7 @@
         <ul class="checks">
           <li><svg><use href="#i-check"/></svg><div><b>AES-256-GCM 암호화</b><span>메모·이전 버전·동영상·분류 이름까지 모두 암호화해 저장해요.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>암호에서 만든 열쇠 (scrypt)</b><span>암호를 모르면 파일을 풀 수 없어요. 암호를 잊으면 만든 사람도 되살릴 수 없습니다.</span></div></li>
-          <li><svg><use href="#i-check"/></svg><div><b>내 PC에서는 한 번만 입력</b><span>열쇠를 Windows 계정에 묶어(DPAPI) 기억해요. 다른 계정·다른 PC에서는 다시 암호가 필요해요.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>내 PC에서는 한 번만 입력</b><span>Windows는 Windows 계정(DPAPI)에, macOS는 로그인 키체인에 열쇠를 기억해요. 다른 계정·다른 PC에서는 다시 암호가 필요해요.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>클립보드도 조용히</b><span>복사한 내용은 Windows 클립보드 기록·클라우드 동기화에 남지 않게 표시해요.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>계정·추적·인터넷 연결 없음</b><span>앱도 이 홈페이지도 분석·광고 스크립트를 쓰지 않아요.</span></div></li>
         </ul>
@@ -181,7 +182,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
 
   <section class="alt" id="keys">
     <div class="wrap">
-      <div class="sec-head"><h2>손에 익는 단축키</h2><p>창을 닫아 트레이에 있을 때도 동작하는 단축키가 있어요.</p></div>
+      <div class="sec-head"><h2>손에 익는 단축키</h2><p>창을 닫아 트레이(Mac은 메뉴 막대)에 있을 때도 동작하는 단축키가 있어요. Mac에서는 Ctrl+Alt 대신 ⌃⌥(Control+Option)를, 앱 안에서는 Ctrl 대신 ⌘를 누릅니다.</p></div>
       <div class="keys">
         <div><span>어디서든 새 메모</span><kbd>Ctrl+Alt+N</kbd></div>
         <div><span>지금 클립보드 내용을 메모로 저장</span><kbd>Ctrl+Alt+M</kbd></div>
@@ -199,12 +200,16 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     <div class="wrap">
       <div class="sec-head"><h2>자주 묻는 질문</h2></div>
       <div class="faq">
-        <details><summary>Windows 메모장에 열어 둔 탭을 옮길 수 있나요?</summary><p>네. 메뉴 › 파일 › “Windows 메모장 탭 가져오기”로 저장하지 않은 탭까지 복사해 옵니다. Windows 메모장 쪽은 건드리지 않아요.</p></details>
+        <details><summary>어디서 받나요?</summary><p>이 홈페이지의 <a href="download.html">다운로드 페이지</a>에서 받습니다. 파일은 GitHub 릴리스로 배포하며, Windows 10·11(64비트)용과 Apple Silicon(M1 이후) Mac용 두 가지가 있어요. Intel Mac은 지원하지 않습니다.</p></details>
+        <details><summary>무료인가요? 오픈소스인가요?</summary><p>둘 다 맞습니다. Hushpad는 무료이고, 소스 코드는 GPL-3.0-or-later 라이선스로 GitHub에 공개합니다. 누구나 소스를 보고 고치고 다시 배포할 수 있어요. 다만 수정본을 배포할 때는 같은 라이선스로 소스를 함께 공개하고, Hushpad 대신 다른 이름과 아이콘을 써야 합니다.</p></details>
+        <details><summary>Windows 메모장에 열어 둔 탭을 옮길 수 있나요?</summary><p>네. Windows에서 메뉴 › 파일 › “Windows 메모장 탭 가져오기”로 저장하지 않은 탭까지 복사해 옵니다. Windows 메모장 쪽은 건드리지 않아요.</p></details>
         <details><summary>암호를 잊으면 어떻게 되나요?</summary><p>되살릴 방법이 없습니다. 암호 없이는 누구도, 만든 사람조차 열 수 없게 만들었기 때문입니다. 처음 암호를 정할 때 안전한 곳에 적어 두세요.</p></details>
+        <details><summary>컴퓨터를 다시 켜도 메모가 남아 있나요?</summary><p>네. 메모는 쓰는 즉시 암호화해서 디스크에 저장하므로 다시 켜도 그대로 있어요. 처음 실행한 뒤부터는 Windows를 켤 때(Mac은 로그인할 때) Hushpad가 트레이(Mac은 메뉴 막대)에서 자동으로 실행됩니다. 원하지 않으면 트레이 아이콘 메뉴나 보안 메뉴에서 끄면 돼요.</p></details>
         <details><summary>여러 PC에서 함께 쓰려면?</summary><p>보관 폴더를 Dropbox·OneDrive 같은 동기화 폴더 안에 두고, 다른 PC에서 같은 폴더를 고른 뒤 같은 암호를 넣으면 됩니다. 다른 PC에서 고친 내용은 몇 초 안에 반영되고, 양쪽에서 동시에 고치면 한쪽을 “충돌 사본”으로 따로 남겨요.</p></details>
         <details><summary>이미지나 동영상도 넣을 수 있나요?</summary><p>서식 메모에는 이미지를 붙여 넣거나 끌어다 놓을 수 있고, 스크린샷과 짧은 화면 녹화(최대 3분)도 바로 들어갑니다. 동영상은 앱 안에서 재생되고 암호화되어 저장돼요.</p></details>
         <details><summary>인터넷에 무언가를 보내나요?</summary><p>아니요. Hushpad는 계정도 서버도 없고, 실행 중에 인터넷에 연결하지 않습니다.</p></details>
-        <details><summary>어디서 받나요?</summary><p>정식 버전은 GitHub에 공개해 배포합니다. 공개되면 이 홈페이지의 다운로드 페이지에서 바로 받을 수 있어요.</p></details>
+        <details><summary>Mac에서도 캡처에 안 보이나요?</summary><p>macOS에서는 창 공유 끔 설정으로 숨깁니다. 다만 macOS 15 이상에서 ScreenCaptureKit을 쓰는 일부 캡처·화면 공유 프로그램은 이 설정을 무시하고 창을 찍을 수 있어요. Mac에서는 화면을 공유하기 전에 직접 확인해 보세요.</p></details>
+        <details><summary>앱 화면 언어를 바꿀 수 있나요?</summary><p>한국어·English·日本語·简体中文을 지원하고, 처음에는 운영체제 언어로 시작합니다. 메뉴(⋯) › 보기 › 언어에서 언제든 바꿀 수 있어요.</p></details>
       </div>
     </div>
   </section>
@@ -215,7 +220,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     <div class="ft">
       <div>
         <div class="ft-brand"><img src="assets/img/icon-64.png" alt="" width="28" height="28" loading="lazy">Hushpad</div>
-        <p>조용히 적고, 아무도 못 보게. 저장 버튼 없이 자동 저장되고 모든 메모가 암호화되는 Windows 메모장.</p>
+        <p>조용히 적고, 아무도 못 보게. 저장 버튼 없이 자동 저장되고 모든 메모가 암호화되는 Windows·macOS용 메모장.</p>
         <p class="name-line"><b>hush</b>(쉿, 조용히) + <b>pad</b>(메모장). 조용히 적어 두는 비밀 메모장이라는 뜻입니다.</p>
       </div>
       <div>
@@ -227,17 +232,19 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <ul>
           <li><a data-repo="" data-on-text="GitHub 저장소">GitHub 저장소 (공개 준비 중)</a></li>
           <li><a data-repo="/issues" data-on-text="이슈 신고">이슈 신고 (공개 후)</a></li>
+          <li><a data-repo="/blob/main/LICENSE" data-on-text="라이선스 전문">라이선스 전문 (공개 후)</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd.</span></p>
-      <p><strong>상표</strong> Windows는 Microsoft Corporation의 상표입니다. Hushpad는 Microsoft와 제휴하거나 후원을 받지 않습니다.</p>
-      <p><strong>사용한 오픈소스</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.</p>
+      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. and Hushpad contributors</span></p>
+      <p><strong>라이선스</strong> Hushpad는 GPL-3.0-or-later로 배포하는 무료 오픈소스 소프트웨어입니다. 있는 그대로 제공하며 어떠한 보증도 하지 않습니다.</p>
+      <p><strong>상표</strong> Hushpad 이름과 아이콘은 NINEROW partners Co., Ltd.의 상표입니다. 수정본을 배포할 때는 다른 이름과 아이콘을 써 주세요. Windows는 Microsoft Corporation의, macOS는 Apple Inc.의 상표이며 Hushpad는 두 회사와 제휴하거나 후원을 받지 않습니다.</p>
+      <p><strong>사용한 오픈소스</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. 전체 목록은 저장소의 THIRD_PARTY_NOTICES.md에 있습니다.</p>
       <p><strong>개인정보</strong> Hushpad 앱과 이 홈페이지는 계정·분석·광고 스크립트를 쓰지 않습니다.</p>
     </div>
   </div>
 </footer>
-<script src="assets/js/site.js?v=3" defer></script>
+<script src="assets/js/site.js?v=4" defer></script>
 </body>
 </html>

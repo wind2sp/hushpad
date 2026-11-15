@@ -17,8 +17,8 @@
  "setup.start": "Start",
  "setup.pick_folder": "Vault folder for notes",
  "setup.existing": "✔ This folder already has Hushpad notes — enter its passphrase.",
- "setup.new": "A new vault folder will be created — choose a passphrase (6+ characters).",
- "setup.too_short": "Use at least 6 characters.",
+ "setup.new": "A new vault folder will be created — choose a passphrase (8+ characters).",
+ "setup.too_short": "Use at least 8 characters.",
  "setup.mismatch": "The passphrases don’t match.",
  "setup.folder_title": "Folder",
  "setup.not_empty": "This folder isn’t empty. Create the Hushpad files in it anyway?",
@@ -357,5 +357,6 @@
  "common.ok": "OK",
  "autostart.first": "Hushpad will now start in the tray when Windows starts. Right-click the tray icon to turn this off.",
  "autostart.first@mac": "Hushpad will now open in the menu bar when you log in. Click the menu bar icon to turn this off.",
- "about.license": "Free and open source · GPL-3.0-or-later · <a href=\"{url}\">Source code</a><br>Provided as is, without any warranty."
+ "about.license": "Free and open source · GPL-3.0-or-later · <a href=\"{url}\">Source code</a><br>Provided as is, without any warranty.",
+ "setup.unsynced": "This folder has note files but no vault file (vault.json). Syncing may not be finished yet. Try again once it is, or pick another folder."
 }

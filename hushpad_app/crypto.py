@@ -11,6 +11,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import re
 import uuid
 import zlib
 from pathlib import Path
@@ -67,8 +68,21 @@ def vault_exists(folder: Path) -> bool:
     return vault_path(folder).is_file()
 
 
+_VID = re.compile(r"^[0-9a-f]{32}$")
+
+
 def vault_id(folder: Path) -> str:
-    return json.loads(vault_path(folder).read_text("utf-8"))["vault_id"]
+    vid = json.loads(vault_path(folder).read_text("utf-8"))["vault_id"]
+    if not isinstance(vid, str) or not _VID.match(vid):   # 키 저장소 명령에 들어가므로 형식을 엄격히
+        raise ValueError("invalid vault_id")
+    return vid
+
+
+def _check_kdf(k: dict) -> None:
+    """공유 폴더의 vault.json을 믿지 않고 범위를 확인 (지나치게 크거나 약한 값 거부)."""
+    n, r, p = int(k["n"]), int(k["r"]), int(k["p"])
+    if not (2 ** 14 <= n <= 2 ** 22 and n & (n - 1) == 0 and 1 <= r <= 32 and 1 <= p <= 16):
+        raise ValueError("unsupported KDF parameters")
 
 
 def _write_vault(folder: Path, vid: str, key: bytes, passphrase: str) -> None:
@@ -95,7 +109,8 @@ def create_vault(folder: Path, passphrase: str) -> bytes:
 def unlock_vault(folder: Path, passphrase: str) -> bytes:
     doc = json.loads(vault_path(folder).read_text("utf-8"))
     k = doc["kdf"]
-    kek = _kek(passphrase, _unb64(k["salt"]), k["n"], k["r"], k["p"])
+    _check_kdf(k)
+    kek = _kek(passphrase, _unb64(k["salt"]), int(k["n"]), int(k["r"]), int(k["p"]))
     try:
         return unseal(kek, _unb64(doc["wrapped_key"]), b"vault")
     except DecryptError as e:

@@ -1,15 +1,10 @@
 # macOS 앱 빌드 — 손으로만 실행 (Actions › build-macos › Run workflow).
-# 비공개 저장소라 macOS 실행 시간이 유료이므로 push·PR에는 돌지 않는다.
+# push·PR에는 돌지 않는다 (릴리스할 때만 손으로 실행).
 # 결과: Hushpad-macos-<arm64|x86_64>.zip → 초안 릴리스 "mac-build"에 올라감 (서명·공증 없음 — 처음 열 때 오른쪽 클릭 › 열기)
 name: build-macos
 
 on:
   workflow_dispatch:
-    inputs:
-      intel:
-        description: "Intel(x86_64)용도 만들기 (macos-15-intel 러너, 시간이 더 듦)"
-        type: boolean
-        default: false
 
 permissions:
   contents: write   # 초안(draft) 릴리스에 zip을 올리기 위해
@@ -19,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-latest = Apple Silicon(arm64), 그때그때 GitHub 기본 Mac. Intel은 고를 때만 (macos-13 러너는 2025년 말 종료됨)
-        include: ${{ fromJSON(inputs.intel && '[{"runner":"macos-latest","arch":"arm64"},{"runner":"macos-15-intel","arch":"x86_64"}]' || '[{"runner":"macos-latest","arch":"arm64"}]') }}
+        # macos-latest = Apple Silicon(arm64). Intel Mac 빌드는 만들지 않는다.
+        include: [{"runner": "macos-latest", "arch": "arm64"}]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
     steps:

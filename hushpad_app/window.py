@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html as html_mod
 import json
+import os
 import shutil
 import time
 from pathlib import Path
@@ -246,6 +247,21 @@ class _CaptureHider(QObject):
 
 
 # ====================================================================== 주 창
+def autostart_allowed() -> bool:
+    """자동 실행 등록을 건드려도 되는 실행인가.
+    - 배포된 앱(exe/.app)에서만. python으로 돌리는 개발 실행은 아님
+    - 자체 점검(--selftest)·시험용 프로필(HUSHPAD_PROFILE)·HUSHPAD_NO_AUTOSTART=1 이면 절대 안 건드림
+    - macOS에서 서명 없는 앱을 다운로드 폴더에서 바로 열면 임시 경로(App Translocation)라 등록하지 않음"""
+    import sys
+    if not plat.AUTOSTART_SUPPORTED or not getattr(sys, "frozen", False):
+        return False
+    if "--selftest" in sys.argv or os.environ.get("HUSHPAD_PROFILE") or os.environ.get("HUSHPAD_NO_AUTOSTART"):
+        return False
+    if sys.platform == "darwin" and "/AppTranslocation/" in sys.executable:
+        return False
+    return True
+
+
 class MainWindow(QMainWindow):
     def __init__(self, store: Store, cfg, app_icon: QIcon):
         super().__init__()
@@ -271,6 +287,7 @@ class MainWindow(QMainWindow):
         self.palette_dlg = CommandPalette(self)
         self._setup_tray()
         self._init_autostart()
+        self._clean_temp_recordings()
         self.idle_timer = QTimer(self, interval=20000, timeout=self._idle_check)
         self.idle_timer.start()
         self.apply_theme()
@@ -914,8 +931,7 @@ class MainWindow(QMainWindow):
     def _init_autostart(self):
         """첫 실행 때 '시작할 때 실행'을 켜고, 그 뒤로는 켜져 있으면 프로그램 위치를 새로 적는다
         (폴더를 옮겨도 자동 실행이 끊기지 않게). 개발용(python) 실행에서는 건드리지 않는다."""
-        import sys
-        if not plat.AUTOSTART_SUPPORTED or not getattr(sys, "frozen", False):
+        if not autostart_allowed():
             return
         try:
             if not self.cfg.get("autostart_initialized"):
@@ -929,6 +945,16 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
         self._sync_autostart_checks()
+
+    @staticmethod
+    def _clean_temp_recordings():
+        """녹화가 비정상 종료돼 남은 임시 MP4(암호화 전)를 지운다."""
+        from .common import LOCAL_DIR
+        for f in (LOCAL_DIR / "tmp").glob("rec-*.mp4"):
+            try:
+                f.unlink()
+            except OSError:
+                pass
 
     def show_about(self):
         from .dialogs import AboutDialog
@@ -2107,6 +2133,14 @@ class MainWindow(QMainWindow):
             i = self._tab_index(nid)
             if i >= 0:
                 t = self.tabs.widget(i)
+                if t.dirty:  # 다른 곳에서 지워졌는데 아직 저장 안 된 고침이 있음 — 새 메모로 살려 둠
+                    t.timer.stop()
+                    t.collect()
+                    copy = self.store.create(kind=t.note.kind, text=t.note.text, html=t.note.html,
+                                             category=t.note.category,
+                                             title=tr("conflict.title", title=t.note.display_title()))
+                    self.status(tr("st.conflict", title=copy.title), 10000)
+                    t.dirty = False
                 self.tabs.removeTab(i)
                 t.deleteLater()
         self._update_empty()

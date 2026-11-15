@@ -17,8 +17,8 @@
  "setup.start": "开始",
  "setup.pick_folder": "笔记仓库文件夹",
  "setup.existing": "✔ 此文件夹中已有 Hushpad 笔记，请输入它的密码。",
- "setup.new": "将创建新的仓库文件夹，请设置密码（至少 6 个字符）。",
- "setup.too_short": "密码至少需要 6 个字符。",
+ "setup.new": "将创建新的仓库文件夹，请设置密码（至少 8 个字符）。",
+ "setup.too_short": "密码至少需要 8 个字符。",
  "setup.mismatch": "两次输入的密码不一致。",
  "setup.folder_title": "文件夹",
  "setup.not_empty": "此文件夹不是空的。仍要在其中创建 Hushpad 文件吗？",
@@ -324,5 +324,6 @@
  "common.ok": "确定",
  "autostart.first": "Hushpad 将在 Windows 启动时自动在托盘中运行。右键单击托盘图标即可关闭。",
  "autostart.first@mac": "登录时 Hushpad 将在菜单栏中自动打开。点击菜单栏图标即可关闭。",
- "about.license": "免费开源 · GPL-3.0-or-later · <a href=\"{url}\">源代码</a><br>按“原样”提供，不附带任何担保。"
+ "about.license": "免费开源 · GPL-3.0-or-later · <a href=\"{url}\">源代码</a><br>按“原样”提供，不附带任何担保。",
+ "setup.unsynced": "此文件夹里有笔记文件，却没有仓库文件（vault.json），可能还没同步完成。请等同步完成后再试，或选择其他文件夹。"
 }

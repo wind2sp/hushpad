@@ -13,6 +13,8 @@ from . import crypto
 from .common import DEFAULT_DATA_DIR, fmt_full
 from .i18n import tr
 
+MIN_PASSPHRASE = 8
+
 
 class SetupDialog(QDialog):
     """데이터 폴더를 고르고, 새 금고를 만들거나 기존 금고를 연다."""
@@ -85,7 +87,11 @@ class SetupDialog(QDialog):
             if crypto.vault_exists(folder):
                 self.key = crypto.unlock_vault(folder, pw)
             else:
-                if len(pw) < 6:
+                if any((folder / "notes").glob("*.own")):
+                    # 메모 파일은 있는데 vault.json이 없음: 동기화가 덜 됐을 가능성. 새 금고를 만들면 기존 메모를 못 연다
+                    QMessageBox.warning(self, tr("setup.folder_title"), tr("setup.unsynced"))
+                    return
+                if len(pw) < MIN_PASSPHRASE:
                     QMessageBox.warning(self, tr("setup.pw"), tr("setup.too_short"))
                     return
                 if pw != self.pw2.text():
@@ -179,7 +185,7 @@ class PassphraseDialog(QDialog):
         lay.addRow(bb)
 
     def _ok(self):
-        if len(self.pw1.text()) < 6 or self.pw1.text() != self.pw2.text():
+        if len(self.pw1.text()) < MIN_PASSPHRASE or self.pw1.text() != self.pw2.text():
             QMessageBox.warning(self, tr("setup.pw"), tr("pwd.invalid"))
             return
         self.accept()

@@ -17,8 +17,8 @@
  "setup.start": "시작",
  "setup.pick_folder": "메모 보관 폴더",
  "setup.existing": "✔ 이미 Hushpad 메모가 있는 폴더입니다 — 그 암호를 넣으세요.",
- "setup.new": "새 보관 폴더를 만듭니다 — 사용할 암호를 정하세요 (6자 이상).",
- "setup.too_short": "암호는 6자 이상으로 정해 주세요.",
+ "setup.new": "새 보관 폴더를 만듭니다 — 사용할 암호를 정하세요 (8자 이상).",
+ "setup.too_short": "암호는 8자 이상으로 정해 주세요.",
  "setup.mismatch": "두 암호가 다릅니다.",
  "setup.folder_title": "폴더",
  "setup.not_empty": "비어 있지 않은 폴더입니다. 이 안에 Hushpad 파일을 만들까요?",
@@ -324,5 +324,6 @@
  "common.ok": "확인",
  "autostart.first": "Windows를 켜면 Hushpad가 트레이에서 자동으로 실행돼요. 트레이 아이콘을 오른쪽 클릭하면 끌 수 있어요.",
  "autostart.first@mac": "로그인하면 Hushpad가 메뉴 막대에서 자동으로 실행돼요. 메뉴 막대 아이콘을 클릭해 끌 수 있어요.",
- "about.license": "무료 오픈소스 · GPL-3.0-or-later · <a href=\"{url}\">소스 코드</a><br>어떠한 보증도 없이 있는 그대로 제공됩니다."
+ "about.license": "무료 오픈소스 · GPL-3.0-or-later · <a href=\"{url}\">소스 코드</a><br>어떠한 보증도 없이 있는 그대로 제공됩니다.",
+ "setup.unsynced": "이 폴더에는 메모 파일이 있는데 금고 파일(vault.json)이 없어요. 동기화가 아직 덜 끝났을 수 있어요. 동기화가 끝난 뒤 다시 시도하거나 다른 폴더를 고르세요."
 }

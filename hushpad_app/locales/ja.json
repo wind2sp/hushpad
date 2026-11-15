@@ -17,8 +17,8 @@
  "setup.start": "開始",
  "setup.pick_folder": "メモの保管フォルダー",
  "setup.existing": "✔ Hushpad のメモがすでにあるフォルダーです。そのパスワードを入力してください。",
- "setup.new": "新しい保管フォルダーを作成します。使うパスワードを決めてください（6文字以上）。",
- "setup.too_short": "パスワードは6文字以上にしてください。",
+ "setup.new": "新しい保管フォルダーを作成します。使うパスワードを決めてください（8文字以上）。",
+ "setup.too_short": "パスワードは8文字以上にしてください。",
  "setup.mismatch": "パスワードが一致しません。",
  "setup.folder_title": "フォルダー",
  "setup.not_empty": "空ではないフォルダーです。この中に Hushpad のファイルを作成しますか？",
@@ -324,5 +324,6 @@
  "common.ok": "OK",
  "autostart.first": "Windows の起動時に Hushpad がトレイで自動起動するよう設定しました。トレイアイコンを右クリックすると解除できます。",
  "autostart.first@mac": "ログイン時に Hushpad がメニューバーで自動起動するよう設定しました。メニューバーのアイコンから解除できます。",
- "about.license": "無料のオープンソース · GPL-3.0-or-later · <a href=\"{url}\">ソースコード</a><br>無保証で現状のまま提供されます。"
+ "about.license": "無料のオープンソース · GPL-3.0-or-later · <a href=\"{url}\">ソースコード</a><br>無保証で現状のまま提供されます。",
+ "setup.unsynced": "このフォルダーにはメモのファイルがありますが、保管ファイル（vault.json）がありません。同期がまだ終わっていない可能性があります。同期が終わってからもう一度試すか、別のフォルダーを選んでください。"
 }

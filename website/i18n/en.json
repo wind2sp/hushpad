@@ -17,7 +17,7 @@
       "download": "Download"
     },
     "footer": {
-      "tagline": "Write quietly. Seen by no one. A Windows notepad that saves as you type and encrypts every note.",
+      "tagline": "Write quietly. Seen by no one. A notepad for Windows and Mac that saves as you type and encrypts every note.",
       "nameLine": "<b>hush</b> (as in “shh”) + <b>pad</b> (a notepad): a notepad that keeps quiet about what you write.",
       "exploreH": "Explore",
       "projectH": "Project",
@@ -26,27 +26,31 @@
       "issuesOn": "Report an issue",
       "issuesOff": "Report an issue (after release)",
       "tmH": "Trademarks",
-      "tm": "Windows is a trademark of Microsoft Corporation. Hushpad is not affiliated with or sponsored by Microsoft.",
+      "tm": "The Hushpad name and icon are trademarks of NINEROW partners Co., Ltd. If you distribute a modified version, please use a different name and icon. Windows is a trademark of Microsoft Corporation, and macOS is a trademark of Apple Inc. Hushpad is not affiliated with or sponsored by Microsoft or Apple.",
       "ossH": "Open source used",
-      "oss": "Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.",
+      "oss": "Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. The full list is in THIRD_PARTY_NOTICES.md in the repository.",
       "privacyH": "Privacy",
-      "privacy": "Neither the Hushpad app nor this website uses accounts, analytics or ad scripts."
+      "privacy": "Neither the Hushpad app nor this website uses accounts, analytics or ad scripts.",
+      "licenseOn": "License text",
+      "licenseOff": "License text (after release)",
+      "licenseH": "License",
+      "license": "Hushpad is free, open-source software released under GPL-3.0-or-later. It is provided as is, without any warranty."
     }
   },
   "index": {
-    "title": "Hushpad — The quiet, private notepad for Windows",
-    "description": "A Windows notepad that saves as you type, encrypts every note, and stays invisible to screenshots and screen sharing. Passwords, API keys, HTML, JSON and screenshots, all in one place.",
+    "title": "Hushpad — The quiet, private notepad for Windows and Mac",
+    "description": "A free, open-source notepad for Windows and Mac that saves as you type, encrypts every note, and stays out of screenshots and screen sharing. Passwords, API keys, HTML, JSON and screenshots, all in one place.",
     "ogTitle": "Hushpad — The quiet, private notepad",
-    "ogDescription": "Auto-save · Every note encrypted · A window screenshots can't see. A notepad for Windows.",
+    "ogDescription": "Auto-save · Every note encrypted · A window screenshots can't see. A free, open-source notepad for Windows and Mac.",
     "iconAlt": "Hushpad icon",
-    "eyebrow": "A notepad for Windows 10 & 11",
+    "eyebrow": "A notepad for Windows & Mac",
     "h1": "Write quietly. <em>Seen by no one.</em>",
     "lead": "What you type is saved as you go, no save button needed. Every note is encrypted and kept in one folder, and the window never shows up in screenshots or screen shares. Passwords, API keys, HTML, JSON and screenshots, all in one place.",
-    "ctaDownload": "Download for Windows",
+    "ctaDownload": "Download free",
     "ctaMore": "What makes it different",
     "metaVersion": "Version",
-    "metaRest": "No account, server or ads · Works fully offline",
-    "shotLightAlt": "Hushpad window — note list and folders on the left, notes open as tabs on the right (Korean interface)",
+    "metaRest": "Free and open source (GPL-3.0-or-later)",
+    "shotLightAlt": "Hushpad window — note list and folders on the left, notes open as tabs on the right",
     "shotDarkAlt": "Hushpad in dark mode — a code note with color-highlighted JSON",
     "pains": {
       "h2": "If this is how you use Notepad",
@@ -102,7 +106,7 @@
       "h2": "On your screen. Not in the capture.",
       "p": "Keep a note open while you share your screen, or take a screenshot: wherever the Hushpad window sits, the capture shows what's behind it. So go ahead and capture without moving the window out of the way.",
       "b1": "Screenshot and recording tools, video-call sharing",
-      "s1": "Uses the capture exclusion built into Windows (Windows 10 version 2004 or later).",
+      "s1": "On Windows it uses the capture exclusion built into the system (Windows 10 version 2004 or later). On macOS it turns off sharing for the window.",
       "b2": "Recording controls stay out of the shot",
       "s2": "The recording frame and the ⏸ ⏹ bar appear only on your screen.",
       "b3": "Turn it off when you need to",
@@ -120,7 +124,7 @@
       "b2": "A key derived from your password (scrypt)",
       "s2": "Without the password, the files can't be decrypted. If you forget it, not even the developer can recover them.",
       "b3": "Enter it once on your own PC",
-      "s3": "Hushpad remembers the key by tying it to your Windows account (DPAPI). On another account or another PC, you'll need the password again.",
+      "s3": "Hushpad remembers the key through your Windows account (DPAPI) or your macOS login keychain. On another account or another computer, you'll need the password again.",
       "b4": "A quiet clipboard, too",
       "s4": "Copied text is flagged to stay out of Windows clipboard history and cloud clipboard sync.",
       "b5": "No account, no tracking, no internet",
@@ -133,7 +137,7 @@
     },
     "keys": {
       "h2": "Shortcuts that become second nature",
-      "p": "Some shortcuts work even while the window is closed to the tray.",
+      "p": "Some shortcuts work even while the window is closed to the tray (the menu bar on a Mac). On a Mac, press ⌃⌥ (Control+Option) instead of Ctrl+Alt, and ⌘ instead of Ctrl inside the app.",
       "k1": "New note, from anywhere",
       "k2": "Save the clipboard as a note",
       "k3": "Area screenshot, from anywhere",
@@ -147,12 +151,24 @@
       "h2": "Frequently asked questions",
       "items": [
         {
+          "q": "Where do I get it?",
+          "a": "From this site's <a href=\"download.html\">download page</a>. Files are published on GitHub Releases in two builds: one for Windows 10 and 11 (64-bit) and one for Macs with Apple silicon (M1 or later). Intel-based Macs are not supported."
+        },
+        {
+          "q": "Is it free? Is it open source?",
+          "a": "Yes to both. Hushpad is free, and its source code is published on GitHub under GPL-3.0-or-later. Anyone can read, change and redistribute it. If you distribute a modified version, you need to publish its source under the same license and give it a different name and icon."
+        },
+        {
           "q": "Can I bring over the tabs I have open in Windows Notepad?",
-          "a": "Yes. Menu › File › Import Windows Notepad tabs copies them over, unsaved tabs included, and leaves Windows Notepad untouched."
+          "a": "Yes. On Windows, Menu › File › Import Windows Notepad tabs copies them over, unsaved tabs included, and leaves Windows Notepad untouched."
         },
         {
           "q": "What if I forget my password?",
           "a": "There's no way to recover it. Hushpad is built so that no one, not even its developer, can open your notes without the password. Write it down somewhere safe when you first set it."
+        },
+        {
+          "q": "Are my notes still there after a restart?",
+          "a": "Yes. Notes are encrypted and written to disk as you type, so they're there when your computer comes back on. After the first run, Hushpad starts in the tray when Windows starts (on a Mac, in the menu bar when you log in). If you'd rather it didn't, turn this off from the tray icon's menu or the Security menu."
         },
         {
           "q": "How do I use it on more than one PC?",
@@ -167,50 +183,76 @@
           "a": "No. Hushpad has no account and no server, and it doesn't connect to the internet while it runs."
         },
         {
-          "q": "Where do I get it?",
-          "a": "Official releases are published on GitHub. Once a release is out, you can grab it straight from this site's download page."
+          "q": "Is it hidden from capture on a Mac, too?",
+          "a": "On macOS, Hushpad turns off sharing for its window. On macOS 15 and later, though, some capture and screen-sharing apps that use ScreenCaptureKit ignore that setting and can still capture the window. On a Mac, check for yourself before you share your screen."
+        },
+        {
+          "q": "Can I change the app's language?",
+          "a": "The app comes in Korean, English, Japanese and Simplified Chinese, and starts in your system language. You can switch anytime under Menu (⋯) › View › Language."
         }
       ]
-    }
+    },
+    "metaPlatforms": "Windows 10 & 11 · Macs with Apple silicon · No account, server or ads · Works fully offline",
+    "shotSuffix": "-en"
   },
   "dl": {
     "title": "Download — Hushpad",
-    "description": "Download Hushpad for Windows. Installation steps, system requirements and file verification (SHA-256).",
+    "description": "Download Hushpad free for Windows 10 and 11 (64-bit) and for Macs with Apple silicon. First-run steps, system requirements and file verification (SHA-256).",
     "ogTitle": "Download Hushpad",
-    "h1": "Hushpad for Windows",
+    "h1": "Download Hushpad",
     "version": "Version",
     "releasePending": "Coming soon",
-    "bits": "64-bit",
-    "getBefore": "Download ",
-    "getAfter": "",
-    "viewRelease": "View on GitHub Releases",
+    "license": "Free · GPL-3.0-or-later",
+    "yourOs": "Your computer",
     "soon": "Coming soon",
     "notice": "We're getting the release version ready. Once it's out, you can download it right here, at this same address.",
-    "uiNote": "<p class=\"ui-note\">The app speaks Korean, English, Japanese and Simplified Chinese. Change it anytime under View › Language.</p>",
-    "install": {
-      "h": "Installation",
-      "s1": "Download the zip file and extract it wherever you like (for example <code>C:\\Program Files\\Hushpad</code> or your Documents folder).",
-      "s2": "Run <code>Hushpad.exe</code>. There's no installer.",
-      "s3": "On first launch, choose a folder for your notes and set a password. To use Hushpad on several PCs, pick a folder inside Dropbox or OneDrive."
+    "viewRelease": "View on GitHub Releases",
+    "uiNote": "The app comes in Korean, English, Japanese and Simplified Chinese, and starts in your system language. Switch anytime under Menu (⋯) › View › Language.",
+    "win": {
+      "req": "Windows 10 (version 2004 or later) or 11, 64-bit",
+      "get": "Download for Windows",
+      "firstH": "First run on Windows",
+      "first": [
+        "Download the zip file and extract it wherever you like (your Documents folder, for example). There's no installer.",
+        "Open the extracted <code>Hushpad</code> folder and run <code>Hushpad.exe</code>.",
+        "If “Windows protected your PC” appears, click “More info › Run anyway.” Hushpad isn't code-signed yet, so SmartScreen may warn you about it. If you'd like to be sure first, check the SHA-256 value as described below.",
+        "Choose a folder for your notes and set a password. To use Hushpad on several PCs, pick a folder inside Dropbox or OneDrive."
+      ]
     },
-    "smart": {
-      "h": "If you see “Windows protected your PC”",
-      "p": "Because Hushpad is new, Windows SmartScreen may show a warning. Check that your download matches the SHA-256 value below, then click “More info › Run anyway.”"
+    "mac": {
+      "req": "Macs with Apple silicon (M1 or later)",
+      "get": "Download for Mac",
+      "note": "Intel-based Macs are not supported.",
+      "firstH": "First run on a Mac",
+      "first": [
+        "Download and unzip the file, then move <code>Hushpad.app</code> to your Applications folder.",
+        "The first time, right-click (or Control-click) Hushpad.app in Finder, choose “Open,” then click “Open” again in the warning. The app isn't signed or notarized by Apple, so double-clicking won't open it. If you don't see an Open button, go to System Settings › Privacy & Security and click “Open Anyway.”",
+        "The first time you take a screenshot or record your screen, macOS asks for Screen Recording permission. Turn on Hushpad under System Settings › Privacy & Security › Screen & System Audio Recording (Screen Recording on macOS 14 and earlier), then restart the app.",
+        "Choose a folder for your notes and set a password. The system-wide shortcuts are ⌃⌥N (new note), ⌃⌥M (clipboard to note), ⌃⌥S (screenshot) and ⌃⌥R (screen recording)."
+      ]
+    },
+    "auto": {
+      "h": "Starts automatically",
+      "p": "After the first run, Hushpad starts in the tray when Windows starts (on a Mac, in the menu bar when you log in). Notes are encrypted and saved as you type, so they're still there after a restart. You can turn auto-start off from the tray or menu bar icon's menu, or from the Security menu."
+    },
+    "req": {
+      "h": "System requirements",
+      "items": [
+        "<b>Windows</b>: Windows 10 (version 2004 or later) or Windows 11, 64-bit. Hiding the window from capture needs Windows 10 version 2004 or later.",
+        "<b>Mac</b>: a Mac with Apple silicon (M1 or later). There is no build for Intel-based Macs.",
+        "No internet connection required."
+      ]
     },
     "hash": {
       "h": "Verify the file (SHA-256)",
-      "p": "In PowerShell, compare this value with the output of <code>Get-FileHash .\\filename.zip</code>.",
+      "p": "Compare your download with the SHA-256 value shown above. On Windows, run <code>Get-FileHash .\\Hushpad-win64.zip</code> in PowerShell. On a Mac, run <code>shasum -a 256 Hushpad-macos-arm64.zip</code> in Terminal.",
       "pending": "Shown at release",
       "copy": "Copy value",
       "copied": "Copied"
     },
-    "req": {
-      "h": "System requirements",
-      "p": "Windows 10 (version 2004 or later) or Windows 11, 64-bit. Hiding the window from capture needs Windows 10 version 2004 or later. No internet connection required."
-    },
     "remove": {
       "h": "Uninstalling",
-      "p": "Just delete the program folder. Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too."
+      "p": "If auto-start is on, turn it off from the tray or menu bar icon first, then delete the program folder (Hushpad.app on a Mac). Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too."
     }
   }
 }

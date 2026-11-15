@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hushpad — 静かに使える、秘密のメモ帳</title>
-<meta name="description" content="保存ボタンなしで自動保存、すべてのメモを暗号化、スクリーンショットや画面共有にも映らない Windows 用メモ帳。パスワード、API キー、HTML、JSON、スクリーンショットをひとつの場所に。">
+<meta name="description" content="保存ボタンなしで自動保存、すべてのメモを暗号化、スクリーンショットや画面共有にも映らない Windows・macOS 用メモ帳。パスワード、API キー、HTML、JSON、スクリーンショットをひとつの場所に。無料のオープンソースです。">
 <meta property="og:title" content="Hushpad — 静かに使える、秘密のメモ帳">
-<meta property="og:description" content="自動保存 · すべてのメモを暗号化 · キャプチャに映らないウィンドウ。Windows 用メモ帳。">
+<meta property="og:description" content="自動保存 · すべてのメモを暗号化 · キャプチャに映らないウィンドウ。Windows・macOS 用の無料オープンソースのメモ帳。">
 <meta name="theme-color" content="#7A3C93">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hushpad">
@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
-<link rel="stylesheet" href="../assets/css/site.css?v=3">
-<script src="../assets/js/lang.js?v=3"></script>
+<link rel="stylesheet" href="../assets/css/site.css?v=4">
+<script src="../assets/js/lang.js?v=4"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -76,17 +76,18 @@
   <section class="hero">
     <div class="wrap">
       <img class="app-icon" src="../assets/img/icon-256.png" alt="Hushpad のアイコン" width="96" height="96">
-      <span class="eyebrow">Windows 10・11 用メモ帳</span>
+      <span class="eyebrow">Windows・macOS 用メモ帳</span>
       <h1>静かに書いて、<em>誰にも見せない</em></h1>
       <p class="lead">保存ボタンを押さなくても書いたそばから記録され、すべてのメモは暗号化されてひとつのフォルダーにまとまります。ウィンドウはスクリーンショットにも画面共有にも映りません。パスワード、API キー、HTML、JSON、スクリーンショットまで、ひとつの場所に。</p>
       <div class="cta">
-        <a class="btn primary" href="download.html">Windows 版をダウンロード</a>
+        <a class="btn primary" href="download.html">無料でダウンロード</a>
         <a class="btn" href="#features">ほかのメモ帳との違い</a>
       </div>
-      <div class="meta">バージョン <span data-cfg="version">1.0.0</span> · アカウント・サーバー・広告なし · オフラインで動作</div>
+      <div class="meta">バージョン <span data-cfg="version">1.0.0</span> · 無料・オープンソース（GPL-3.0-or-later）</div>
+      <div class="meta">Windows 10・11 · Apple シリコン搭載 Mac · アカウント・サーバー・広告なし · オフラインで動作</div>
       <div class="shot">
-        <img class="light" src="../assets/img/app-light.png" alt="Hushpad の画面 — 左にメモ一覧と分類、右にタブで開いたメモ（画面は韓国語）" width="1280" height="760">
-        <img class="dark" src="../assets/img/app-dark.png" alt="Hushpad のダークモード — コードメモで JSON が色分け表示されている" width="1280" height="760" loading="lazy">
+        <img class="light" src="../assets/img/app-light-ja.png" alt="Hushpad の画面 — 左にメモ一覧と分類、右にタブで開いたメモ" width="1280" height="760">
+        <img class="dark" src="../assets/img/app-dark-ja.png" alt="Hushpad のダークモード — コードメモで JSON が色分け表示されている" width="1280" height="760" loading="lazy">
       </div>
     </div>
   </section>
@@ -133,7 +134,7 @@
           <p>画面共有中にメモを開いたままでも、スクリーンショットを撮っても、Hushpad のウィンドウがあった場所には、その後ろの画面が映ります。だからウィンドウをどけずに、そのままキャプチャして大丈夫です。</p>
         </div>
         <ul class="checks">
-          <li><svg><use href="#i-check"/></svg><div><b>スクリーンショット・録画ツール、ビデオ会議の共有</b><span>Windows のキャプチャ除外機能（Windows 10 バージョン 2004 以降）を使用します。</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>スクリーンショット・録画ツール、ビデオ会議の共有</b><span>Windows ではシステムのキャプチャ除外機能（Windows 10 バージョン 2004 以降）、macOS ではウィンドウの共有をオフにする設定を使います。</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>録画中のボタンも映りません</b><span>録画範囲の枠と ⏸・⏹ バーは、自分の画面にだけ表示されます。</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>必要ならオフにできます</b><span>メモをあえて画面共有したいときは、メニューからすぐに解除できます。</span></div></li>
         </ul>
@@ -157,7 +158,7 @@
         <ul class="checks">
           <li><svg><use href="#i-check"/></svg><div><b>AES-256-GCM 暗号化</b><span>メモ、以前のバージョン、動画、分類名まで、すべて暗号化して保存します。</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>パスワードから作る鍵（scrypt）</b><span>パスワードを知らなければファイルは復号できません。パスワードを忘れると、開発者でも復元できません。</span></div></li>
-          <li><svg><use href="#i-check"/></svg><div><b>自分の PC では入力は一度だけ</b><span>鍵を Windows アカウントに結び付けて（DPAPI）記憶します。別のアカウントや別の PC では、あらためてパスワードが必要です。</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>自分の PC では入力は一度だけ</b><span>鍵は、Windows ではアカウント（DPAPI）に結び付けて、macOS ではログインキーチェーンに記憶します。別のアカウントや別の PC では、あらためてパスワードが必要です。</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>クリップボードも静かに</b><span>コピーした内容は、Windows のクリップボード履歴やクラウド同期に残らないよう指定します。</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>アカウント・追跡・インターネット接続なし</b><span>アプリもこのサイトも、アクセス解析や広告のスクリプトを使っていません。</span></div></li>
         </ul>
@@ -179,7 +180,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
 
   <section class="alt" id="keys">
     <div class="wrap">
-      <div class="sec-head"><h2>手になじむショートカット</h2><p>ウィンドウを閉じていても（トレイに常駐中）使えるショートカットがあります。</p></div>
+      <div class="sec-head"><h2>手になじむショートカット</h2><p>ウィンドウを閉じていても（トレイ、Mac ではメニューバーに常駐中）使えるショートカットがあります。Mac では Ctrl+Alt の代わりに ⌃⌥（Control+Option）、アプリ内では Ctrl の代わりに ⌘ を使います。</p></div>
       <div class="keys">
         <div><span>どこからでも新規メモ</span><kbd>Ctrl+Alt+N</kbd></div>
         <div><span>今のクリップボードをメモとして保存</span><kbd>Ctrl+Alt+M</kbd></div>
@@ -197,12 +198,16 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     <div class="wrap">
       <div class="sec-head"><h2>よくある質問</h2></div>
       <div class="faq">
-        <details><summary>Windows のメモ帳で開いているタブを移せますか？</summary><p>はい。メニュー › ファイル ›「Windows メモ帳のタブを取り込む」で、保存していないタブまでコピーできます。Windows のメモ帳側には手を加えません。</p></details>
+        <details><summary>どこで入手できますか？</summary><p>このサイトの<a href="download.html">ダウンロードページ</a>から入手できます。ファイルは GitHub のリリースで配布しており、Windows 10・11（64 ビット）用と、Apple シリコン搭載 Mac（M1 以降）用の 2 種類があります。Intel プロセッサ搭載の Mac には対応していません。</p></details>
+        <details><summary>無料ですか？オープンソースですか？</summary><p>どちらも「はい」です。Hushpad は無料で、ソースコードは GPL-3.0-or-later のもと GitHub で公開しています。誰でもソースを読み、改変し、再配布できます。ただし改変版を配布する場合は、同じライセンスでソースを公開し、Hushpad とは別の名前とアイコンを使う必要があります。</p></details>
+        <details><summary>Windows のメモ帳で開いているタブを移せますか？</summary><p>はい。Windows 版のメニュー › ファイル ›「Windows メモ帳のタブを取り込む」で、保存していないタブまでコピーできます。Windows のメモ帳側には手を加えません。</p></details>
         <details><summary>パスワードを忘れたらどうなりますか？</summary><p>復元する方法はありません。パスワードを知らなければ誰にも（開発者にも）開けないように作られているためです。最初に設定するときに、安全な場所に書き留めておいてください。</p></details>
+        <details><summary>PC を再起動してもメモは残りますか？</summary><p>はい。メモは書いたそばから暗号化してディスクに保存するので、再起動してもそのまま残ります。初回起動のあとは、Windows の起動時（Mac ではログイン時）に Hushpad がトレイ（Mac ではメニューバー）で自動的に起動します。不要なら、トレイのアイコンのメニューか［セキュリティ］メニューでオフにできます。</p></details>
         <details><summary>複数の PC で使うには？</summary><p>保管フォルダーを Dropbox や OneDrive などの同期フォルダーの中に置き、別の PC で同じフォルダーを選んで同じパスワードを入力するだけです。別の PC での変更は数秒で反映され、両方で同時に編集した場合は片方を「競合コピー」として別に残します。</p></details>
         <details><summary>画像や動画も入れられますか？</summary><p>書式付きメモには画像を貼り付けたりドラッグ＆ドロップしたりでき、スクリーンショットや短い画面録画（最大 3 分）もそのまま入ります。動画はアプリ内で再生でき、暗号化して保存されます。</p></details>
         <details><summary>インターネットに何か送信しますか？</summary><p>いいえ。Hushpad にはアカウントもサーバーもなく、実行中にインターネットへ接続することはありません。</p></details>
-        <details><summary>どこで入手できますか？</summary><p>正式版は GitHub で公開・配布します。公開後は、このサイトのダウンロードページから直接入手できます。</p></details>
+        <details><summary>Mac でもキャプチャに映りませんか？</summary><p>macOS では、ウィンドウの共有をオフにする設定で隠します。ただし macOS 15 以降では、ScreenCaptureKit を使う一部のキャプチャ・画面共有アプリがこの設定を無視し、ウィンドウを撮影できる場合があります。Mac では、画面を共有する前に一度確かめてください。</p></details>
+        <details><summary>アプリの表示言語は変えられますか？</summary><p>日本語・英語・韓国語・簡体字中国語に対応し、最初はシステムの言語で起動します。メニュー（⋯）›［表示］›［言語］でいつでも切り替えられます。</p></details>
       </div>
     </div>
   </section>
@@ -213,7 +218,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     <div class="ft">
       <div>
         <div class="ft-brand"><img src="../assets/img/icon-64.png" alt="" width="28" height="28" loading="lazy">Hushpad</div>
-        <p>静かに書いて、誰にも見せない。保存ボタンなしで自動保存し、すべてのメモを暗号化する Windows 用メモ帳です。</p>
+        <p>静かに書いて、誰にも見せない。保存ボタンなしで自動保存し、すべてのメモを暗号化する Windows・macOS 用メモ帳です。</p>
         <p class="name-line"><b>hush</b>（しーっ、静かに）＋ <b>pad</b>（メモ帳）。静かに書き留めておく、秘密のメモ帳という意味です。</p>
       </div>
       <div>
@@ -225,17 +230,19 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <ul>
           <li><a data-repo="" data-on-text="GitHub リポジトリ">GitHub リポジトリ（公開準備中）</a></li>
           <li><a data-repo="/issues" data-on-text="不具合の報告">不具合の報告（公開後）</a></li>
+          <li><a data-repo="/blob/main/LICENSE" data-on-text="ライセンス全文">ライセンス全文（公開後）</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd.</span></p>
-      <p><strong>商標</strong> Windows は Microsoft Corporation の商標です。Hushpad は Microsoft と提携しておらず、支援も受けていません。</p>
-      <p><strong>使用しているオープンソース</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.</p>
+      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. and Hushpad contributors</span></p>
+      <p><strong>ライセンス</strong> Hushpad は GPL-3.0-or-later で配布する無料のオープンソースソフトウェアです。現状のまま提供され、いかなる保証もありません。</p>
+      <p><strong>商標</strong> Hushpad の名前とアイコンは NINEROW partners Co., Ltd. の商標です。改変版を配布する場合は、別の名前とアイコンを使ってください。Windows は Microsoft Corporation の、macOS は Apple Inc. の商標です。Hushpad は Microsoft・Apple と提携しておらず、支援も受けていません。</p>
+      <p><strong>使用しているオープンソース</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. 全体の一覧はリポジトリの THIRD_PARTY_NOTICES.md にあります。</p>
       <p><strong>プライバシー</strong> Hushpad アプリとこのサイトは、アカウント・アクセス解析・広告スクリプトを使用しません。</p>
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=3" defer></script>
+<script src="../assets/js/site.js?v=4" defer></script>
 </body>
 </html>

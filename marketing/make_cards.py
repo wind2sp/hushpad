@@ -25,7 +25,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-SHOTS = os.path.join(HERE, "shots")
+SHOTS = os.path.join(HERE, "shots")   # Korean UI shots; English UI shots in shots/en (see build())
 ICON = os.path.join(ROOT, "assets", "app_1024.png")
 FONTS = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
 
@@ -63,7 +63,7 @@ T = {
     "ko": {
         "brand_sub": "허시패드",
         "tagline": "조용히 적고, 아무도 못 보게",
-        "foot": "곧 공개 · " + URL,
+        "foot": "지금 받기 · " + URL,
         "c1_kicker": "메모장 탭에 암호·API 키 적어 두셨죠?",
         "c1_title": "조용히 적고,\n아무도 못 보게",
         "c1_sub": "쓰는 대로 저장되고, 파일은 전부 암호화됩니다.\n화면을 공유해도 이 창은 상대에게 안 보여요.",
@@ -89,6 +89,7 @@ T = {
         "cap_points": ["창을 치우지 않고 그대로 캡처해도 돼요", "일부러 보여 줄 때는 메뉴에서 끄면 됩니다"],
         "copy_a": ("Ctrl+C", "서식 그대로"), "copy_b": ("Ctrl+Shift+C", "글자만"),
         "plain_lines": ["출장 준비 체크리스트", "11월 20일(목) 부산 · KTX 07:30", "노트북 충전기 · 발표 자료 최종본"],
+        "rich_bullet": ("• 노트북 충전기 · ", "발표 자료 최종본"),
         "value_menu": "이 줄 값만 복사",
         "value_got": "복사됨: sk-test-51Hq9ZtE…",
         "json_btn": "JSON 정리  Ctrl+Alt+J",
@@ -97,15 +98,16 @@ T = {
         "keys_s": "영역 스크린샷", "keys_r": "화면 녹화 (최대 3분)",
         "clip_src": "어디서든 복사", "clip_toast_t": "Hushpad", "clip_toast": "클립보드를 메모로 저장했어요 (23자)",
         "clip_item": ("복사해 둔 문구", "방금"),
+        "clip_text": ("“배송은 영업일 기준", "2~3일 걸립니다.”"),
         "clip_note": "창을 닫아도 트레이에서 동작해요",
         # CTA
-        "cta_kicker": "곧 공개",
+        "cta_kicker": "무료 · 오픈소스",
         "cta_title": "조용히 적고,\n아무도 못 보게",
-        "cta_rows": [("Windows 10·11", "Mac 버전 준비 중"),
+        "cta_rows": [("Windows·macOS", "Windows 10·11, Apple Silicon Mac"),
                      ("설치 없이", "압축 풀고 바로 실행하는 포터블 앱"),
                      ("계정·서버 없음", "인터넷 연결 없이 동작"),
                      ("4개 언어 지원", None)],
-        "cta_btn": "홈페이지에서 소식 받기",
+        "cta_btn": "지금 받기",
         "langs": [("한국어", "ko"), ("English", "en"), ("日本語", "ja"), ("简体中文", "zh")],
         "link_sub": "저장 버튼 없이 쓰고 전부 암호화되는 메모장.\n화면을 공유해도 창이 보이지 않아요.",
         "story_kicker": "쉿.",
@@ -114,7 +116,7 @@ T = {
     "en": {
         "brand_sub": "허시패드",
         "tagline": "Write quietly. Seen by no one.",
-        "foot": "Coming soon · " + URL,
+        "foot": "Get it free · " + URL,
         "c1_kicker": "Passwords and API keys in Notepad tabs?",
         "c1_title": "Write quietly.\nSeen by no one.",
         "c1_sub": "It saves as you type and encrypts every file.\nShare your screen, and the window just isn't there.",
@@ -138,28 +140,29 @@ T = {
         "mon_gone": "window area shows what's behind",
         "cap_points": ["Capture without moving the window first", "Turn it off in one click when you do want to share"],
         "copy_a": ("Ctrl+C", "with formatting"), "copy_b": ("Ctrl+Shift+C", "plain text"),
-        "plain_lines": ["출장 준비 체크리스트", "11월 20일(목) 부산 · KTX 07:30", "노트북 충전기 · 발표 자료 최종본"],
+        "plain_lines": ["Business trip checklist", "Thu, Nov 20 Busan · KTX 07:30", "Laptop charger · final slide deck"],
+        "rich_bullet": ("• Laptop charger · ", "final slide deck"),
         "value_menu": "Copy only this line's value",
         "value_got": "Copied: sk-test-51Hq9ZtE…",
         "json_btn": "Tidy JSON  Ctrl+Alt+J",
         "rec_bar": "REC 00:12",
         "rec_note": "The red frame and pause/stop bar\nshow only on your screen,\nnever in the recording",
         "keys_s": "area screenshot", "keys_r": "screen recording\n(up to 3 min)",
-        "clip_src": "Copy anywhere", "clip_toast_t": "Hushpad", "clip_toast": "Clipboard saved as a note (23 chars)",
-        "clip_item": ("복사해 둔 문구", "just now"),
+        "clip_src": "Copy anywhere", "clip_toast_t": "Hushpad", "clip_toast": "Saved the clipboard as a note\n(35 characters)",
+        "clip_item": ("Copied text", "just now"),
+        "clip_text": ("“Delivery takes", "2–3 business days.”"),
         "clip_note": "Works with the window\nclosed (from the tray)",
-        "cta_kicker": "Coming soon",
+        "cta_kicker": "Free · open source",
         "cta_title": "Write quietly.\nSeen by no one.",
-        "cta_rows": [("Windows 10 & 11", "Mac version coming"),
+        "cta_rows": [("Windows & Mac", "Windows 10/11, Apple silicon Macs"),
                      ("No installer", "portable: unzip and run"),
                      ("No account, no server", "works fully offline"),
                      ("4 UI languages", None)],
-        "cta_btn": "Get updates on the homepage",
+        "cta_btn": "Get it free",
         "langs": [("한국어", "ko"), ("English", "en"), ("日本語", "ja"), ("简体中文", "zh")],
         "link_sub": "No save button, every file encrypted,\nand hidden when you share your screen.",
         "story_kicker": "Shh.",
         "story_hint": "Swipe →",
-        "ui_note": "Screens show the current Korean UI.",
     },
 }
 
@@ -211,7 +214,7 @@ def shadow_paste(base: Image.Image, im: Image.Image, xy, r=18, blur=28, off=(0, 
 
 
 def shot(name, box=None, width=None):
-    im = Image.open(os.path.join(SHOTS, name + ".png")).convert("RGBA")
+    im = Image.open(os.path.join(SHOTS_DIR, name + ".png")).convert("RGBA")
     if box:
         im = im.crop(box)
     if width:
@@ -489,14 +492,16 @@ def vis_copy(c: Card):
         lines = c.t["plain_lines"]
         if plain:
             for j, s in enumerate(lines):
-                d.text((x + 18, y + 124 + j * 36), s, font=F(19, False, "mono") if False else F(19, False, "ko"),
-                       fill=INK)
+                d.text((x + 18, y + 124 + j * 36), s, font=F(19, False, c.sc), fill=INK)
         else:
-            d.text((x + 18, y + 120), lines[0], font=F(24, True, "ko"), fill=INK)
-            d.text((x + 18, y + 160), lines[1], font=F(18, False, "ko"), fill=INK)
-            d.text((x + 18, y + 192), "• 노트북 충전기 · ", font=F(18, False, "ko"), fill=INK)
-            d.text((x + 18 + tw(F(18, False, "ko"), "• 노트북 충전기 · "), y + 192), "발표 자료 최종본",
-                   font=F(18, True, "ko"), fill=PLUM2)
+            d.text((x + 18, y + 120), lines[0], font=F(24, True, c.sc), fill=INK)
+            d.text((x + 18, y + 160), lines[1], font=F(18, False, c.sc), fill=INK)
+            b0, b1 = c.t["rich_bullet"]
+            d.text((x + 18, y + 192), b0, font=F(18, False, c.sc), fill=INK)
+            d.text((x + 18 + tw(F(18, False, c.sc), b0), y + 192), b1, font=F(18, True, c.sc), fill=PLUM2)
+        for j, s in enumerate(lines):   # text starts 18px into the box
+            if tw(F(24 if (j == 0 and not plain) else 19, not plain and j == 0, c.sc), s) > w - 22:
+                WARN.append(f"{c.lang} copy box line too wide: {s}")
     d.text((M, y0 + ed.height + 22), "Ctrl+Shift+V  " + ("붙여넣기도 글자만" if c.lang == "ko" else "pastes plain text, too"),
            font=c.f(24), fill=MUTED)
 
@@ -573,8 +578,10 @@ def vis_clip(c: Card):
     box = Image.new("RGBA", (300, 150), WHITE)
     shadow_paste(c.im, box, (M, y1), border=LINE)
     d.text((M + 22, y1 + 18), c.t["clip_src"], font=c.f(22, True), fill=PEACH_D)
-    d.text((M + 22, y1 + 60), "“배송은 영업일 기준", font=F(20, False, "ko"), fill=INK)
-    d.text((M + 22, y1 + 90), "2~3일 걸립니다.”", font=F(20, False, "ko"), fill=INK)
+    for j, s in enumerate(c.t["clip_text"]):
+        d.text((M + 22, y1 + 60 + j * 30), s, font=F(20, False, c.sc), fill=INK)
+        if tw(F(20, False, c.sc), s) > 300 - 40:
+            WARN.append(f"{c.lang} clip text too wide: {s}")
     d.rectangle([M + 20, y1 + 60, M + 230, y1 + 118], outline=(170, 200, 255), width=0)
     # arrow
     ax = M + 330
@@ -667,9 +674,6 @@ def card_cta(lang):
     d.rounded_rectangle([M, by, M + COLW, by + 96], 48, fill=WHITE)
     d.text((M + COLW // 2, by + 48), label, font=bf, fill=PLUM, anchor="mm")
     d.text((M + COLW // 2, by + 140), URL, font=F(34, True, "en"), fill=WHITE, anchor="mm")
-    if lang == "en":
-        d.text((M + COLW // 2, H - 70), T["en"]["ui_note"] + " English UI is on the way.", font=F(22, False, "en"),
-               fill=(220, 200, 232), anchor="mm")
     return c
 
 
@@ -727,7 +731,12 @@ def story_cover(lang):
     return c
 
 
+SHOTS_DIR = SHOTS
+
+
 def build(lang):
+    global SHOTS_DIR
+    SHOTS_DIR = SHOTS if lang == "ko" else os.path.join(SHOTS, lang)
     out = os.path.join(HERE, "cards") if lang == "ko" else os.path.join(HERE, "cards", "en")
     card_cover(lang).save(os.path.join(out, "card_01.png"))
     for i in range(7):

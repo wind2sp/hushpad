@@ -4,10 +4,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hushpad — The quiet, private notepad for Windows</title>
-<meta name="description" content="A Windows notepad that saves as you type, encrypts every note, and stays invisible to screenshots and screen sharing. Passwords, API keys, HTML, JSON and screenshots, all in one place.">
+<title>Hushpad — The quiet, private notepad for Windows and Mac</title>
+<meta name="description" content="A free, open-source notepad for Windows and Mac that saves as you type, encrypts every note, and stays out of screenshots and screen sharing. Passwords, API keys, HTML, JSON and screenshots, all in one place.">
 <meta property="og:title" content="Hushpad — The quiet, private notepad">
-<meta property="og:description" content="Auto-save · Every note encrypted · A window screenshots can't see. A notepad for Windows.">
+<meta property="og:description" content="Auto-save · Every note encrypted · A window screenshots can't see. A free, open-source notepad for Windows and Mac.">
 <meta name="theme-color" content="#7A3C93">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hushpad">
@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
-<link rel="stylesheet" href="../assets/css/site.css?v=3">
-<script src="../assets/js/lang.js?v=3"></script>
+<link rel="stylesheet" href="../assets/css/site.css?v=4">
+<script src="../assets/js/lang.js?v=4"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -76,17 +76,18 @@
   <section class="hero">
     <div class="wrap">
       <img class="app-icon" src="../assets/img/icon-256.png" alt="Hushpad icon" width="96" height="96">
-      <span class="eyebrow">A notepad for Windows 10 & 11</span>
+      <span class="eyebrow">A notepad for Windows & Mac</span>
       <h1>Write quietly. <em>Seen by no one.</em></h1>
       <p class="lead">What you type is saved as you go, no save button needed. Every note is encrypted and kept in one folder, and the window never shows up in screenshots or screen shares. Passwords, API keys, HTML, JSON and screenshots, all in one place.</p>
       <div class="cta">
-        <a class="btn primary" href="download.html">Download for Windows</a>
+        <a class="btn primary" href="download.html">Download free</a>
         <a class="btn" href="#features">What makes it different</a>
       </div>
-      <div class="meta">Version <span data-cfg="version">1.0.0</span> · No account, server or ads · Works fully offline</div>
+      <div class="meta">Version <span data-cfg="version">1.0.0</span> · Free and open source (GPL-3.0-or-later)</div>
+      <div class="meta">Windows 10 & 11 · Macs with Apple silicon · No account, server or ads · Works fully offline</div>
       <div class="shot">
-        <img class="light" src="../assets/img/app-light.png" alt="Hushpad window — note list and folders on the left, notes open as tabs on the right (Korean interface)" width="1280" height="760">
-        <img class="dark" src="../assets/img/app-dark.png" alt="Hushpad in dark mode — a code note with color-highlighted JSON" width="1280" height="760" loading="lazy">
+        <img class="light" src="../assets/img/app-light-en.png" alt="Hushpad window — note list and folders on the left, notes open as tabs on the right" width="1280" height="760">
+        <img class="dark" src="../assets/img/app-dark-en.png" alt="Hushpad in dark mode — a code note with color-highlighted JSON" width="1280" height="760" loading="lazy">
       </div>
     </div>
   </section>
@@ -133,7 +134,7 @@
           <p>Keep a note open while you share your screen, or take a screenshot: wherever the Hushpad window sits, the capture shows what's behind it. So go ahead and capture without moving the window out of the way.</p>
         </div>
         <ul class="checks">
-          <li><svg><use href="#i-check"/></svg><div><b>Screenshot and recording tools, video-call sharing</b><span>Uses the capture exclusion built into Windows (Windows 10 version 2004 or later).</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Screenshot and recording tools, video-call sharing</b><span>On Windows it uses the capture exclusion built into the system (Windows 10 version 2004 or later). On macOS it turns off sharing for the window.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>Recording controls stay out of the shot</b><span>The recording frame and the ⏸ ⏹ bar appear only on your screen.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>Turn it off when you need to</b><span>When you do want to show a note on a screen share, one click in the menu turns it off.</span></div></li>
         </ul>
@@ -157,7 +158,7 @@
         <ul class="checks">
           <li><svg><use href="#i-check"/></svg><div><b>AES-256-GCM encryption</b><span>Notes, previous versions, videos, even folder names: everything is stored encrypted.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>A key derived from your password (scrypt)</b><span>Without the password, the files can't be decrypted. If you forget it, not even the developer can recover them.</span></div></li>
-          <li><svg><use href="#i-check"/></svg><div><b>Enter it once on your own PC</b><span>Hushpad remembers the key by tying it to your Windows account (DPAPI). On another account or another PC, you'll need the password again.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>Enter it once on your own PC</b><span>Hushpad remembers the key through your Windows account (DPAPI) or your macOS login keychain. On another account or another computer, you'll need the password again.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>A quiet clipboard, too</b><span>Copied text is flagged to stay out of Windows clipboard history and cloud clipboard sync.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>No account, no tracking, no internet</b><span>Neither the app nor this website uses analytics or ad scripts.</span></div></li>
         </ul>
@@ -179,7 +180,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
 
   <section class="alt" id="keys">
     <div class="wrap">
-      <div class="sec-head"><h2>Shortcuts that become second nature</h2><p>Some shortcuts work even while the window is closed to the tray.</p></div>
+      <div class="sec-head"><h2>Shortcuts that become second nature</h2><p>Some shortcuts work even while the window is closed to the tray (the menu bar on a Mac). On a Mac, press ⌃⌥ (Control+Option) instead of Ctrl+Alt, and ⌘ instead of Ctrl inside the app.</p></div>
       <div class="keys">
         <div><span>New note, from anywhere</span><kbd>Ctrl+Alt+N</kbd></div>
         <div><span>Save the clipboard as a note</span><kbd>Ctrl+Alt+M</kbd></div>
@@ -197,12 +198,16 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     <div class="wrap">
       <div class="sec-head"><h2>Frequently asked questions</h2></div>
       <div class="faq">
-        <details><summary>Can I bring over the tabs I have open in Windows Notepad?</summary><p>Yes. Menu › File › Import Windows Notepad tabs copies them over, unsaved tabs included, and leaves Windows Notepad untouched.</p></details>
+        <details><summary>Where do I get it?</summary><p>From this site's <a href="download.html">download page</a>. Files are published on GitHub Releases in two builds: one for Windows 10 and 11 (64-bit) and one for Macs with Apple silicon (M1 or later). Intel-based Macs are not supported.</p></details>
+        <details><summary>Is it free? Is it open source?</summary><p>Yes to both. Hushpad is free, and its source code is published on GitHub under GPL-3.0-or-later. Anyone can read, change and redistribute it. If you distribute a modified version, you need to publish its source under the same license and give it a different name and icon.</p></details>
+        <details><summary>Can I bring over the tabs I have open in Windows Notepad?</summary><p>Yes. On Windows, Menu › File › Import Windows Notepad tabs copies them over, unsaved tabs included, and leaves Windows Notepad untouched.</p></details>
         <details><summary>What if I forget my password?</summary><p>There's no way to recover it. Hushpad is built so that no one, not even its developer, can open your notes without the password. Write it down somewhere safe when you first set it.</p></details>
+        <details><summary>Are my notes still there after a restart?</summary><p>Yes. Notes are encrypted and written to disk as you type, so they're there when your computer comes back on. After the first run, Hushpad starts in the tray when Windows starts (on a Mac, in the menu bar when you log in). If you'd rather it didn't, turn this off from the tray icon's menu or the Security menu.</p></details>
         <details><summary>How do I use it on more than one PC?</summary><p>Keep your vault folder inside a synced folder such as Dropbox or OneDrive, then choose the same folder on your other PC and enter the same password. Changes made on another PC show up within seconds, and if both sides edit at the same time, one version is kept separately as a “conflict copy.”</p></details>
         <details><summary>Can I add images or videos?</summary><p>You can paste or drag images into rich-text notes, and screenshots and short screen recordings (up to 3 minutes) go straight in. Videos play inside the app and are stored encrypted.</p></details>
         <details><summary>Does it send anything over the internet?</summary><p>No. Hushpad has no account and no server, and it doesn't connect to the internet while it runs.</p></details>
-        <details><summary>Where do I get it?</summary><p>Official releases are published on GitHub. Once a release is out, you can grab it straight from this site's download page.</p></details>
+        <details><summary>Is it hidden from capture on a Mac, too?</summary><p>On macOS, Hushpad turns off sharing for its window. On macOS 15 and later, though, some capture and screen-sharing apps that use ScreenCaptureKit ignore that setting and can still capture the window. On a Mac, check for yourself before you share your screen.</p></details>
+        <details><summary>Can I change the app's language?</summary><p>The app comes in Korean, English, Japanese and Simplified Chinese, and starts in your system language. You can switch anytime under Menu (⋯) › View › Language.</p></details>
       </div>
     </div>
   </section>
@@ -213,7 +218,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     <div class="ft">
       <div>
         <div class="ft-brand"><img src="../assets/img/icon-64.png" alt="" width="28" height="28" loading="lazy">Hushpad</div>
-        <p>Write quietly. Seen by no one. A Windows notepad that saves as you type and encrypts every note.</p>
+        <p>Write quietly. Seen by no one. A notepad for Windows and Mac that saves as you type and encrypts every note.</p>
         <p class="name-line"><b>hush</b> (as in “shh”) + <b>pad</b> (a notepad): a notepad that keeps quiet about what you write.</p>
       </div>
       <div>
@@ -225,17 +230,19 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <ul>
           <li><a data-repo="" data-on-text="GitHub repository">GitHub repository (coming soon)</a></li>
           <li><a data-repo="/issues" data-on-text="Report an issue">Report an issue (after release)</a></li>
+          <li><a data-repo="/blob/main/LICENSE" data-on-text="License text">License text (after release)</a></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd.</span></p>
-      <p><strong>Trademarks</strong> Windows is a trademark of Microsoft Corporation. Hushpad is not affiliated with or sponsored by Microsoft.</p>
-      <p><strong>Open source used</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.</p>
+      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. and Hushpad contributors</span></p>
+      <p><strong>License</strong> Hushpad is free, open-source software released under GPL-3.0-or-later. It is provided as is, without any warranty.</p>
+      <p><strong>Trademarks</strong> The Hushpad name and icon are trademarks of NINEROW partners Co., Ltd. If you distribute a modified version, please use a different name and icon. Windows is a trademark of Microsoft Corporation, and macOS is a trademark of Apple Inc. Hushpad is not affiliated with or sponsored by Microsoft or Apple.</p>
+      <p><strong>Open source used</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. The full list is in THIRD_PARTY_NOTICES.md in the repository.</p>
       <p><strong>Privacy</strong> Neither the Hushpad app nor this website uses accounts, analytics or ad scripts.</p>
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=3" defer></script>
+<script src="../assets/js/site.js?v=4" defer></script>
 </body>
 </html>

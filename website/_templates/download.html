@@ -19,42 +19,63 @@
       <div class="dl-card">
         <img src="{{_root}}assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
         <h1 style="margin:0;font-size:30px">{{dl.h1}}</h1>
-        <div class="ver">{{dl.version}} <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">{{dl.releasePending}}</span> · {{dl.bits}}</div>
+        <div class="ver">{{dl.version}} <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">{{dl.releasePending}}</span> · {{dl.license}}</div>
 
-        <div class="when-public">
-          <a class="btn primary" data-href="downloadUrl" href="#" aria-disabled="true">⬇ {{dl.getBefore}}<span data-cfg="fileName">Hushpad-win64.zip</span>{{dl.getAfter}}</a>
-          <div style="margin-top:10px;font-size:14px;color:var(--muted)"><span data-cfg="fileSize"></span>
-            · <a data-href="releaseUrl" href="#">{{dl.viewRelease}}</a></div>
+        <div class="os-grid">
+          <div class="os" data-os-card="win">
+            <span class="you">{{dl.yourOs}}</span>
+            <h2>Windows</h2>
+            <p class="os-req">{{dl.win.req}}</p>
+            <div class="when-public">
+              <a class="btn primary" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ {{dl.win.get}}</a>
+              <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-win" data-dl-sha="win">{{dl.hash.pending}}</code>
+              <button class="btn small" type="button" data-copy="sha-win" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+            </div>
+            <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">{{dl.soon}}</a></div>
+          </div>
+          <div class="os" data-os-card="mac">
+            <span class="you">{{dl.yourOs}}</span>
+            <h2>macOS</h2>
+            <p class="os-req">{{dl.mac.req}}</p>
+            <div class="when-public">
+              <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ {{dl.mac.get}}</a>
+              <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
+              <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-mac" data-dl-sha="mac">{{dl.hash.pending}}</code>
+              <button class="btn small" type="button" data-copy="sha-mac" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+            </div>
+            <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">{{dl.soon}}</a></div>
+            <p class="os-note">{{dl.mac.note}}</p>
+          </div>
         </div>
-        <div class="when-private">
-          <a class="btn primary" aria-disabled="true" href="#">{{dl.soon}}</a>
-          <p class="notice">{{dl.notice}}</p>
-        </div>
-        {{dl.uiNote}}
+
+        <p class="notice when-private">{{dl.notice}}</p>
+        <p class="release-link when-public"><a data-href="releaseUrl" href="https://github.com/wind2sp/hushpad/releases/latest">{{dl.viewRelease}}</a></p>
+        <p class="ui-note">{{dl.uiNote}}</p>
       </div>
 
       <div class="req">
-        <div class="box">
-          <h3>{{dl.install.h}}</h3>
-          <ol>
-            <li>{{dl.install.s1}}</li>
-            <li>{{dl.install.s2}}</li>
-            <li>{{dl.install.s3}}</li>
-          </ol>
+        <div class="box" data-os-box="win">
+          <h3>{{dl.win.firstH}}</h3>
+          <ol>{{dl.win.first}}</ol>
+        </div>
+        <div class="box" data-os-box="mac">
+          <h3>{{dl.mac.firstH}}</h3>
+          <ol>{{dl.mac.first}}</ol>
         </div>
         <div class="box">
-          <h3>{{dl.smart.h}}</h3>
-          <p>{{dl.smart.p}}</p>
+          <h3>{{dl.auto.h}}</h3>
+          <p>{{dl.auto.p}}</p>
+        </div>
+        <div class="box">
+          <h3>{{dl.req.h}}</h3>
+          <ul>{{dl.req.items}}</ul>
         </div>
         <div class="box">
           <h3>{{dl.hash.h}}</h3>
           <p>{{dl.hash.p}}</p>
-          <code class="sum" id="sha256">{{dl.hash.pending}}</code>
-          <button class="btn small when-public" type="button" data-copy="sha256" data-copied="{{dl.hash.copied|a}}" style="margin-top:8px">{{dl.hash.copy}}</button>
-        </div>
-        <div class="box">
-          <h3>{{dl.req.h}}</h3>
-          <p>{{dl.req.p}}</p>
         </div>
         <div class="box">
           <h3>{{dl.remove.h}}</h3>
