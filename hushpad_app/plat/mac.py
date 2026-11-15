@@ -75,7 +75,12 @@ def _nsstring(s: str):
 
 
 def _nswindow(widget):
-    """QWidget → NSWindow* (아직 창이 없으면 None). winId()는 macOS에서 NSView*."""
+    """QWidget → NSWindow* (아직 창이 없으면 None). winId()는 macOS 화면(cocoa)에서만 NSView*.
+    offscreen·minimal 같은 다른 Qt 플랫폼에서는 winId가 Objective-C 객체가 아니라서
+    보내면 프로그램이 죽는다 → 그때는 아무것도 하지 않는다."""
+    from PySide6.QtGui import QGuiApplication
+    if QGuiApplication.platformName() != "cocoa":
+        return None
     view = int(widget.winId())
     if not view:
         return None
