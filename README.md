@@ -129,4 +129,4 @@ Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes
 
 - Download: [Windows](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip) · [macOS (Apple Silicon)](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip). Portable, no installer, unsigned (Windows: "More info › Run anyway"; macOS: right-click › Open). No Intel Mac build.
 - Run from source: `pip install -r requirements.txt`, then `python hushpad_main.py`. Build: `python build.py`.
-- License: GPL-3.0-or-later. © 2026 NINEROW partners Co., Ltd. and Hushpad contributors. See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+- License: GPL-3.0-or-later. © 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors. See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

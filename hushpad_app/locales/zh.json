@@ -30,7 +30,7 @@
  "pwd.new": "新密码",
  "pwd.new2": "确认新密码",
  "pwd.note": "其他电脑下次打开时会要求输入一次新密码。",
- "pwd.invalid": "至少 6 个字符，且两次输入必须相同。",
+ "pwd.invalid": "至少 8 个字符，且两次输入必须相同。",
  "hist.title": "历史版本 — {title}",
  "hist.none": "（还没有历史版本，每 10 分钟保存一个）",
  "hist.restore": "恢复到此版本",
@@ -325,5 +325,8 @@
  "autostart.first": "Hushpad 将在 Windows 启动时自动在托盘中运行。右键单击托盘图标即可关闭。",
  "autostart.first@mac": "登录时 Hushpad 将在菜单栏中自动打开。点击菜单栏图标即可关闭。",
  "about.license": "免费开源 · GPL-3.0-or-later · <a href=\"{url}\">源代码</a><br>按“原样”提供，不附带任何担保。",
- "setup.unsynced": "此文件夹里有笔记文件，却没有仓库文件（vault.json），可能还没同步完成。请等同步完成后再试，或选择其他文件夹。"
+ "setup.unsynced": "此文件夹里有笔记文件，却没有仓库文件（vault.json），可能还没同步完成。请等同步完成后再试，或选择其他文件夹。",
+ "about.copyright": "© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors",
+ "about.oss": "使用了 Qt for Python / Qt（LGPL-3.0）、FFmpeg（LGPL-2.1+）等开源软件。<br><a href=\"{notices}\">第三方软件与许可证</a> · <a href=\"{license}\">GPL 全文</a>",
+ "setup.bad_vault": "无法读取仓库文件（vault.json），它可能已损坏或被其他程序修改。请从备份恢复 vault.json，或选择其他文件夹。"
 }

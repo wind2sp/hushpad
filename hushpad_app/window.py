@@ -949,6 +949,9 @@ class MainWindow(QMainWindow):
     @staticmethod
     def _clean_temp_recordings():
         """녹화가 비정상 종료돼 남은 임시 MP4(암호화 전)를 지운다."""
+        import sys
+        if "--selftest" in sys.argv or os.environ.get("HUSHPAD_NO_AUTOSTART"):
+            return   # 점검 중에는 다른 실행의 녹화 파일을 건드리지 않음
         from .common import LOCAL_DIR
         for f in (LOCAL_DIR / "tmp").glob("rec-*.mp4"):
             try:

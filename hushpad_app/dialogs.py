@@ -109,6 +109,9 @@ class SetupDialog(QDialog):
         except OSError as e:
             QMessageBox.critical(self, tr("setup.folder_title"), tr("setup.cant_write", err=e))
             return
+        except (ValueError, KeyError, TypeError):   # 손상되거나 바뀐 vault.json (JSON 오류도 ValueError)
+            QMessageBox.critical(self, tr("setup.folder_title"), tr("setup.bad_vault"))
+            return
         crypto.remember_key(crypto.vault_id(folder), self.key)
         self.folder = folder
         self.accept()
@@ -149,11 +152,21 @@ class AboutDialog(QDialog):
             lb.setTextInteractionFlags(Qt.TextBrowserInteraction)
             lay.addWidget(lb)
         lay.addSpacing(8)
+        from PySide6.QtCore import QUrl
+        from .common import resource
+        cp = QLabel(tr("about.copyright"), alignment=Qt.AlignCenter, objectName="EmptyHint")
+        lay.addWidget(cp)
         lic = QLabel(tr("about.license", url="https://github.com/wind2sp/hushpad"), alignment=Qt.AlignCenter,
                      objectName="EmptyHint")
         lic.setTextFormat(Qt.RichText)
         lic.setOpenExternalLinks(True)
         lay.addWidget(lic)
+        oss = QLabel(tr("about.oss", notices=QUrl.fromLocalFile(str(resource("THIRD_PARTY_NOTICES.md"))).toString(),
+                        license=QUrl.fromLocalFile(str(resource("LICENSE"))).toString()),
+                     alignment=Qt.AlignCenter, objectName="EmptyHint")
+        oss.setTextFormat(Qt.RichText)
+        oss.setOpenExternalLinks(True)
+        lay.addWidget(oss)
         lay.addSpacing(14)
         row = QHBoxLayout()
         row.addStretch(1)

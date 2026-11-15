@@ -28,7 +28,7 @@
       "tmH": "상표",
       "tm": "Hushpad 이름과 아이콘은 NINEROW partners Co., Ltd.의 상표입니다. 수정본을 배포할 때는 다른 이름과 아이콘을 써 주세요. Windows는 Microsoft Corporation의, macOS는 Apple Inc.의 상표이며 Hushpad는 두 회사와 제휴하거나 후원을 받지 않습니다.",
       "ossH": "사용한 오픈소스",
-      "oss": "Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. 전체 목록은 저장소의 THIRD_PARTY_NOTICES.md에 있습니다.",
+      "oss": "Qt for Python·Qt (LGPL-3.0), FFmpeg (LGPL-2.1 이상), cryptography (Apache-2.0/BSD), OpenSSL (Apache-2.0), Python (PSF), PyInstaller 부트로더 (GPL-2.0 이상, 예외 조항). 전체 목록과 라이선스 원문은 저장소의 THIRD_PARTY_NOTICES.md와 licenses 폴더에 있습니다.",
       "privacyH": "개인정보",
       "privacy": "Hushpad 앱과 이 홈페이지는 계정·분석·광고 스크립트를 쓰지 않습니다.",
       "licenseOn": "라이선스 전문",
@@ -60,7 +60,7 @@
       "q2": "“컴퓨터가 꺼지면 내용이 날아간 것 같아요”",
       "a2": "쓰는 즉시 디스크에 안전하게 저장하고 10분마다 이전 버전을 남깁니다. 저장하는 도중에 꺼져도 직전 내용은 그대로예요.",
       "q3": "“암호랑 API 키를 메모장에 적어 둬요”",
-      "a3": "모든 메모는 암호화된 파일로만 저장됩니다. 비밀 메모는 열 때마다 가려지고, 복사해도 30초 뒤면 클립보드에서 지워져요."
+      "a3": "메모는 암호화된 파일로 저장됩니다. 비밀 메모는 열 때마다 가려지고, 복사해도 30초 뒤면 클립보드에서 지워져요."
     },
     "feat": {
       "h2": "가볍지만 꼭 필요한 것만",
@@ -120,7 +120,7 @@
       "h2": "어떻게 지켜지나요",
       "p": "Hushpad는 서버가 없습니다. 메모는 내가 고른 폴더에만 있고, 그 안의 모든 파일은 암호화되어 있어요.",
       "b1": "AES-256-GCM 암호화",
-      "s1": "메모·이전 버전·동영상·분류 이름까지 모두 암호화해 저장해요.",
+      "s1": "메모·이전 버전·동영상·분류 이름까지 모두 암호화해 저장해요. 녹화하는 동안만 임시 파일이 잠깐 생기고, 끝나면 바로 지웁니다.",
       "b2": "암호에서 만든 열쇠 (scrypt)",
       "s2": "암호를 모르면 파일을 풀 수 없어요. 암호를 잊으면 만든 사람도 되살릴 수 없습니다.",
       "b3": "내 PC에서는 한 번만 입력",

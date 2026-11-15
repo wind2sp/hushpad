@@ -42,7 +42,14 @@ jobs:
         run: python build.py
 
       - name: Zip
-        run: ditto -c -k --keepParent dist/Hushpad.app "Hushpad-macos-${{ matrix.arch }}.zip"
+        # zip 안: Hushpad/Hushpad.app + LICENSE, NOTICE, THIRD_PARTY_NOTICES.md, licenses/ (Windows zip과 같은 구성)
+        run: |
+          mkdir -p pkg/Hushpad
+          ditto dist/Hushpad.app pkg/Hushpad/Hushpad.app
+          cp LICENSE NOTICE THIRD_PARTY_NOTICES.md pkg/Hushpad/
+          ditto licenses pkg/Hushpad/licenses
+          (cd pkg && ditto -c -k --keepParent Hushpad "../Hushpad-macos-${{ matrix.arch }}.zip")
+          shasum -a 256 "Hushpad-macos-${{ matrix.arch }}.zip"
 
       # 결과물 보관함(artifact)은 계정 전체 용량을 함께 써서 가득 찰 수 있다 → 공개되지 않는 초안 릴리스에 올린다.
       - name: Upload to draft release "mac-build" (not public)

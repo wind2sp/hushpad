@@ -95,8 +95,11 @@ def main() -> int:
     key, folder, reason = None, None, ""
     if cfg.get("data_dir") and crypto.vault_exists(Path(cfg["data_dir"])):
         folder = Path(cfg["data_dir"])
-        key = crypto.recall_key(crypto.vault_id(folder))
-        if key is None:
+        try:
+            key = crypto.recall_key(crypto.vault_id(folder))
+        except (ValueError, KeyError, TypeError, OSError):
+            key, reason = None, tr("setup.bad_vault")
+        if key is None and not reason:
             reason = tr("main.first_open")
     elif cfg.get("data_dir"):
         reason = tr("main.missing", path=cfg["data_dir"])

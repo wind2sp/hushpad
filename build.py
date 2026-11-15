@@ -63,11 +63,22 @@ def main():
 # 쓰지 않는데 PySide6가 끌어오는 것: Qt 가상 키보드(GPL 전용 구성요소), QML·Quick, Mesa 소프트웨어 OpenGL.
 # 남는 파일 중 이것들을 불러오는 것이 없음을 확인했다(가져오기 표 검사).
 PRUNE_PATTERNS = ("*VirtualKeyboard*", "*virtualkeyboard*", "Qt6Qml*", "Qt6Quick*", "QtQml*", "QtQuick*",
-                  "opengl32sw.dll")
+                  "opengl32sw.dll",
+                  # 쓰지 않는 그림 형식·플랫폼·터치 플러그인 (배포물과 라이선스 목록을 줄임)
+                  "*qtiff*", "*qwebp*", "*qtga*", "*qwbmp*", "*qicns*", "*qdirect2d*", "*qminimal*",
+                  "*qtuiotouchplugin*",
+                  # Qt 네트워크 TLS용 OpenSSL 사본 (Hushpad는 네트워크를 쓰지 않음. Python의 libssl-3.dll은 남김)
+                  "libssl-3-x64.dll", "libcrypto-3-x64.dll")
+PRUNE_PLUGIN_DIRS = ("tls", "networkinformation", "platforminputcontexts")
 
 
 def prune(root: Path) -> int:
     n = 0
+    for plugins in [p for p in root.rglob("plugins") if p.is_dir()]:
+        for d in PRUNE_PLUGIN_DIRS:
+            if (plugins / d).is_dir():
+                shutil.rmtree(plugins / d)
+                n += 1
     for pat in PRUNE_PATTERNS:
         for f in sorted(root.rglob(pat), key=lambda x: -len(x.parts)):
             if f.is_symlink():          # macOS 번들의 Resources ↔ Frameworks 연결 (끊긴 연결도 지움)
@@ -93,7 +104,8 @@ def finish_mac_bundle(app: Path) -> None:
     info = plistlib.loads(pl.read_bytes())
     info.update({"CFBundleShortVersionString": __version__, "CFBundleVersion": __version__,
                  "CFBundleName": "Hushpad", "CFBundleDisplayName": "Hushpad",
-                 "NSHumanReadableCopyright": "© 2026 NINEROW partners Co., Ltd. · GPL-3.0-or-later",
+                 "NSHumanReadableCopyright": "© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad "
+                                             "contributors · GPL-3.0-or-later",
                  "LSApplicationCategoryType": "public.app-category.productivity",
                  "NSHighResolutionCapable": True})
     pl.write_bytes(plistlib.dumps(info))

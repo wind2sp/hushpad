@@ -30,7 +30,7 @@
  "pwd.new": "新しいパスワード",
  "pwd.new2": "新しいパスワードの確認",
  "pwd.note": "ほかのパソコンでは、次に開くときに新しいパスワードを一度だけ聞かれます。",
- "pwd.invalid": "6文字以上で、2つの欄を同じにしてください。",
+ "pwd.invalid": "8文字以上で、2つの欄を同じにしてください。",
  "hist.title": "履歴 — {title}",
  "hist.none": "（まだ以前のバージョンはありません。10分ごとに1つ保存されます）",
  "hist.restore": "このバージョンに戻す",
@@ -325,5 +325,8 @@
  "autostart.first": "Windows の起動時に Hushpad がトレイで自動起動するよう設定しました。トレイアイコンを右クリックすると解除できます。",
  "autostart.first@mac": "ログイン時に Hushpad がメニューバーで自動起動するよう設定しました。メニューバーのアイコンから解除できます。",
  "about.license": "無料のオープンソース · GPL-3.0-or-later · <a href=\"{url}\">ソースコード</a><br>無保証で現状のまま提供されます。",
- "setup.unsynced": "このフォルダーにはメモのファイルがありますが、保管ファイル（vault.json）がありません。同期がまだ終わっていない可能性があります。同期が終わってからもう一度試すか、別のフォルダーを選んでください。"
+ "setup.unsynced": "このフォルダーにはメモのファイルがありますが、保管ファイル（vault.json）がありません。同期がまだ終わっていない可能性があります。同期が終わってからもう一度試すか、別のフォルダーを選んでください。",
+ "about.copyright": "© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors",
+ "about.oss": "Qt for Python / Qt（LGPL-3.0）や FFmpeg（LGPL-2.1+）などのオープンソースを使用しています。<br><a href=\"{notices}\">使用しているオープンソースとライセンス</a> · <a href=\"{license}\">GPL 全文</a>",
+ "setup.bad_vault": "保管ファイル（vault.json）を読み込めません。破損しているか、別のプログラムに変更された可能性があります。バックアップから vault.json を戻すか、別のフォルダーを選んでください。"
 }

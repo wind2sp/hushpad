@@ -30,7 +30,7 @@
  "pwd.new": "New passphrase",
  "pwd.new2": "Confirm new passphrase",
  "pwd.note": "Other computers will ask for the new passphrase once, the next time they open the vault.",
- "pwd.invalid": "Use at least 6 characters, and type the same passphrase twice.",
+ "pwd.invalid": "Use at least 8 characters, and type the same passphrase twice.",
  "hist.title": "History — {title}",
  "hist.none": "(No earlier versions yet — one is saved every 10 minutes.)",
  "hist.restore": "Restore this version",
@@ -358,5 +358,8 @@
  "autostart.first": "Hushpad will now start in the tray when Windows starts. Right-click the tray icon to turn this off.",
  "autostart.first@mac": "Hushpad will now open in the menu bar when you log in. Click the menu bar icon to turn this off.",
  "about.license": "Free and open source · GPL-3.0-or-later · <a href=\"{url}\">Source code</a><br>Provided as is, without any warranty.",
- "setup.unsynced": "This folder has note files but no vault file (vault.json). Syncing may not be finished yet. Try again once it is, or pick another folder."
+ "setup.unsynced": "This folder has note files but no vault file (vault.json). Syncing may not be finished yet. Try again once it is, or pick another folder.",
+ "about.copyright": "© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors",
+ "about.oss": "Uses open-source software including Qt for Python / Qt (LGPL-3.0) and FFmpeg (LGPL-2.1+).<br><a href=\"{notices}\">Third-party notices</a> · <a href=\"{license}\">GPL text</a>",
+ "setup.bad_vault": "The vault file (vault.json) can’t be read. It may be damaged or changed by another program. Restore vault.json from a backup or pick another folder."
 }

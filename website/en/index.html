@@ -156,7 +156,7 @@
           <p>Hushpad has no server. Your notes live only in the folder you choose, and every file in it is encrypted.</p>
         </div>
         <ul class="checks">
-          <li><svg><use href="#i-check"/></svg><div><b>AES-256-GCM encryption</b><span>Notes, previous versions, videos, even folder names: everything is stored encrypted.</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>AES-256-GCM encryption</b><span>Notes, previous versions, videos, even folder names: everything is stored encrypted. Only while a recording is in progress does a temporary file exist, and it is deleted when the recording ends.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>A key derived from your password (scrypt)</b><span>Without the password, the files can't be decrypted. If you forget it, not even the developer can recover them.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>Enter it once on your own PC</b><span>Hushpad remembers the key through your Windows account (DPAPI) or your macOS login keychain. On another account or another computer, you'll need the password again.</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>A quiet clipboard, too</b><span>Copied text is flagged to stay out of Windows clipboard history and cloud clipboard sync.</span></div></li>
@@ -235,10 +235,10 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
       </div>
     </div>
     <div class="legal">
-      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. and Hushpad contributors</span></p>
+      <p><span data-cfg="copyright">© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors · wind2sp@9rowpar.com</span></p>
       <p><strong>License</strong> Hushpad is free, open-source software released under GPL-3.0-or-later. It is provided as is, without any warranty.</p>
       <p><strong>Trademarks</strong> The Hushpad name and icon are trademarks of NINEROW partners Co., Ltd. If you distribute a modified version, please use a different name and icon. Windows is a trademark of Microsoft Corporation, and macOS is a trademark of Apple Inc. Hushpad is not affiliated with or sponsored by Microsoft or Apple.</p>
-      <p><strong>Open source used</strong> Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller. The full list is in THIRD_PARTY_NOTICES.md in the repository.</p>
+      <p><strong>Open source used</strong> Qt for Python / Qt (LGPL-3.0), FFmpeg (LGPL-2.1+), cryptography (Apache-2.0/BSD), OpenSSL (Apache-2.0), Python (PSF), PyInstaller bootloader (GPL-2.0+ with exception). The full list and license texts are in THIRD_PARTY_NOTICES.md and the licenses folder in the repository.</p>
       <p><strong>Privacy</strong> Neither the Hushpad app nor this website uses accounts, analytics or ad scripts.</p>
     </div>
   </div>

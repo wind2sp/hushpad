@@ -30,7 +30,7 @@
  "pwd.new": "새 암호",
  "pwd.new2": "새 암호 확인",
  "pwd.note": "다른 PC에서는 다음에 열 때 새 암호를 한 번 물어봅니다.",
- "pwd.invalid": "6자 이상, 두 칸이 같아야 합니다.",
+ "pwd.invalid": "8자 이상, 두 칸이 같아야 합니다.",
  "hist.title": "이전 버전 — {title}",
  "hist.none": "(아직 저장된 이전 버전이 없어요 — 10분마다 하나씩 생깁니다)",
  "hist.restore": "이 버전으로 되돌리기",
@@ -325,5 +325,8 @@
  "autostart.first": "Windows를 켜면 Hushpad가 트레이에서 자동으로 실행돼요. 트레이 아이콘을 오른쪽 클릭하면 끌 수 있어요.",
  "autostart.first@mac": "로그인하면 Hushpad가 메뉴 막대에서 자동으로 실행돼요. 메뉴 막대 아이콘을 클릭해 끌 수 있어요.",
  "about.license": "무료 오픈소스 · GPL-3.0-or-later · <a href=\"{url}\">소스 코드</a><br>어떠한 보증도 없이 있는 그대로 제공됩니다.",
- "setup.unsynced": "이 폴더에는 메모 파일이 있는데 금고 파일(vault.json)이 없어요. 동기화가 아직 덜 끝났을 수 있어요. 동기화가 끝난 뒤 다시 시도하거나 다른 폴더를 고르세요."
+ "setup.unsynced": "이 폴더에는 메모 파일이 있는데 금고 파일(vault.json)이 없어요. 동기화가 아직 덜 끝났을 수 있어요. 동기화가 끝난 뒤 다시 시도하거나 다른 폴더를 고르세요.",
+ "about.copyright": "© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors",
+ "about.oss": "Qt for Python·Qt(LGPL-3.0), FFmpeg(LGPL-2.1+) 등 오픈소스를 사용합니다.<br><a href=\"{notices}\">사용한 오픈소스와 라이선스</a> · <a href=\"{license}\">GPL 전문</a>",
+ "setup.bad_vault": "금고 파일(vault.json)을 읽을 수 없어요. 파일이 손상됐거나 다른 프로그램이 바꿨을 수 있어요. 백업에서 vault.json을 되살리거나 다른 폴더를 고르세요."
 }

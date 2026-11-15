@@ -25,7 +25,14 @@ Under section 7(e) of the GNU GPL v3, the license does not grant any
 right to use them. Forks and modified versions must use a different
 name and icon.
 
+Windows, Notepad and OneDrive are trademarks of Microsoft Corporation;
+macOS and Mac are trademarks of Apple Inc.; Qt is a trademark of The Qt
+Company Ltd.; Dropbox is a trademark of Dropbox, Inc. Other names are
+trademarks of their respective owners and are used only to describe
+compatibility. Hushpad is not affiliated with or endorsed by them.
+
 Hushpad includes third-party software under its own licenses
-(LGPL-3.0, Apache-2.0, BSD-3-Clause, MIT, MIT-CMU, PSF and others),
-including Qt for Python (PySide6) and the Qt libraries (LGPL-3.0).
+(LGPL-3.0, LGPL-2.1, Apache-2.0, BSD-3-Clause, MIT, PSF and others),
+including Qt for Python (PySide6) and the Qt libraries (LGPL-3.0) and
+the FFmpeg libraries (LGPL-2.1-or-later).
 See THIRD_PARTY_NOTICES.md for the list and where to get their source.
