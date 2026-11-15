@@ -9,7 +9,8 @@ from PySide6.QtGui import QColor, QFont, QFontMetrics, QIcon, QPainter, QPainter
 from PySide6.QtWidgets import (QAbstractItemView, QDialog, QFrame, QHBoxLayout, QLabel, QLineEdit, QListWidget,
                                QListWidgetItem, QPushButton, QStyle, QStyledItemDelegate, QVBoxLayout, QWidget)
 
-from . import icons
+from . import icons, plat
+from .i18n import fmt_ts, tr
 
 IDS_MIME = "application/x-hushpad-ids"
 META = Qt.UserRole + 1
@@ -18,17 +19,17 @@ META = Qt.UserRole + 1
 def rel_time(ts: float) -> str:
     d = time.time() - ts
     if d < 60:
-        return "방금"
+        return tr("rel.now")
     if d < 3600:
-        return f"{int(d // 60)}분 전"
+        return tr("rel.min", n=int(d // 60))
     lt, now = time.localtime(ts), time.localtime()
     if lt.tm_year == now.tm_year and lt.tm_yday == now.tm_yday:
-        return f"{int(d // 3600)}시간 전"
+        return tr("rel.hour", n=int(d // 3600))
     if d < 86400 * 2 and (now.tm_yday - lt.tm_yday) % 365 == 1:
-        return "어제 " + time.strftime("%H:%M", lt)
+        return tr("rel.yesterday", time=fmt_ts(ts, "fmt.hm"))
     if lt.tm_year == now.tm_year:
-        return time.strftime("%m.%d", lt)
-    return time.strftime("%Y.%m.%d", lt)
+        return fmt_ts(ts, "fmt.rel_md")
+    return fmt_ts(ts, "fmt.rel_ymd")
 
 
 # ====================================================================== 메모 목록
@@ -199,12 +200,13 @@ class EmptyState(QWidget):
         lay = QVBoxLayout(self)
         lay.addStretch(3)
         self.icon = QLabel(alignment=Qt.AlignCenter)
-        title = QLabel("열린 메모가 없어요", objectName="EmptyTitle", alignment=Qt.AlignCenter)
-        hint = QLabel("쓰는 즉시 암호화되어 저장됩니다", objectName="EmptyHint", alignment=Qt.AlignCenter)
+        title = QLabel(tr("empty.title"), objectName="EmptyTitle", alignment=Qt.AlignCenter)
+        hint = QLabel(tr("empty.hint"), objectName="EmptyHint", alignment=Qt.AlignCenter)
+        hint.setWordWrap(True)
         row = QHBoxLayout()
         row.addStretch(1)
-        self.b1 = QPushButton("  새 메모", objectName="Primary")
-        self.b2 = QPushButton("  코드 메모")
+        self.b1 = QPushButton("  " + tr("tb.new"), objectName="Primary")
+        self.b2 = QPushButton("  " + tr("empty.code"))
         self.b1.clicked.connect(lambda: owner.new_note("rich"))
         self.b2.clicked.connect(lambda: owner.new_note("text"))
         for b in (self.b1, self.b2):
@@ -214,7 +216,13 @@ class EmptyState(QWidget):
         row.addStretch(1)
         keys = QHBoxLayout()
         keys.addStretch(1)
-        for k, d in (("Ctrl+K", "명령·메모 찾기"), ("Ctrl+Alt+S", "스크린샷"), ("Ctrl+Alt+R", "화면 녹화")):
+        chips = [(plat.key_label("Ctrl+K"), tr("empty.k_palette"))]
+        if plat.HOTKEYS_SUPPORTED:
+            chips += [(plat.global_key("S"), tr("empty.k_shot")), (plat.global_key("R"), tr("tb.record"))]
+        else:
+            chips += [(plat.key_label("Ctrl+Shift+S"), tr("empty.k_shot")),
+                      (plat.key_label("Ctrl+Shift+R"), tr("tb.record"))]
+        for k, d in chips:
             keys.addWidget(QLabel(k, objectName="Kbd"))
             keys.addWidget(QLabel(d, objectName="EmptyHint"))
             keys.addSpacing(14)
@@ -314,13 +322,13 @@ class CommandPalette(QDialog):
         lay = QVBoxLayout(box)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
-        self.inp = QLineEdit(objectName="PaletteInput", placeholderText="메모나 명령 찾기")
+        self.inp = QLineEdit(objectName="PaletteInput", placeholderText=tr("pal.placeholder"))
         self.search_act = self.inp.addAction(QIcon(), QLineEdit.LeadingPosition)
         self.lst = QListWidget(objectName="PaletteList")
         self.lst.setItemDelegate(PaletteDelegate(self))
         self.lst.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.lst.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
-        foot = QLabel("↑↓ 고르기   ·   Enter 실행   ·   Esc 닫기", objectName="PaletteFoot")
+        foot = QLabel(tr("pal.foot"), objectName="PaletteFoot")
         lay.addWidget(self.inp)
         lay.addWidget(self.lst)
         lay.addWidget(foot)
@@ -363,8 +371,8 @@ class CommandPalette(QDialog):
                 hits_n.append(n)
         hits_c = [(a, label, ic) for a, label, ic in self.owner.palette_actions()
                   if all(w in label.lower() for w in words)]
-        sections = [("메모" if words else "최근 메모", hits_n[: (30 if words else 6)], "note"),
-                    ("명령", hits_c, "cmd")]
+        sections = [(tr("pal.notes") if words else tr("pal.recent"), hits_n[: (30 if words else 6)], "note"),
+                    (tr("pal.commands"), hits_c, "cmd")]
         if not words:
             sections.reverse()
             sections = [sections[1], sections[0]]

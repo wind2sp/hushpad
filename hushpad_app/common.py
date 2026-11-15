@@ -1,11 +1,11 @@
-"""여러 곳에서 쓰는 작은 도구: 설정, 경로, 클립보드, 캡처 숨김, 이미지 변환."""
+"""여러 곳에서 쓰는 작은 도구: 설정, 경로, 클립보드, 캡처 숨김, 이미지 변환.
+
+OS마다 다른 부분(경로·캡처 숨김·클립보드 표시)은 plat 모듈에 있다."""
 from __future__ import annotations
 
 import base64
-import ctypes
 import json
 import os
-import struct
 import sys
 import time
 from pathlib import Path
@@ -14,14 +14,18 @@ from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QMimeData
 from PySide6.QtGui import QImage
 from PySide6.QtWidgets import QApplication
 
+from . import plat
+from .i18n import fmt_ts
+
 APP_NAME = "Hushpad"
 APP_ID = "windsp.Hushpad.Notes"
 
 # HUSHPAD_PROFILE 환경 변수를 주면 설정·키·백업을 그 폴더에 둔다 (시험용)
-_PROFILE = os.environ.get("HUSHPAD_PROFILE")
-LOCAL_DIR = Path(_PROFILE) / "local" if _PROFILE else Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / APP_NAME
-CONFIG_FILE = (Path(_PROFILE) if _PROFILE else Path(os.environ.get("APPDATA", str(Path.home()))) / APP_NAME) / "config.json"
-DEFAULT_DATA_DIR = Path.home() / "Documents" / "Hushpad"
+# Windows: %APPDATA%\Hushpad\config.json, %LOCALAPPDATA%\Hushpad
+# macOS:   ~/Library/Application Support/Hushpad
+LOCAL_DIR = plat.local_dir()
+CONFIG_FILE = plat.config_dir() / "config.json"
+DEFAULT_DATA_DIR = plat.default_data_dir()
 
 
 def resource(*parts: str) -> Path:
@@ -39,12 +43,13 @@ DEFAULTS = {
     "font_pt": 11,
     "wrap": True,
     "plain_paste": False,
-    "clip_private": True,       # 복사한 내용을 Windows 클립보드 기록·클라우드 동기화에서 빼기
+    "clip_private": True,       # 복사한 내용을 클립보드 기록(Windows Win+V·클라우드 / macOS 클립보드 관리자)에서 빼기
     "secret_clear_sec": 30,     # 비밀 메모에서 복사하면 n초 뒤 클립보드 비움 (0 = 끔)
     "sort": "updated",
     "capture_delay": 0,
     "video_fps": 12,
     "video_max_sec": 180,
+    "language": "system",       # system = 운영체제 언어(지원하지 않으면 영어) / ko / en / ja / zh
 }
 
 
@@ -64,33 +69,20 @@ class Config(dict):
 
 
 # ------------------------------------------------------------------ 화면 캡처에서 이 창 숨기기
-WDA_NONE = 0
-WDA_EXCLUDEFROMCAPTURE = 0x11
-
-
 def exclude_from_capture(widget, on: bool = True) -> bool:
-    """이 창을 스크린샷·화면 녹화·화면 공유에서 보이지 않게 한다 (Windows 10 2004 이상)."""
-    try:
-        return bool(ctypes.windll.user32.SetWindowDisplayAffinity(
-            int(widget.winId()), WDA_EXCLUDEFROMCAPTURE if on else WDA_NONE))
-    except Exception:
-        return False
+    """이 창을 스크린샷·화면 녹화·화면 공유에서 보이지 않게 한다
+    (Windows 10 2004 이상: SetWindowDisplayAffinity / macOS: NSWindow.sharingType)."""
+    return plat.exclude_from_capture(widget, on)
 
 
 # ------------------------------------------------------------------ 클립보드
-_WIN_FMT = 'application/x-qt-windows-mime;value="{}"'
 TOKEN_MIME = "application/x-hushpad-token"
 
 
 def mark_private(md: QMimeData, strict: bool = False) -> QMimeData:
-    """Windows 클립보드 기록(Win+V)·클라우드 클립보드에 남지 않게 표시.
+    """클립보드 기록에 남지 않게 표시 (Windows: Win+V 기록·클라우드 / macOS: 클립보드 관리 프로그램).
     strict=True면 클립보드 감시 프로그램(클립보드 관리자 등)도 무시하도록 표시."""
-    zero = QByteArray(struct.pack("<I", 0))
-    md.setData(_WIN_FMT.format("CanIncludeInClipboardHistory"), zero)
-    md.setData(_WIN_FMT.format("CanUploadToCloudClipboard"), zero)
-    if strict:
-        md.setData(_WIN_FMT.format("ExcludeClipboardContentFromMonitorProcessing"), QByteArray(b"\x01\0\0\0"))
-    return md
+    return plat.mark_private(md, strict)
 
 
 def set_clipboard(md: QMimeData, private: bool, strict: bool = False, clear_after: int = 0) -> None:
@@ -135,15 +127,21 @@ def data_url_to_image(url: str) -> QImage | None:
     return None if img.isNull() else img
 
 
+# ------------------------------------------------------------------ 시각 (언어에 맞춰)
 def fmt_time(ts: float) -> str:
     now = time.localtime()
     t = time.localtime(ts)
     if t.tm_year == now.tm_year and t.tm_yday == now.tm_yday:
-        return time.strftime("%H:%M", t)
+        return fmt_ts(ts, "fmt.hm")
     if t.tm_year == now.tm_year:
-        return time.strftime("%m-%d %H:%M", t)
-    return time.strftime("%Y-%m-%d", t)
+        return fmt_ts(ts, "fmt.md_hm")
+    return fmt_ts(ts, "fmt.ymd")
 
 
 def fmt_full(ts: float) -> str:
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ts))
+    return fmt_ts(ts, "fmt.full")
+
+
+def fmt_stamp(ts: float | None = None, key: str = "fmt.md_hm") -> str:
+    """메모 안에 적는 짧은 시각 (예: '📷 캡처 11-15 14:32')."""
+    return fmt_ts(time.time() if ts is None else ts, key)

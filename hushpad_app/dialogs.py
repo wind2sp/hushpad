@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (QCheckBox, QDialog, QDialogButtonBox, QFileDialog
 
 from . import crypto
 from .common import DEFAULT_DATA_DIR, fmt_full
+from .i18n import tr
 
 
 class SetupDialog(QDialog):
@@ -18,7 +19,7 @@ class SetupDialog(QDialog):
 
     def __init__(self, folder: str = "", reason: str = ""):
         super().__init__()
-        self.setWindowTitle("Hushpad — 메모 보관 폴더와 암호")
+        self.setWindowTitle(tr("setup.title"))
         self.setMinimumWidth(560)
         self.key = None
         self.folder = None
@@ -28,34 +29,31 @@ class SetupDialog(QDialog):
             r.setWordWrap(True)
             r.setStyleSheet("color:#c0392b;")
             lay.addWidget(r)
-        intro = QLabel(
-            "모든 메모는 이 폴더 한 곳에 <b>암호화된 파일</b>로 저장됩니다. 다른 프로그램이나 사람이 파일을 열어도 내용을 볼 수 없어요.<br>"
-            "여러 PC에서 같이 쓰려면 Dropbox·OneDrive 같은 <b>동기화 폴더 안</b>을 고르고, 다른 PC에서도 같은 폴더와 같은 암호를 넣으면 됩니다.<br>"
-            "이 PC에서는 암호를 한 번만 넣으면 Windows 계정에 묶어 기억해 두므로 다음부터 묻지 않습니다.")
+        intro = QLabel("<br>".join(tr(k) for k in ("setup.intro1", "setup.intro2", "setup.intro3")))
         intro.setWordWrap(True)
         lay.addWidget(intro)
         row = QHBoxLayout()
         self.path = QLineEdit(folder or str(DEFAULT_DATA_DIR))
-        browse = QPushButton("찾아보기...")
+        browse = QPushButton(tr("setup.browse"))
         browse.clicked.connect(self._browse)
         row.addWidget(self.path, 1)
         row.addWidget(browse)
         form = QFormLayout()
-        form.addRow("보관 폴더", row)
+        form.addRow(tr("setup.folder"), row)
         self.mode = QLabel()
         form.addRow("", self.mode)
         self.pw1 = QLineEdit(echoMode=QLineEdit.Password)
         self.pw2 = QLineEdit(echoMode=QLineEdit.Password)
-        self.pw2_label = QLabel("암호 확인")
-        form.addRow("암호", self.pw1)
+        self.pw2_label = QLabel(tr("setup.pw2"))
+        form.addRow(tr("setup.pw"), self.pw1)
         form.addRow(self.pw2_label, self.pw2)
         lay.addLayout(form)
-        self.warn = QLabel("⚠ 암호를 잊으면 아무도(만든 사람도) 메모를 되살릴 수 없습니다. 안전한 곳에 적어 두세요.")
+        self.warn = QLabel(tr("setup.warn"))
         self.warn.setWordWrap(True)
         lay.addWidget(self.warn)
         bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        bb.button(QDialogButtonBox.Ok).setText("시작")
-        bb.button(QDialogButtonBox.Cancel).setText("닫기")
+        bb.button(QDialogButtonBox.Ok).setText(tr("setup.start"))
+        bb.button(QDialogButtonBox.Cancel).setText(tr("common.close"))
         bb.accepted.connect(self._ok)
         bb.rejected.connect(self.reject)
         lay.addWidget(bb)
@@ -63,7 +61,7 @@ class SetupDialog(QDialog):
         self._refresh()
 
     def _browse(self):
-        d = QFileDialog.getExistingDirectory(self, "메모 보관 폴더", self.path.text())
+        d = QFileDialog.getExistingDirectory(self, tr("setup.pick_folder"), self.path.text())
         if d:
             self.path.setText(str(Path(d)))
 
@@ -73,8 +71,7 @@ class SetupDialog(QDialog):
 
     def _refresh(self):
         ex = self._existing()
-        self.mode.setText("✔ 이미 Hushpad 메모가 있는 폴더입니다 — 그 암호를 넣으세요." if ex
-                          else "새 보관 폴더를 만듭니다 — 사용할 암호를 정하세요 (6자 이상).")
+        self.mode.setText(tr("setup.existing") if ex else tr("setup.new"))
         self.pw2.setVisible(not ex)
         self.pw2_label.setVisible(not ex)
         self.warn.setVisible(not ex)
@@ -89,22 +86,22 @@ class SetupDialog(QDialog):
                 self.key = crypto.unlock_vault(folder, pw)
             else:
                 if len(pw) < 6:
-                    QMessageBox.warning(self, "암호", "암호는 6자 이상으로 정해 주세요.")
+                    QMessageBox.warning(self, tr("setup.pw"), tr("setup.too_short"))
                     return
                 if pw != self.pw2.text():
-                    QMessageBox.warning(self, "암호", "두 암호가 다릅니다.")
+                    QMessageBox.warning(self, tr("setup.pw"), tr("setup.mismatch"))
                     return
                 if folder.exists() and any(folder.iterdir()):
-                    if QMessageBox.question(self, "폴더", "비어 있지 않은 폴더입니다. 이 안에 Hushpad 파일을 만들까요?") \
+                    if QMessageBox.question(self, tr("setup.folder_title"), tr("setup.not_empty")) \
                             != QMessageBox.Yes:
                         return
                 self.key = crypto.create_vault(folder, pw)
         except crypto.BadPassphrase:
-            QMessageBox.warning(self, "암호", "암호가 맞지 않습니다.")
+            QMessageBox.warning(self, tr("setup.pw"), tr("setup.bad_pw"))
             self.pw1.selectAll()
             return
         except OSError as e:
-            QMessageBox.critical(self, "폴더", f"폴더를 쓸 수 없습니다.\n{e}")
+            QMessageBox.critical(self, tr("setup.folder_title"), tr("setup.cant_write", err=e))
             return
         crypto.remember_key(crypto.vault_id(folder), self.key)
         self.folder = folder
@@ -114,13 +111,15 @@ class SetupDialog(QDialog):
 class PassphraseDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
-        self.setWindowTitle("암호 바꾸기")
+        self.setWindowTitle(tr("pwd.title"))
         lay = QFormLayout(self)
         self.pw1 = QLineEdit(echoMode=QLineEdit.Password)
         self.pw2 = QLineEdit(echoMode=QLineEdit.Password)
-        lay.addRow("새 암호", self.pw1)
-        lay.addRow("새 암호 확인", self.pw2)
-        lay.addRow(QLabel("다른 PC에서는 다음에 열 때 새 암호를 한 번 물어봅니다."))
+        lay.addRow(tr("pwd.new"), self.pw1)
+        lay.addRow(tr("pwd.new2"), self.pw2)
+        note = QLabel(tr("pwd.note"))
+        note.setWordWrap(True)
+        lay.addRow(note)
         bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         bb.accepted.connect(self._ok)
         bb.rejected.connect(self.reject)
@@ -128,7 +127,7 @@ class PassphraseDialog(QDialog):
 
     def _ok(self):
         if len(self.pw1.text()) < 6 or self.pw1.text() != self.pw2.text():
-            QMessageBox.warning(self, "암호", "6자 이상, 두 칸이 같아야 합니다.")
+            QMessageBox.warning(self, tr("setup.pw"), tr("pwd.invalid"))
             return
         self.accept()
 
@@ -138,7 +137,7 @@ class HistoryDialog(QDialog):
 
     def __init__(self, parent, store, note):
         super().__init__(parent)
-        self.setWindowTitle(f"이전 버전 — {note.display_title()}")
+        self.setWindowTitle(tr("hist.title", title=note.display_title()))
         self.resize(900, 560)
         self.store, self.note = store, note
         self.chosen = None
@@ -154,10 +153,10 @@ class HistoryDialog(QDialog):
         for ts, p in self.items:
             self.lst.addItem(fmt_full(ts))
         if not self.items:
-            self.lst.addItem("(아직 저장된 이전 버전이 없어요 — 10분마다 하나씩 생깁니다)")
+            self.lst.addItem(tr("hist.none"))
         self.lst.currentRowChanged.connect(self._show)
         bb = QDialogButtonBox(QDialogButtonBox.Cancel)
-        self.restore_btn = bb.addButton("이 버전으로 되돌리기", QDialogButtonBox.AcceptRole)
+        self.restore_btn = bb.addButton(tr("hist.restore"), QDialogButtonBox.AcceptRole)
         self.restore_btn.setEnabled(False)
         bb.accepted.connect(self._ok)
         bb.rejected.connect(self.reject)
@@ -171,7 +170,7 @@ class HistoryDialog(QDialog):
         try:
             snap = self.store.load_snapshot(self.items[row][1], self.note.id)
         except Exception:
-            self.view.setPlainText("(이 버전은 읽을 수 없습니다)")
+            self.view.setPlainText(tr("hist.unreadable"))
             self.restore_btn.setEnabled(False)
             return
         self._snap = snap
@@ -191,11 +190,10 @@ class ImportDialog(QDialog):
 
     def __init__(self, parent, tabs, already: set[str]):
         super().__init__(parent)
-        self.setWindowTitle("Windows 메모장 탭 가져오기")
+        self.setWindowTitle(tr("imp.title"))
         self.resize(760, 520)
         lay = QVBoxLayout(self)
-        info = QLabel("Windows 메모장에 열려 있는 탭(저장하지 않은 것 포함)을 Hushpad로 복사합니다. "
-                      "메모장 쪽은 건드리지 않아요. 이미 가져온 내용은 체크가 꺼져 있습니다.")
+        info = QLabel(tr("imp.info"))
         info.setWordWrap(True)
         lay.addWidget(info)
         sp = QSplitter()
@@ -209,16 +207,16 @@ class ImportDialog(QDialog):
         for t in tabs:
             first = next((ln.strip() for ln in t.text.splitlines() if ln.strip()), "")[:50]
             name = Path(t.path).name if t.path else first
-            it = QListWidgetItem(f"{name}  ({len(t.text):,}자)")
+            it = QListWidgetItem(f"{name}  ({tr('note.chars', n=len(t.text))})")
             it.setFlags(it.flags() | Qt.ItemIsUserCheckable)
             it.setCheckState(Qt.Unchecked if t.text in already else Qt.Checked)
             self.lst.addItem(it)
         self.lst.currentRowChanged.connect(lambda r: self.view.setPlainText(self.tabs[r].text if 0 <= r < len(self.tabs) else ""))
-        self.as_text = QCheckBox("텍스트 메모로 가져오기 (HTML·JSON·코드가 많으면 추천)")
+        self.as_text = QCheckBox(tr("imp.as_text"))
         self.as_text.setChecked(True)
         lay.addWidget(self.as_text)
         bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        bb.button(QDialogButtonBox.Ok).setText("가져오기")
+        bb.button(QDialogButtonBox.Ok).setText(tr("imp.ok"))
         bb.accepted.connect(self.accept)
         bb.rejected.connect(self.reject)
         lay.addWidget(bb)

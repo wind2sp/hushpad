@@ -1,7 +1,10 @@
 """스크린샷·짧은 화면 녹화.
 
-Hushpad 창, 영역 테두리, 녹화 버튼 막대는 모두 '캡처 제외'(SetWindowDisplayAffinity) 상태라
-화면에는 보이지만 찍히는 그림·동영상에는 들어가지 않는다.
+Hushpad 창, 영역 테두리, 녹화 버튼 막대는 모두 '캡처 제외'(Windows SetWindowDisplayAffinity /
+macOS NSWindow.sharingType) 상태라 화면에는 보이지만 찍히는 그림·동영상에는 들어가지 않는다.
+
+macOS는 '화면 기록' 권한이 있어야 다른 앱 창이 찍힌다. 권한이 없으면 배경 화면만 찍히므로
+screen_capture_ok()로 미리 묻고, 찍은 그림이 비었는지(looks_blank)도 살핀다.
 """
 from __future__ import annotations
 
@@ -15,7 +18,9 @@ from PySide6.QtGui import QColor, QCursor, QGuiApplication, QImage, QPainter, QP
     QPolygonF
 from PySide6.QtWidgets import QDialog, QFileDialog, QHBoxLayout, QLabel, QPushButton, QSlider, QVBoxLayout, QWidget
 
+from . import plat
 from .common import LOCAL_DIR, exclude_from_capture
+from .i18n import tr
 
 
 def screen_under_cursor():
@@ -24,6 +29,23 @@ def screen_under_cursor():
 
 def grab_screen(screen) -> QPixmap:
     return screen.grabWindow(0)
+
+
+def screen_capture_ok() -> bool:
+    """화면을 찍을 수 있는지 (macOS: 화면 기록 권한). 없으면 권한 창을 한 번 띄운다."""
+    if plat.screen_capture_allowed():
+        return True
+    plat.request_screen_capture()
+    return False
+
+
+def looks_blank(pix: QPixmap) -> bool:
+    """찍은 그림이 비었거나 한 가지 색뿐인지 (권한이 없을 때 생기는 검은·빈 화면)."""
+    if pix.isNull() or pix.width() < 2 or pix.height() < 2:
+        return True
+    img = pix.toImage().scaled(32, 32)
+    first = img.pixel(0, 0)
+    return all(img.pixel(x, y) == first for x in range(img.width()) for y in range(img.height()))
 
 
 # ====================================================================== 영역 고르기
@@ -67,9 +89,9 @@ class RegionOverlay(QWidget):
             dpr = self.pix.devicePixelRatio()
             label = f"{round(r.width() * dpr)} × {round(r.height() * dpr)}"
             self._tag(p, r.left(), r.top() - 26 if r.top() > 30 else r.bottom() + 6, label, accent)
-        hint = ("녹화할 영역을 끌어서 고르세요 · Enter 화면 전체 · Esc 취소" if self.purpose == "video"
-                else "캡처할 영역을 끌어서 고르세요 · Enter 화면 전체 · Esc 취소")
-        self._tag(p, self.width() // 2 - 230, 18, hint, QColor(30, 30, 30))
+        hint = tr("cap.hint_video") if self.purpose == "video" else tr("cap.hint_image")
+        hw = p.fontMetrics().horizontalAdvance(hint) + 16
+        self._tag(p, (self.width() - hw) // 2, 18, hint, QColor(30, 30, 30))
 
     def _tag(self, p, x, y, text, bg):
         fm = p.fontMetrics()
@@ -162,9 +184,9 @@ class RecordBar(QWidget):
         lay = QHBoxLayout(bar)
         lay.setContentsMargins(8, 6, 8, 6)
         self.lbl = QLabel("● 00:00")
-        self.pause_btn = QPushButton("⏸ 일시정지")
-        stop = QPushButton("⏹ 저장", objectName="stop")
-        cancel = QPushButton("✕ 취소")
+        self.pause_btn = QPushButton(tr("rec.pause"))
+        stop = QPushButton(tr("rec.save"), objectName="stop")
+        cancel = QPushButton(tr("rec.cancel"))
         for w in (self.lbl, self.pause_btn, stop, cancel):
             lay.addWidget(w)
         self.pause_btn.clicked.connect(self._pause)
@@ -174,11 +196,11 @@ class RecordBar(QWidget):
 
     def _pause(self):
         self.rec.toggle_pause()
-        self.pause_btn.setText("▶ 계속" if self.rec.paused else "⏸ 일시정지")
+        self.pause_btn.setText(tr("rec.resume") if self.rec.paused else tr("rec.pause"))
 
     def tick(self, sec: float, paused: bool):
         m, s = divmod(int(sec), 60)
-        self.lbl.setText(f"{'❚❚' if paused else '●'} {m:02d}:{s:02d} / {self.rec.max_sec // 60}분")
+        self.lbl.setText(f"{'❚❚' if paused else '●'} {m:02d}:{s:02d} / " + tr("rec.max", n=self.rec.max_sec // 60))
 
     def mousePressEvent(self, e):
         self._drag = e.globalPosition().toPoint() - self.frameGeometry().topLeft()
@@ -344,7 +366,7 @@ class Recorder(QObject):
         if self._cancel:
             self.cancelled.emit()
         elif not data or self.frames == 0:
-            self.failed.emit("녹화된 화면이 없어요.")
+            self.failed.emit(tr("rec.nothing"))
         else:
             self.finished.emit(data, self.thumb, self._elapsed_ms() / 1000)
         self.deleteLater()
@@ -378,7 +400,7 @@ def video_thumbnail(img: QImage, seconds: float) -> QImage:
     p.drawPolygon(QPolygonF([QPointF(c.x() - r * 0.35, c.y() - r * 0.5), QPointF(c.x() - r * 0.35, c.y() + r * 0.5),
                              QPointF(c.x() + r * 0.55, c.y())]))
     m, s = divmod(int(round(seconds)), 60)
-    label = f"▶ 동영상 {m}:{s:02d}"
+    label = tr("vid.thumb", time=f"{m}:{s:02d}")
     f = p.font()
     f.setPointSize(10)
     f.setBold(True)
@@ -416,7 +438,7 @@ class VideoDialog(QDialog):
         self.play_btn.setFixedWidth(44)
         self.slider = QSlider(Qt.Horizontal)
         self.time = QLabel("0:00 / 0:00")
-        save = QPushButton("파일로 저장...")
+        save = QPushButton(tr("vid.save_file"))
         row.addWidget(self.play_btn)
         row.addWidget(self.slider, 1)
         row.addWidget(self.time)

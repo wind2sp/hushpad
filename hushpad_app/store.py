@@ -23,6 +23,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from . import crypto
+from .i18n import tr
 
 SNAPSHOT_EVERY = 600  # 초
 SNAPSHOT_KEEP = 40
@@ -66,7 +67,7 @@ class Note:
                     break
         flat = " ".join(" ".join(lines).split()).strip(" ,;")
         if not flat:
-            flat = f"{len(self.text.strip()):,}\uc790" + (" \u00b7 \uc774\ubbf8\uc9c0" if self.has_images() else "")
+            flat = tr("note.chars", n=len(self.text.strip())) + (tr("note.with_image") if self.has_images() else "")
         return flat[:n]
 
     def has_images(self) -> bool:
@@ -79,13 +80,13 @@ class Note:
         if self.title:
             return self.title
         if self.secret:
-            return "비밀 메모"
+            return tr("note.secret")
         fl = self.first_line()
         if fl:
             return fl
         if self.has_images():
-            return "(이미지)"
-        return "(빈 메모)"
+            return tr("note.image")
+        return tr("note.empty")
 
     def media_ids(self) -> set[str]:
         return set(MEDIA_RE.findall(self.html))

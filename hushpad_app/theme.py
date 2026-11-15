@@ -1,14 +1,13 @@
-"""테마: 색 토큰(밝은/어두운) → Qt 스타일시트, Windows 11 제목 표시줄 맞춤.
+"""테마: 색 토큰(밝은/어두운) → Qt 스타일시트, 제목 표시줄 맞춤(Windows 11 DWM / macOS 외관).
 
 가볍게: 이미지·웹 없이 QSS + 직접 그린 선 아이콘만 쓴다.
 """
 from __future__ import annotations
 
-import ctypes
-from ctypes import wintypes
-
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QGuiApplication, QPalette
+
+from . import i18n, plat
 
 # 브랜드: 자두색(plum) + 복숭아색(peach) — 앱 아이콘 "흩어지는 메모지"와 같은 색
 LIGHT = {
@@ -34,10 +33,32 @@ DARK = {
     "code_bg": "#232026", "gutter": "#201D23", "primary_from": "#7A3C93", "primary_to": "#9B4DB5",
 }
 
-FONT_UI = '"Pretendard", "Malgun Gothic"'
-FONT_CODE = '"D2Coding", "Cascadia Mono", "Consolas", "Malgun Gothic"'
-UI_FAMILIES = ["Pretendard", "Malgun Gothic"]
-CODE_FAMILIES = ["D2Coding", "Cascadia Mono", "Consolas", "Malgun Gothic"]
+# 글꼴: 앞에서부터 그 글자가 있는 글꼴을 쓴다. 언어마다 맞는 한자·가나 글꼴을 앞쪽에 둔다
+# (일본어 한자를 한국어 글꼴로, 중국어를 일본어 글꼴로 그리지 않게).
+_CJK_WIN = {"ja": ["Yu Gothic UI", "Meiryo"], "zh": ["Microsoft YaHei UI", "Microsoft YaHei"]}
+_CJK_MAC = {"ja": ["Hiragino Sans"], "zh": ["PingFang SC"], "ko": ["Apple SD Gothic Neo"]}
+
+
+def _dedup(xs):
+    return list(dict.fromkeys(xs))
+
+
+def ui_families(lang: str | None = None) -> list[str]:
+    lang = lang or i18n.current()
+    if plat.IS_MAC:
+        return _dedup(["Pretendard"] + _CJK_MAC.get(lang, []) +
+                      ["Apple SD Gothic Neo", "Hiragino Sans", "PingFang SC"])
+    return _dedup(["Pretendard"] + _CJK_WIN.get(lang, []) +
+                  ["Malgun Gothic", "Yu Gothic UI", "Microsoft YaHei UI"])
+
+
+def code_families(lang: str | None = None) -> list[str]:
+    mono = ["D2Coding", "Cascadia Mono", "Consolas"] + (["SF Mono", "Menlo"] if plat.IS_MAC else [])
+    return _dedup(mono + ui_families(lang)[1:])
+
+
+def _css(fams: list[str]) -> str:
+    return ", ".join(f'"{f}"' for f in fams)
 
 
 def system_is_dark() -> bool:
@@ -87,7 +108,7 @@ def _icon_file(name: str, color: str) -> str:
 
 
 def qss(t: dict) -> str:
-    return QSS.format(ui=FONT_UI, code=FONT_CODE, close_icon=_icon_file("close", t["muted"]),
+    return QSS.format(ui=_css(ui_families()), code=_css(code_families()), close_icon=_icon_file("close", t["muted"]),
                       chev_icon=_icon_file("chev", "#FFFFFF"), chev_muted=_icon_file("chev", t["muted"]),
                       **{k: v for k, v in t.items() if k != "dark"})
 
@@ -123,7 +144,7 @@ QToolBar#TopBar QToolButton:hover {{ background: {hover}; color: {text}; }}
 QToolBar#TopBar QToolButton:pressed {{ background: {pressed}; }}
 QToolBar#TopBar QToolButton:checked {{ background: {accent_subtle}; color: {accent_subtle_text}; }}
 QToolBar#TopBar QToolButton#Primary {{ background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {primary_from}, stop:1 {primary_to});
-    color: #FFFFFF; font-weight: 600; padding: 6px 10px; min-height: 22px; margin-right: 6px; }}
+    color: #FFFFFF; font-weight: 600; padding: 6px 30px 6px 10px; min-height: 22px; margin-right: 6px; }}
 QToolBar#TopBar QToolButton#Primary:hover {{ background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #66307C, stop:1 #8A3FA3); }}
 QToolBar#TopBar QToolButton#Primary::menu-button {{ border-left: 1px solid rgba(255,255,255,0.25); width: 22px;
     border-top-right-radius: 6px; border-bottom-right-radius: 6px; }}
@@ -224,21 +245,7 @@ QHeaderView::section {{ background: transparent; border: none; color: {muted}; p
 """
 
 
-# ------------------------------------------------------------------ Windows 11 제목 표시줄
+# ------------------------------------------------------------------ 제목 표시줄
 def style_titlebar(widget, t: dict) -> None:
-    """제목 표시줄을 앱 색에 맞춘다 (어두운 모드, 캡션 색, 둥근 모서리, Mica)."""
-    try:
-        hwnd = wintypes.HWND(int(widget.winId()))
-        dwm = ctypes.windll.dwmapi
-
-        def setattr_(attr, value):
-            v = ctypes.c_int(value)
-            dwm.DwmSetWindowAttribute(hwnd, attr, ctypes.byref(v), ctypes.sizeof(v))
-        setattr_(20, 1 if t["dark"] else 0)                 # DWMWA_USE_IMMERSIVE_DARK_MODE
-        setattr_(33, 2)                                     # DWMWA_WINDOW_CORNER_PREFERENCE = ROUND
-        col = QColor(t["window"])
-        setattr_(35, col.red() | (col.green() << 8) | (col.blue() << 16))  # DWMWA_CAPTION_COLOR (COLORREF)
-        setattr_(36, QColor(t["text"]).red() | (QColor(t["text"]).green() << 8) | (QColor(t["text"]).blue() << 16))
-        setattr_(34, 0xFFFFFFFE)                            # DWMWA_BORDER_COLOR = DWMWA_COLOR_NONE
-    except Exception:
-        pass
+    """제목 표시줄을 앱 색에 맞춘다 (Windows: 어두운 모드·캡션 색·둥근 모서리 / macOS: 밝게·어둡게 외관)."""
+    plat.style_titlebar(widget, t)

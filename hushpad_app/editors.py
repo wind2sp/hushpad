@@ -14,7 +14,9 @@ from PySide6.QtGui import (QColor, QDesktopServices, QFont, QFontDatabase, QImag
                            QSyntaxHighlighter, QTextCharFormat, QTextCursor, QTextFormat, QTextImageFormat)
 from PySide6.QtWidgets import QFileDialog, QPlainTextEdit, QTextEdit, QWidget
 
+from . import plat
 from .common import data_url_to_image, image_to_data_url, mark_private
+from .i18n import tr
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
 _REMOTE_IMG = re.compile(r"<img\b[^>]*\bsrc\s*=\s*[\"']?(?:https?:|file:|//)[^>]*>", re.I)
@@ -22,18 +24,18 @@ MAX_DISPLAY_W = 900
 
 
 def mono_font(pt: int) -> QFont:
-    from .theme import CODE_FAMILIES
+    from .theme import code_families
     f = QFont()
-    f.setFamilies(CODE_FAMILIES)
+    f.setFamilies(code_families())
     f.setStyleHint(QFont.Monospace)
     f.setPointSize(max(7, pt - 1))
     return f
 
 
 def body_font(pt: int) -> QFont:
-    from .theme import UI_FAMILIES
+    from .theme import ui_families
     f = QFont()
-    f.setFamilies(UI_FAMILIES)
+    f.setFamilies(ui_families())
     f.setPointSize(pt)
     return f
 
@@ -157,7 +159,7 @@ class RichEdit(_CopyMixin, QTextEdit):
         if href:
             fmt.setAnchor(True)
             fmt.setAnchorHref(href)
-            fmt.setToolTip("두 번 클릭하면 재생")
+            fmt.setToolTip(tr("ed.play_tip"))
         c = self.textCursor()
         c.insertImage(fmt)
         c.insertBlock()
@@ -226,20 +228,20 @@ class RichEdit(_CopyMixin, QTextEdit):
             href = f.anchorHref()
             if href.startswith("owvideo:"):
                 mid = href.split(":", 1)[1]
-                menu.addAction("▶ 동영상 재생", lambda: self.play_video.emit(mid))
-                menu.addAction("동영상 파일로 저장...", lambda: self.host.export_video(mid))
+                menu.addAction(tr("ed.play"), lambda: self.play_video.emit(mid))
+                menu.addAction(tr("ed.save_video"), lambda: self.host.export_video(mid))
             img = data_url_to_image(f.name())
             if img is not None:
-                menu.addAction("이미지 복사", lambda: self.host.copy_image(img))
-                menu.addAction("이미지 파일로 저장...", lambda: self._save_image(img))
+                menu.addAction(tr("ed.copy_image"), lambda: self.host.copy_image(img))
+                menu.addAction(tr("ed.save_image"), lambda: self._save_image(img))
         menu.addSeparator()
-        menu.addAction("서식 없이 복사\tCtrl+Shift+C", lambda: self.host.copy_selection(self, plain=True))
-        menu.addAction("서식 없이 붙여넣기\tCtrl+Shift+V", self.host.paste_plain)
-        menu.addAction("선택 부분 서식 지우기", self.host.clear_format)
+        menu.addAction(tr("ed.copy_plain") + "\t" + plat.key_label("Ctrl+Shift+C"), lambda: self.host.copy_selection(self, plain=True))
+        menu.addAction(tr("act.paste_plain") + "\t" + plat.key_label("Ctrl+Shift+V"), self.host.paste_plain)
+        menu.addAction(tr("act.clear_fmt"), self.host.clear_format)
         menu.exec(e.globalPos())
 
     def _save_image(self, img: QImage):
-        fn, _ = QFileDialog.getSaveFileName(self, "이미지 저장", "image.png", "PNG (*.png);;JPEG (*.jpg)")
+        fn, _ = QFileDialog.getSaveFileName(self, tr("ed.save_image_title"), "image.png", "PNG (*.png);;JPEG (*.jpg)")
         if fn:
             img.save(fn)
 
@@ -389,7 +391,7 @@ class CodeEdit(_CopyMixin, QPlainTextEdit):
                     except OSError:
                         pass
         elif src.hasImage():
-            self.host.status("텍스트 메모에는 이미지를 넣을 수 없어요. 서식 메모(Ctrl+N)를 쓰세요.")
+            self.host.status(tr("ed.no_image", key=plat.key_label("Ctrl+N")))
 
     def createMimeDataFromSelection(self):
         md = super().createMimeDataFromSelection()
@@ -430,10 +432,10 @@ class CodeEdit(_CopyMixin, QPlainTextEdit):
         menu.addSeparator()
         if val:
             short = val if len(val) <= 24 else val[:10] + "…" + val[-6:]
-            menu.addAction(f"이 줄 값만 복사  ({short})", lambda: self.host.copy_text(val, "값만 복사했어요"))
+            menu.addAction(tr("ed.copy_value", v=short), lambda: self.host.copy_text(val, tr("ed.copied_value")))
         if line.strip():
-            menu.addAction("이 줄 복사", lambda: self.host.copy_text(line.strip(), "줄을 복사했어요"))
+            menu.addAction(tr("ed.copy_line"), lambda: self.host.copy_text(line.strip(), tr("ed.copied_line")))
         menu.addSeparator()
-        menu.addAction("JSON 보기 좋게 정리", self.host.json_pretty)
-        menu.addAction("JSON 한 줄로 줄이기", self.host.json_compact)
+        menu.addAction(tr("act.json_pretty"), self.host.json_pretty)
+        menu.addAction(tr("act.json_compact"), self.host.json_compact)
         menu.exec(e.globalPos())

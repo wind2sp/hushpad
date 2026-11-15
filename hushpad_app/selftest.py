@@ -12,12 +12,16 @@ def run() -> int:
     out = Path(tempfile.gettempdir()) / "hushpad_selftest.txt"
     lines, ok = [], True
 
-    def check(name, fn):
+    def check(name, fn, soft=False):
+        """soft=True: 실패해도 전체 결과는 통과 (CI처럼 키체인이 없을 수 있는 환경)."""
         nonlocal ok
         try:
             r = fn()
             lines.append(f"PASS {name}" + (f" — {r}" if r else ""))
         except Exception as e:
+            if soft:
+                lines.append(f"WARN {name}: {e!r}")
+                return
             ok = False
             lines.append(f"FAIL {name}: {e!r}\n{traceback.format_exc()}")
 
@@ -26,20 +30,86 @@ def run() -> int:
     from PySide6.QtWidgets import QApplication
     app = QApplication.instance() or QApplication(sys.argv)
 
-    from . import crypto, notepad_import
+    from . import crypto, i18n, notepad_import, plat
     from .common import Config, resource
     from .store import Store
 
     def icons():
-        for n in ("app.ico", "app.png", "app_small.png"):
+        names = ["app.ico", "app.png", "app_small.png"] + (["app.icns"] if plat.IS_MAC else [])
+        for n in names:
             p = resource("assets", n)
             assert p.is_file() and p.stat().st_size > 100, p
         return "assets OK"
     check("icon files bundled", icons)
 
-    def dpapi():
-        assert crypto.dpapi_unprotect(crypto.dpapi_protect(b"secret-123")) == b"secret-123"
-    check("DPAPI roundtrip", dpapi)
+    def platform_layer():
+        assert plat.select("win32") == "win" and plat.select("darwin") == "mac" and plat.select("linux") == "base"
+        assert plat.NAME == plat.select()
+        if not plat.IS_WIN:
+            assert "hushpad_app.plat.win" not in sys.modules, "Windows-only module imported"
+        return f"{plat.NAME} (keystore {plat.keystore_name or 'none'})"
+    check("platform layer", platform_layer)
+
+    def keystore():
+        vid = "selftest-" + os.urandom(4).hex()
+        k = os.urandom(32)
+        crypto.remember_key(vid, k)
+        try:
+            if plat.IS_WIN or plat.IS_MAC:
+                assert crypto.recall_key(vid) == k, "recall failed"
+        finally:
+            crypto.forget_key(vid)
+        assert crypto.recall_key(vid) is None, "forget failed"
+        if plat.IS_WIN:
+            assert plat._impl.dpapi_unprotect(plat._impl.dpapi_protect(b"secret-123")) == b"secret-123"
+        return plat.keystore_name
+    check("key cache roundtrip", keystore, soft=not plat.IS_WIN)
+
+    def catalogs():
+        import re
+        cats = {lg: i18n.catalog(lg) for lg in i18n.SUPPORTED}
+        base = set(cats["ko"])
+        assert len(base) > 200, f"ko catalog too small ({len(base)})"
+        ph = re.compile(r"\{(\w+)")
+
+        def holders(v):
+            vals = v.values() if isinstance(v, dict) else [v]
+            return {m for x in vals for m in ph.findall(x)}
+        for lg, c in cats.items():
+            missing, extra = base - set(c), set(c) - base
+            assert not missing and not extra, f"{lg}: missing {sorted(missing)[:5]} extra {sorted(extra)[:5]}"
+            for k, v in c.items():
+                assert holders(v) == holders(cats["ko"][k]), f"{lg}:{k} placeholders differ"
+                if isinstance(v, dict):
+                    assert "other" in v, f"{lg}:{k} plural without 'other'"
+        return f"{len(base)} keys × {len(cats)} languages"
+    check("i18n catalogs", catalogs)
+
+    def tr_fallback():
+        saved = i18n.current()
+        cs = {lg: i18n.catalog(lg) for lg in i18n.SUPPORTED}
+        try:
+            cs["en"]["__t.en"] = "EN"
+            cs["ko"]["__t.en"] = "KO"
+            cs["ko"]["__t.ko"] = "KO only"
+            i18n.set_language("ja")
+            assert i18n.tr("__t.en") == "EN", "no English fallback"
+            assert i18n.tr("__t.ko") == "KO only", "no Korean fallback"
+            assert i18n.tr("__t.none") == "__t.none"
+            i18n.set_language("en")
+            assert i18n.tr("st.trashed", n=1).startswith("Moved 1 note ")
+            assert "3 notes" in i18n.tr("st.trashed", n=3)
+            i18n.set_language("ko")
+            assert i18n.tr("note.chars", n=1234) == "1,234자"
+            assert i18n.match("ko-KR") == "ko" and i18n.match("zh-Hans-CN") == "zh" and i18n.match("zh-TW") is None
+            assert i18n.match("ja_JP") == "ja" and i18n.match("de-DE") is None
+        finally:
+            for k in ("__t.en", "__t.ko"):
+                for c in cs.values():
+                    c.pop(k, None)
+            i18n.set_language(saved)
+        return "lang → en → ko → key"
+    check("tr() fallback", tr_fallback)
 
     tmp = Path(tempfile.mkdtemp(prefix="hsp-selftest-"))
 
