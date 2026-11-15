@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- 이 파일은 build-i18n.mjs가 _templates/download.html + i18n/{{_lang}}.json으로 만든 결과입니다. 직접 고치지 말고 템플릿·번역을 고친 뒤 다시 생성하세요. -->
+<html lang="{{_htmlLang}}" data-lang="{{_lang}}" data-root="{{_root}}" data-page="download" data-public="false">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{dl.title|a}}</title>
+<meta name="description" content="{{dl.description|a}}">
+<meta property="og:title" content="{{dl.ogTitle|a}}">
+<meta property="og:description" content="{{dl.description|a}}">
+{{> head}}
+</head>
+<body>
+{{> header}}
+
+<main id="main">
+  <section>
+    <div class="wrap">
+      <div class="dl-card">
+        <img src="{{_root}}assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
+        <h1 style="margin:0;font-size:30px">{{dl.h1}}</h1>
+        <div class="ver">{{dl.version}} <span data-cfg="version">1.0.0</span> · <span data-cfg="releaseDate">{{dl.releasePending}}</span> · {{dl.bits}}</div>
+
+        <div class="when-public">
+          <a class="btn primary" data-href="downloadUrl" href="#" aria-disabled="true">⬇ {{dl.getBefore}}<span data-cfg="fileName">Hushpad-win64.zip</span>{{dl.getAfter}}</a>
+          <div style="margin-top:10px;font-size:14px;color:var(--muted)"><span data-cfg="fileSize"></span>
+            · <a data-href="releaseUrl" href="#">{{dl.viewRelease}}</a></div>
+        </div>
+        <div class="when-private">
+          <a class="btn primary" aria-disabled="true" href="#">{{dl.soon}}</a>
+          <p class="notice">{{dl.notice}}</p>
+        </div>
+        {{dl.uiNote}}
+      </div>
+
+      <div class="req">
+        <div class="box">
+          <h3>{{dl.install.h}}</h3>
+          <ol>
+            <li>{{dl.install.s1}}</li>
+            <li>{{dl.install.s2}}</li>
+            <li>{{dl.install.s3}}</li>
+          </ol>
+        </div>
+        <div class="box">
+          <h3>{{dl.smart.h}}</h3>
+          <p>{{dl.smart.p}}</p>
+        </div>
+        <div class="box">
+          <h3>{{dl.hash.h}}</h3>
+          <p>{{dl.hash.p}}</p>
+          <code class="sum" id="sha256">{{dl.hash.pending}}</code>
+          <button class="btn small when-public" type="button" data-copy="sha256" data-copied="{{dl.hash.copied|a}}" style="margin-top:8px">{{dl.hash.copy}}</button>
+        </div>
+        <div class="box">
+          <h3>{{dl.req.h}}</h3>
+          <p>{{dl.req.p}}</p>
+        </div>
+        <div class="box">
+          <h3>{{dl.remove.h}}</h3>
+          <p>{{dl.remove.p}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}
+</body>
+</html>

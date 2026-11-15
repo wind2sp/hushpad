@@ -1,0 +1,164 @@
+<!doctype html>
+<!-- 이 파일은 build-i18n.mjs가 _templates/index.html + i18n/{{_lang}}.json으로 만든 결과입니다. 직접 고치지 말고 템플릿·번역을 고친 뒤 다시 생성하세요. -->
+<html lang="{{_htmlLang}}" data-lang="{{_lang}}" data-root="{{_root}}" data-page="index" data-public="false">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{index.title|a}}</title>
+<meta name="description" content="{{index.description|a}}">
+<meta property="og:title" content="{{index.ogTitle|a}}">
+<meta property="og:description" content="{{index.ogDescription|a}}">
+{{> head}}
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3M12 14.5v2"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.6A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.2 3.9M6.4 6.9C3.9 8.6 2.5 12 2.5 12S6 18.5 12 18.5c1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h1.5l1.5-2h6l1.5 2H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/></symbol>
+  </defs>
+</svg>
+
+{{> header}}
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <img class="app-icon" src="{{_root}}assets/img/icon-256.png" alt="{{index.iconAlt|a}}" width="96" height="96">
+      <span class="eyebrow">{{index.eyebrow}}</span>
+      <h1>{{index.h1}}</h1>
+      <p class="lead">{{index.lead}}</p>
+      <div class="cta">
+        <a class="btn primary" href="download.html">{{index.ctaDownload}}</a>
+        <a class="btn" href="#features">{{index.ctaMore}}</a>
+      </div>
+      <div class="meta">{{index.metaVersion}} <span data-cfg="version">1.0.0</span> · {{index.metaRest}}</div>
+      <div class="shot">
+        <img class="light" src="{{_root}}assets/img/app-light.png" alt="{{index.shotLightAlt|a}}" width="1280" height="760">
+        <img class="dark" src="{{_root}}assets/img/app-dark.png" alt="{{index.shotDarkAlt|a}}" width="1280" height="760" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>{{index.pains.h2}}</h2>
+        <p>{{index.pains.p}}</p>
+      </div>
+      <div class="pains">
+        <div class="pain"><div class="q">{{index.pains.q1}}</div><div class="a">{{index.pains.a1}}</div></div>
+        <div class="pain"><div class="q">{{index.pains.q2}}</div><div class="a">{{index.pains.a2}}</div></div>
+        <div class="pain"><div class="q">{{index.pains.q3}}</div><div class="a">{{index.pains.a3}}</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>{{index.feat.h2}}</h2>
+        <p>{{index.feat.p}}</p>
+      </div>
+      <div class="grid">
+        <div class="feat"><div class="ic"><svg><use href="#i-save"/></svg></div><h3>{{index.feat.save.h}}</h3><p>{{index.feat.save.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-lock"/></svg></div><h3>{{index.feat.lock.h}}</h3><p>{{index.feat.lock.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-eye-off"/></svg></div><h3>{{index.feat.hide.h}}</h3><p>{{index.feat.hide.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-copy"/></svg></div><h3>{{index.feat.copy.h}}</h3><p>{{index.feat.copy.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>{{index.feat.code.h}}</h3><p>{{index.feat.code.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>{{index.feat.shot.h}}</h3><p>{{index.feat.shot.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>{{index.feat.folder.h}}</h3><p>{{index.feat.folder.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>{{index.feat.sync.h}}</h3><p>{{index.feat.sync.p}}</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>{{index.feat.search.h}}</h3><p>{{index.feat.search.p}}</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="capture">
+    <div class="wrap split">
+      <div>
+        <div class="sec-head" style="text-align:left;margin:0 0 22px">
+          <h2>{{index.capture.h2}}</h2>
+          <p>{{index.capture.p}}</p>
+        </div>
+        <ul class="checks">
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.capture.b1}}</b><span>{{index.capture.s1}}</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.capture.b2}}</b><span>{{index.capture.s2}}</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.capture.b3}}</b><span>{{index.capture.s3}}</span></div></li>
+        </ul>
+      </div>
+      <div class="capture-demo" aria-hidden="true">
+        <div class="row">
+          <div class="pane"><b>{{index.capture.mine}}</b><div class="ghost">{{index.capture.ghost}}</div></div>
+          <div class="pane"><b>{{index.capture.theirs}}</b><div class="ghost gone">{{index.capture.gone}}</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="security">
+    <div class="wrap split">
+      <div>
+        <div class="sec-head" style="text-align:left;margin:0 0 22px">
+          <h2>{{index.sec.h2}}</h2>
+          <p>{{index.sec.p}}</p>
+        </div>
+        <ul class="checks">
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.sec.b1}}</b><span>{{index.sec.s1}}</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.sec.b2}}</b><span>{{index.sec.s2}}</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.sec.b3}}</b><span>{{index.sec.s3}}</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.sec.b4}}</b><span>{{index.sec.s4}}</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>{{index.sec.b5}}</b><span>{{index.sec.s5}}</span></div></li>
+        </ul>
+      </div>
+      <div class="vault" role="img" aria-label="{{index.sec.vaultAria|a}}" translate="no">
+<span class="dim">Documents\Hushpad\</span><br>
+├─ vault.json <span class="dim">{{index.sec.vKey}}</span><br>
+├─ notes\<br>
+│ &nbsp;├─ <span class="acc">20261115-143205-a1b2.own</span><br>
+│ &nbsp;└─ <span class="acc">20261115-151740-9c0e.own</span><br>
+├─ history\ <span class="dim">{{index.sec.vHistory}}</span><br>
+└─ media\ <span class="dim">{{index.sec.vMedia}}</span><br><br>
+<span class="dim">$ type notes\20261115-143205-a1b2.own</span><br>
+OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓░█▒▓<br>
+<span class="dim">{{index.sec.vSeen}}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="keys">
+    <div class="wrap">
+      <div class="sec-head"><h2>{{index.keys.h2}}</h2><p>{{index.keys.p}}</p></div>
+      <div class="keys">
+        <div><span>{{index.keys.k1}}</span><kbd>Ctrl+Alt+N</kbd></div>
+        <div><span>{{index.keys.k2}}</span><kbd>Ctrl+Alt+M</kbd></div>
+        <div><span>{{index.keys.k3}}</span><kbd>Ctrl+Alt+S</kbd></div>
+        <div><span>{{index.keys.k4}}</span><kbd>Ctrl+Alt+R</kbd></div>
+        <div><span>{{index.keys.k5}}</span><kbd>Ctrl+K</kbd></div>
+        <div><span>{{index.keys.k6}}</span><kbd>Ctrl+Shift+C / V</kbd></div>
+        <div><span>{{index.keys.k7}}</span><kbd>Ctrl+L</kbd></div>
+        <div><span>{{index.keys.k8}}</span><kbd>Ctrl+Shift+H</kbd></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head"><h2>{{index.faq.h2}}</h2></div>
+      <div class="faq">
+{{_faq}}
+      </div>
+    </div>
+  </section>
+</main>
+
+{{> footer}}
+</body>
+</html>

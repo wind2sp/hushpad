@@ -23,13 +23,12 @@ def _set_app_id():
 
 
 def _install_qt_translations(app, lang):
-    """Qt 기본 단추(OK·Cancel·Yes…)와 입력 칸 오른쪽 클릭 메뉴를 고른 언어로.
-    한국어는 지금 화면(승인된 그대로)을 바꾸지 않으려고 넣지 않는다."""
-    if lang not in ("ja", "zh"):
+    """Qt 기본 단추(OK·Cancel·Yes…)와 입력 칸 오른쪽 클릭 메뉴를 고른 언어로."""
+    if lang not in ("ko", "ja", "zh"):
         return
     from PySide6.QtCore import QLibraryInfo, QLocale, QTranslator
     tr = QTranslator(app)
-    loc = QLocale({"ja": "ja_JP", "zh": "zh_CN"}[lang])
+    loc = QLocale({"ko": "ko_KR", "ja": "ja_JP", "zh": "zh_CN"}[lang])
     if tr.load(loc, "qtbase", "_", QLibraryInfo.path(QLibraryInfo.TranslationsPath)):
         app.installTranslator(tr)
 

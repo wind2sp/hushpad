@@ -1,0 +1,216 @@
+{
+  "meta": {
+    "htmlLang": "en",
+    "ogLocale": "en_US",
+    "label": "English",
+    "short": "EN"
+  },
+  "common": {
+    "skip": "Skip to content",
+    "navAria": "Main menu",
+    "langAria": "Language",
+    "ogImageAlt": "Hushpad — Write quietly. Seen by no one.",
+    "nav": {
+      "features": "Features",
+      "security": "Security",
+      "faq": "FAQ",
+      "download": "Download"
+    },
+    "footer": {
+      "tagline": "Write quietly. Seen by no one. A Windows notepad that saves as you type and encrypts every note.",
+      "nameLine": "<b>hush</b> (as in “shh”) + <b>pad</b> (a notepad): a notepad that keeps quiet about what you write.",
+      "exploreH": "Explore",
+      "projectH": "Project",
+      "repoOn": "GitHub repository",
+      "repoOff": "GitHub repository (coming soon)",
+      "issuesOn": "Report an issue",
+      "issuesOff": "Report an issue (after release)",
+      "tmH": "Trademarks",
+      "tm": "Windows is a trademark of Microsoft Corporation. Hushpad is not affiliated with or sponsored by Microsoft.",
+      "ossH": "Open source used",
+      "oss": "Qt for Python (PySide6, LGPLv3), cryptography (Apache-2.0/BSD), Pillow (HPND), PyInstaller.",
+      "privacyH": "Privacy",
+      "privacy": "Neither the Hushpad app nor this website uses accounts, analytics or ad scripts."
+    }
+  },
+  "index": {
+    "title": "Hushpad — The quiet, private notepad for Windows",
+    "description": "A Windows notepad that saves as you type, encrypts every note, and stays invisible to screenshots and screen sharing. Passwords, API keys, HTML, JSON and screenshots, all in one place.",
+    "ogTitle": "Hushpad — The quiet, private notepad",
+    "ogDescription": "Auto-save · Every note encrypted · A window screenshots can't see. A notepad for Windows.",
+    "iconAlt": "Hushpad icon",
+    "eyebrow": "A notepad for Windows 10 & 11",
+    "h1": "Write quietly. <em>Seen by no one.</em>",
+    "lead": "What you type is saved as you go, no save button needed. Every note is encrypted and kept in one folder, and the window never shows up in screenshots or screen shares. Passwords, API keys, HTML, JSON and screenshots, all in one place.",
+    "ctaDownload": "Download for Windows",
+    "ctaMore": "What makes it different",
+    "metaVersion": "Version",
+    "metaRest": "No account, server or ads · Works fully offline",
+    "shotLightAlt": "Hushpad window — note list and folders on the left, notes open as tabs on the right (Korean interface)",
+    "shotDarkAlt": "Hushpad in dark mode — a code note with color-highlighted JSON",
+    "pains": {
+      "h2": "If this is how you use Notepad",
+      "p": "Tabs that stick around without saving are handy, until they start piling up.",
+      "q1": "“Too many tabs, and they all look alike”",
+      "a1": "Sort things out with the note list, folders and search, and each tab shows when the note was created. A single click opens a preview tab, so browsing around doesn't leave a trail of new tabs.",
+      "q2": "“I worry everything's gone if my PC shuts down”",
+      "a2": "Your text is safely written to disk as you type, and a previous version is kept every 10 minutes. Even if the power cuts out mid-save, your latest text is intact.",
+      "q3": "“I keep passwords and API keys in Notepad”",
+      "a3": "Every note is stored only as an encrypted file. Secret notes are masked each time you open them, and anything you copy from them is cleared from the clipboard after 30 seconds."
+    },
+    "feat": {
+      "h2": "Lightweight, with just what you need",
+      "p": "Start typing right away, just like Windows Notepad, while Hushpad quietly handles what Notepad never could.",
+      "save": {
+        "h": "No save button",
+        "p": "Saved the moment you type. No need to name anything: notes are sorted by the date and time they were created, all in one folder."
+      },
+      "lock": {
+        "h": "Every note encrypted",
+        "p": "Open the files and there's nothing to read. Other apps, search indexers and cloud services can't see what's inside."
+      },
+      "hide": {
+        "h": "Invisible to capture",
+        "p": "Screenshots, screen recordings and screen sharing in video calls don't pick up the Hushpad window. Only you can see it."
+      },
+      "copy": {
+        "h": "Rich text or plain text",
+        "p": "Paste formatted text from the web as is, then copy it out as plain text with <kbd>Ctrl+Shift+C</kbd>. Rich notes always keep a plain-text version alongside."
+      },
+      "code": {
+        "h": "HTML & JSON in a hurry",
+        "p": "Code notes come with line numbers, syntax colors and auto-indent, plus one-step JSON formatting. On a <code>KEY=value</code> line, copy just the value."
+      },
+      "shot": {
+        "h": "Screenshots & short recordings",
+        "p": "From anywhere, press <kbd>Ctrl+Alt+S</kbd> to capture an area or <kbd>Ctrl+Alt+R</kbd> to record the screen. Results land straight in a note, and videos are encrypted too."
+      },
+      "folder": {
+        "h": "Folders, merge, trash",
+        "p": "Drag notes into folders, merge several into one, and restore deleted notes from the trash. You can even round up notes you haven't opened in a while and tidy them away."
+      },
+      "sync": {
+        "h": "Across your own PCs",
+        "p": "Keep your vault folder in Dropbox or OneDrive and open it on another PC with the same password. One note is one file, so conflicts are rare."
+      },
+      "search": {
+        "h": "Everything from Ctrl+K",
+        "p": "Search note titles, note contents and every command from one box, then press Enter to run it. <kbd>Ctrl+Alt+M</kbd> saves your clipboard straight to a new note."
+      }
+    },
+    "capture": {
+      "h2": "On your screen. Not in the capture.",
+      "p": "Keep a note open while you share your screen, or take a screenshot: wherever the Hushpad window sits, the capture shows what's behind it. So go ahead and capture without moving the window out of the way.",
+      "b1": "Screenshot and recording tools, video-call sharing",
+      "s1": "Uses the capture exclusion built into Windows (Windows 10 version 2004 or later).",
+      "b2": "Recording controls stay out of the shot",
+      "s2": "The recording frame and the ⏸ ⏹ bar appear only on your screen.",
+      "b3": "Turn it off when you need to",
+      "s3": "When you do want to show a note on a screen share, one click in the menu turns it off.",
+      "mine": "Your monitor",
+      "ghost": "Hushpad window",
+      "theirs": "Screenshot / screen share",
+      "gone": "(not visible)"
+    },
+    "sec": {
+      "h2": "How your notes stay protected",
+      "p": "Hushpad has no server. Your notes live only in the folder you choose, and every file in it is encrypted.",
+      "b1": "AES-256-GCM encryption",
+      "s1": "Notes, previous versions, videos, even folder names: everything is stored encrypted.",
+      "b2": "A key derived from your password (scrypt)",
+      "s2": "Without the password, the files can't be decrypted. If you forget it, not even the developer can recover them.",
+      "b3": "Enter it once on your own PC",
+      "s3": "Hushpad remembers the key by tying it to your Windows account (DPAPI). On another account or another PC, you'll need the password again.",
+      "b4": "A quiet clipboard, too",
+      "s4": "Copied text is flagged to stay out of Windows clipboard history and cloud clipboard sync.",
+      "b5": "No account, no tracking, no internet",
+      "s5": "Neither the app nor this website uses analytics or ad scripts.",
+      "vaultAria": "Example vault folder layout",
+      "vKey": "— key wrapped by your password",
+      "vHistory": "— previous versions",
+      "vMedia": "— recorded videos",
+      "vSeen": "# this is all anyone sees"
+    },
+    "keys": {
+      "h2": "Shortcuts that become second nature",
+      "p": "Some shortcuts work even while the window is closed to the tray.",
+      "k1": "New note, from anywhere",
+      "k2": "Save the clipboard as a note",
+      "k3": "Area screenshot, from anywhere",
+      "k4": "Screen recording, from anywhere",
+      "k5": "Find notes & commands",
+      "k6": "Copy / paste as plain text",
+      "k7": "Lock",
+      "k8": "View previous versions"
+    },
+    "faq": {
+      "h2": "Frequently asked questions",
+      "items": [
+        {
+          "q": "Can I bring over the tabs I have open in Windows Notepad?",
+          "a": "Yes. Menu › File › Import Windows Notepad tabs copies them over, unsaved tabs included, and leaves Windows Notepad untouched."
+        },
+        {
+          "q": "What if I forget my password?",
+          "a": "There's no way to recover it. Hushpad is built so that no one, not even its developer, can open your notes without the password. Write it down somewhere safe when you first set it."
+        },
+        {
+          "q": "How do I use it on more than one PC?",
+          "a": "Keep your vault folder inside a synced folder such as Dropbox or OneDrive, then choose the same folder on your other PC and enter the same password. Changes made on another PC show up within seconds, and if both sides edit at the same time, one version is kept separately as a “conflict copy.”"
+        },
+        {
+          "q": "Can I add images or videos?",
+          "a": "You can paste or drag images into rich-text notes, and screenshots and short screen recordings (up to 3 minutes) go straight in. Videos play inside the app and are stored encrypted."
+        },
+        {
+          "q": "Does it send anything over the internet?",
+          "a": "No. Hushpad has no account and no server, and it doesn't connect to the internet while it runs."
+        },
+        {
+          "q": "Where do I get it?",
+          "a": "Official releases are published on GitHub. Once a release is out, you can grab it straight from this site's download page."
+        }
+      ]
+    }
+  },
+  "dl": {
+    "title": "Download — Hushpad",
+    "description": "Download Hushpad for Windows. Installation steps, system requirements and file verification (SHA-256).",
+    "ogTitle": "Download Hushpad",
+    "h1": "Hushpad for Windows",
+    "version": "Version",
+    "releasePending": "Coming soon",
+    "bits": "64-bit",
+    "getBefore": "Download ",
+    "getAfter": "",
+    "viewRelease": "View on GitHub Releases",
+    "soon": "Coming soon",
+    "notice": "We're getting the release version ready. Once it's out, you can download it right here, at this same address.",
+    "uiNote": "<p class=\"ui-note\">The app speaks Korean, English, Japanese and Simplified Chinese. Change it anytime under View › Language.</p>",
+    "install": {
+      "h": "Installation",
+      "s1": "Download the zip file and extract it wherever you like (for example <code>C:\\Program Files\\Hushpad</code> or your Documents folder).",
+      "s2": "Run <code>Hushpad.exe</code>. There's no installer.",
+      "s3": "On first launch, choose a folder for your notes and set a password. To use Hushpad on several PCs, pick a folder inside Dropbox or OneDrive."
+    },
+    "smart": {
+      "h": "If you see “Windows protected your PC”",
+      "p": "Because Hushpad is new, Windows SmartScreen may show a warning. Check that your download matches the SHA-256 value below, then click “More info › Run anyway.”"
+    },
+    "hash": {
+      "h": "Verify the file (SHA-256)",
+      "p": "In PowerShell, compare this value with the output of <code>Get-FileHash .\\filename.zip</code>.",
+      "pending": "Shown at release",
+      "copy": "Copy value",
+      "copied": "Copied"
+    },
+    "req": {
+      "h": "System requirements",
+      "p": "Windows 10 (version 2004 or later) or Windows 11, 64-bit. Hiding the window from capture needs Windows 10 version 2004 or later. No internet connection required."
+    },
+    "remove": {
+      "h": "Uninstalling",
+      "p": "Just delete the program folder. Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too."
+    }
+  }
+}

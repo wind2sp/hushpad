@@ -6,13 +6,15 @@ ErrorDocument 404 /hushpad/404.html
 # 상위 폴더(/www)의 WordPress 주소 규칙이 이 폴더에 적용되지 않게 하고, 없는 주소는 우리 404로
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # 다국어 생성용 원본 폴더(_templates/, i18n/)는 있어도 없는 것처럼 404
+  RewriteRule ^(_templates|i18n)(/|$) - [R=404,L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ - [R=404,L]
 </IfModule>
 
-# 안내·원본 파일은 밖에서 열리지 않게
-<FilesMatch "^(README\.txt|make_site_assets\.py|.*\.md)$">
+# 안내·원본 파일은 밖에서 열리지 않게 (하위 폴더에도 적용)
+<FilesMatch "^(README\.txt|make_site_assets\.py|build-i18n\.mjs|.*\.md)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
@@ -21,6 +23,13 @@ ErrorDocument 404 /hushpad/404.html
     Deny from all
   </IfModule>
 </FilesMatch>
+
+# mod_rewrite가 없을 때를 위한 예비: 원본 폴더 차단
+<IfModule !mod_rewrite.c>
+  <IfModule mod_alias.c>
+    RedirectMatch 404 ^/hushpad/(_templates|i18n)(/|$)
+  </IfModule>
+</IfModule>
 
 <IfModule mod_mime.c>
   AddType application/manifest+json .webmanifest

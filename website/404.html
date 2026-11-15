@@ -3,21 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>페이지를 찾을 수 없어요 — Hushpad</title>
+<title>페이지를 찾을 수 없어요 · Page not found — Hushpad</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/hushpad/favicon.ico" sizes="any">
-<link rel="stylesheet" href="/hushpad/assets/css/site.css">
+<link rel="stylesheet" href="/hushpad/assets/css/site.css?v=3">
 </head>
 <body>
+<!-- 404는 어느 깊이의 주소에서도 열리므로 모든 경로를 /hushpad/ 절대 경로로 씁니다. 언어 자동 이동(lang.js)은 넣지 않습니다. -->
 <main>
   <section class="hero">
     <div class="wrap">
       <img class="app-icon" src="/hushpad/assets/img/icon-256.png" alt="" width="96" height="96">
       <h1>쉿, 여기는 <em>비어 있어요</em></h1>
-      <p class="lead">찾는 페이지가 없거나 주소가 바뀌었어요.</p>
-      <div class="cta"><a class="btn primary" href="/hushpad/">Hushpad 홈으로</a><a class="btn" href="/hushpad/download.html">다운로드</a></div>
+      <p class="lead">찾는 페이지가 없거나 주소가 바뀌었어요.<br>
+        <span lang="en">This page doesn't exist or has moved.</span><br>
+        <span lang="ja">お探しのページは見つかりませんでした。</span><br>
+        <span lang="zh-Hans">找不到您要访问的页面。</span></p>
+      <div class="cta">
+        <a class="btn primary" href="/hushpad/" hreflang="ko" lang="ko">한국어</a>
+        <a class="btn" href="/hushpad/en/" hreflang="en" lang="en">English</a>
+        <a class="btn" href="/hushpad/ja/" hreflang="ja" lang="ja">日本語</a>
+        <a class="btn" href="/hushpad/zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a>
+      </div>
+      <p class="meta"><a href="/hushpad/download.html">다운로드</a> · <a href="/hushpad/en/download.html" lang="en">Download</a> · <a href="/hushpad/ja/download.html" lang="ja">ダウンロード</a> · <a href="/hushpad/zh/download.html" lang="zh-Hans">下载</a></p>
     </div>
   </section>
 </main>
+<footer>
+  <div class="wrap">
+    <div class="legal" style="margin:0;padding:0;border:0">
+      <p>© 2026 NINEROW partners Co., Ltd.</p>
+      <p lang="en">Windows is a trademark of Microsoft Corporation. Hushpad is not affiliated with or sponsored by Microsoft.</p>
+    </div>
+  </div>
+</footer>
 </body>
 </html>

@@ -5,3 +5,6 @@ __pycache__/
 build.log
 *.pyc
 /website/_preview/
+.claude/
+marketing/video/*.mp4
+marketing/video/qa/
