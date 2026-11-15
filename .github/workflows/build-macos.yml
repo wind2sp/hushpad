@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-14 = Apple Silicon(arm64). Intel은 고를 때만 (macos-13 러너는 2025년 말 종료됨)
-        include: ${{ fromJSON(inputs.intel && '[{"runner":"macos-14","arch":"arm64"},{"runner":"macos-15-intel","arch":"x86_64"}]' || '[{"runner":"macos-14","arch":"arm64"}]') }}
+        # macos-latest = Apple Silicon(arm64), 그때그때 GitHub 기본 Mac. Intel은 고를 때만 (macos-13 러너는 2025년 말 종료됨)
+        include: ${{ fromJSON(inputs.intel && '[{"runner":"macos-latest","arch":"arm64"},{"runner":"macos-15-intel","arch":"x86_64"}]' || '[{"runner":"macos-latest","arch":"arm64"}]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
     steps:
