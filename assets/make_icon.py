@@ -3,7 +3,8 @@
 디자인 시안은 icon_concepts.py에 있다 (A 서리유리 메모 · B 흩어지는 메모지 · C H 모양 메모지).
 CHOSEN을 바꾸면 다른 시안으로 바뀐다. 기본: B — 한쪽 끝이 조각나 사라지는 메모지 = 캡처에 안 보이는 조용한 메모장.
 1024px 그림을 줄이고, 40px 이하는 시안마다 따로 그린 단순한 그림을 쓴다.
-결과: app.ico(16~256), app.png(256), app_small.png(32), app_1024.png, icon_preview.png(밝은·어두운 배경)
+결과: app.ico(16~256), app.icns(macOS, 16~1024), app.png(256), app_small.png(32), app_1024.png,
+      icon_preview.png(밝은·어두운 배경)
 """
 import sys
 from pathlib import Path
@@ -24,6 +25,10 @@ def main():
     frames[256].save(HERE / "app.png")
     frames[32].save(HERE / "app_small.png")
     big.save(HERE / "app_1024.png")
+    # macOS 앱 아이콘 (16~1024px). 32px 이하는 단순한 그림을 그대로 쓰고, 512px만 큰 그림에서 줄인다.
+    icns_imgs = [frames[16], frames[32], frames[64], frames[128], frames[256],
+                 big.resize((512, 512), Image.LANCZOS)]
+    big.save(HERE / "app.icns", format="ICNS", append_images=icns_imgs)
     pad = 20
     w = sum(ic.SIZES) + pad * (len(ic.SIZES) + 1)
     h = 256 + pad * 2

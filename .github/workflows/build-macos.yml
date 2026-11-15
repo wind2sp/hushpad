@@ -1,0 +1,53 @@
+# macOS 앱 빌드 — 손으로만 실행 (Actions › build-macos › Run workflow).
+# 비공개 저장소라 macOS 실행 시간이 유료이므로 push·PR에는 돌지 않는다.
+# 결과: Hushpad-macos-<arm64|x86_64>.zip (서명·공증 없음 — 처음 열 때 오른쪽 클릭 › 열기)
+name: build-macos
+
+on:
+  workflow_dispatch:
+    inputs:
+      intel:
+        description: "Intel(x86_64)용도 만들기 (macos-15-intel 러너, 시간이 더 듦)"
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-14 = Apple Silicon(arm64). Intel은 고를 때만 (macos-13 러너는 2025년 말 종료됨)
+        include: ${{ fromJSON(inputs.intel && '[{"runner":"macos-14","arch":"arm64"},{"runner":"macos-15-intel","arch":"x86_64"}]' || '[{"runner":"macos-14","arch":"arm64"}]') }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Self-test (source)
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python hushpad_main.py --selftest || { cat "$(python -c 'import tempfile;print(tempfile.gettempdir())')/hushpad_selftest.txt"; exit 1; }
+
+      - name: Build Hushpad.app (includes self-test of the bundle)
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python build.py
+
+      - name: Zip
+        run: ditto -c -k --keepParent dist/Hushpad.app "Hushpad-macos-${{ matrix.arch }}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hushpad-macos-${{ matrix.arch }}
+          path: Hushpad-macos-${{ matrix.arch }}.zip
+          retention-days: 14

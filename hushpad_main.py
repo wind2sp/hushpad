@@ -2,10 +2,10 @@
 
 실행:  python hushpad_main.py
 점검:  python hushpad_main.py --selftest   (결과: %TEMP%\\hushpad_selftest.txt, 종료 코드 0 = 통과)
+Windows·macOS 공통 (OS마다 다른 부분은 hushpad_app/plat).
 """
 from __future__ import annotations
 
-import ctypes
 import getpass
 import os
 import sys
@@ -15,10 +15,23 @@ from pathlib import Path
 
 def _set_app_id():
     try:
+        from hushpad_app import plat
         from hushpad_app.common import APP_ID
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
+        plat.set_app_id(APP_ID)      # Windows: 작업 표시줄 아이콘 묶음 (창을 만들기 전에)
     except Exception:
         pass
+
+
+def _install_qt_translations(app, lang):
+    """Qt 기본 단추(OK·Cancel·Yes…)와 입력 칸 오른쪽 클릭 메뉴를 고른 언어로.
+    한국어는 지금 화면(승인된 그대로)을 바꾸지 않으려고 넣지 않는다."""
+    if lang not in ("ja", "zh"):
+        return
+    from PySide6.QtCore import QLibraryInfo, QLocale, QTranslator
+    tr = QTranslator(app)
+    loc = QLocale({"ja": "ja_JP", "zh": "zh_CN"}[lang])
+    if tr.load(loc, "qtbase", "_", QLibraryInfo.path(QLibraryInfo.TranslationsPath)):
+        app.installTranslator(tr)
 
 
 def _log_crash(exc_type, exc, tb):
@@ -47,17 +60,24 @@ def main() -> int:
     from PySide6.QtNetwork import QLocalServer, QLocalSocket
     from PySide6.QtWidgets import QApplication, QMessageBox
 
-    from hushpad_app import crypto
+    from hushpad_app import crypto, i18n
     from hushpad_app.common import APP_NAME, Config, resource
+    from hushpad_app.i18n import tr
+
+    app = QApplication(sys.argv)
+    cfg = Config()
+    i18n.set_language(i18n.resolve(cfg.get("language", "system")))   # 창을 만들기 전에 언어를 정한다
+    _install_qt_translations(app, i18n.current())
     from hushpad_app.dialogs import SetupDialog
     from hushpad_app.store import Store
     from hushpad_app.window import MainWindow
 
-    app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME)
     app.setStyle("Fusion")   # QSS와 잘 맞는 기본 스타일
-    icon = QIcon(str(resource("assets", "app.ico")))
-    icon.addFile(str(resource("assets", "app.png")))
+    icon = QIcon(str(resource("assets", "app.png")))
+    if sys.platform == "win32":
+        icon = QIcon(str(resource("assets", "app.ico")))
+        icon.addFile(str(resource("assets", "app.png")))
     app.setWindowIcon(icon)
 
     # 하나만 실행: 이미 떠 있으면 그 창을 앞으로
@@ -73,15 +93,14 @@ def main() -> int:
     server = QLocalServer()
     server.listen(server_name)
 
-    cfg = Config()
     key, folder, reason = None, None, ""
     if cfg.get("data_dir") and crypto.vault_exists(Path(cfg["data_dir"])):
         folder = Path(cfg["data_dir"])
         key = crypto.recall_key(crypto.vault_id(folder))
         if key is None:
-            reason = "이 PC에서 처음 여는 보관 폴더이거나 암호가 바뀌었어요. 암호를 넣어 주세요."
+            reason = tr("main.first_open")
     elif cfg.get("data_dir"):
-        reason = f"보관 폴더를 찾을 수 없어요: {cfg['data_dir']}\n(동기화가 아직 안 됐거나 폴더가 옮겨졌을 수 있어요)"
+        reason = tr("main.missing", path=cfg["data_dir"])
     if key is None:
         d = SetupDialog(cfg.get("data_dir", ""), reason)
         d.setWindowIcon(icon)
@@ -95,7 +114,7 @@ def main() -> int:
     try:
         crypto.unseal(key, crypto.seal(key, b"ok"))
     except Exception:
-        QMessageBox.critical(None, APP_NAME, "암호화 모듈 점검에 실패했어요.")
+        QMessageBox.critical(None, APP_NAME, tr("main.crypto_fail"))
         return 1
 
     win = MainWindow(store, cfg, icon)

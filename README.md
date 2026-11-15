@@ -4,17 +4,24 @@
 임시 기록, 붙여넣기 전 보관, 암호·API 키, HTML·JSON, 스크린샷·짧은 녹화를 한곳에 조용히 담아 둡니다.
 모든 내용은 자동 저장·암호화되고, 창은 다른 프로그램의 캡처·화면 공유에 보이지 않습니다.
 
-실행: `dist\Hushpad\Hushpad.exe` (처음 실행하면 보관 폴더와 암호를 정합니다)
+실행: Windows `dist\Hushpad\Hushpad.exe` · macOS `Hushpad.app` (처음 실행하면 보관 폴더와 암호를 정합니다)
+
+## 언어
+- 한국어 · English · 日本語 · 简体中文. `⋯ › 보기 › 언어`에서 바꾸고, **지금 다시 시작**을 누르면 열린 메모를 모두 저장한 뒤 다시 켜집니다.
+- 기본은 **시스템 따라가기**: 운영체제 언어가 위 넷 중 하나면 그 언어, 아니면 영어(번체 중국어도 아직은 영어). 설정 파일의 `"language"`에 저장됩니다.
+- 날짜·"5분 전" 같은 시각도 언어에 맞춰 보입니다. 단축키는 언어와 상관없이 같습니다.
+- 일본어·중국어에서는 그 언어에 맞는 글꼴(Yu Gothic UI·Meiryo / Microsoft YaHei, macOS는 Hiragino Sans / PingFang SC)을 먼저 씁니다.
+- 일본어·중국어에서는 Qt 기본 단추(OK·Cancel 등)도 그 언어로 바뀝니다. 한국어 화면은 예전 그대로입니다.
 
 ## 저장
 - 저장 버튼이 없습니다. 쓰는 즉시(0.6초 뒤) 자동 저장되고, 저장할 때 임시 파일에 쓴 뒤 바꿔치기해서 저장 도중 꺼져도 이전 내용이 남습니다.
 - 모든 메모는 **보관 폴더 한 곳**에 메모 1개 = 파일 1개(`notes\20261115-143205-xxxx.own`)로, 만든 시각을 이름으로 저장됩니다.
 - 10분마다 이전 버전이 쌓입니다(메모마다 최근 40개) → `메모 › 이전 버전 보기` (Ctrl+Shift+H).
-- 하루 한 번 이 PC의 `%LOCALAPPDATA%\Hushpad\backups`에 보관 폴더를 zip으로 백업합니다(14일치, 암호화된 상태 그대로).
+- 하루 한 번 이 PC의 `%LOCALAPPDATA%\Hushpad\backups`(macOS: `~/Library/Application Support/Hushpad/backups`)에 보관 폴더를 zip으로 백업합니다(14일치, 암호화된 상태 그대로).
 
 ## 암호화·다른 프로그램과 안 섞이게
 - 파일 내용은 AES-256으로 암호화됩니다. 다른 프로그램·검색 색인·클라우드가 파일을 읽어도 내용을 알 수 없습니다.
-- 이 PC에서는 암호를 처음 한 번만 넣습니다(Windows 계정에 묶어 기억). 다른 Windows 계정이나 다른 PC에서는 풀 수 없습니다.
+- 이 PC에서는 암호를 처음 한 번만 넣습니다(Windows는 DPAPI로 Windows 계정에 묶어, macOS는 로그인 키체인에 기억). 다른 계정이나 다른 PC에서는 풀 수 없습니다.
 - **여러 PC에서 같이 쓰기**: 보관 폴더를 Dropbox·OneDrive 안에 두고, 다른 PC에서도 같은 폴더를 고른 다음 같은 암호를 넣으면 됩니다. 다른 PC에서 고친 내용은 3초 안에 반영되고, 양쪽에서 동시에 고치면 이 PC 쪽 내용이 "(충돌 사본)"으로 따로 저장됩니다.
 - 복사한 내용은 Windows 클립보드 기록(Win+V)·클라우드 클립보드에 남지 않습니다(`보안` 메뉴에서 끌 수 있음).
 - **비밀 메모**(🔒): 목록에 첫 줄이 보이지 않고, 복사하면 클립보드 관리 프로그램도 못 보며 30초 뒤 클립보드를 비웁니다.
@@ -67,8 +74,32 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 - **항상 위에 Ctrl+Alt+T**: 다른 프로그램에 옮겨 적을 때 창을 위에 고정.
 - **테마**: `⋯ › 보기 › 테마` — 시스템 따라가기·밝게·어둡게.
 
+## macOS
+같은 코드가 macOS에서도 돌도록 OS마다 다른 부분을 `hushpad_app\plat\`(win.py · mac.py · base.py)에 모았습니다. Windows 동작은 그대로입니다.
+
+| 기능 | Windows | macOS |
+|---|---|---|
+| 이 PC에 암호 기억 | DPAPI (`%LOCALAPPDATA%\Hushpad\keys.json`) | 로그인 키체인 (서비스 `Hushpad`, `/usr/bin/security`) |
+| 캡처·화면 공유에서 창 숨기기 | SetWindowDisplayAffinity | NSWindow 공유 끔(sharingType = None) |
+| 어디서든 쓰는 단축키 | Ctrl+Alt+S/R/N/M | ⌃⌥S/R/N/M (Control+Option, Carbon 단축키) |
+| 시작할 때 실행 | 레지스트리 Run 키 | `~/Library/LaunchAgents/com.hushpad.app.plist` (다음 로그인부터) |
+| 클립보드 기록에서 빼기 | Win+V 기록·클라우드 제외 형식 | `org.nspasteboard.TransientType`/`ConcealedType` 표시 |
+| 설정·백업 폴더 | `%APPDATA%`·`%LOCALAPPDATA%\Hushpad` | `~/Library/Application Support/Hushpad` |
+| 메모장 탭 가져오기, Windows 잠글 때 함께 잠그기, 제목 표시줄 색 | 있음 | 없음(메뉴에서 숨김). 제목 표시줄은 밝게/어둡게만 맞춤 |
+
+- 앱 안 단축키는 같은 키를 쓰고, macOS에서는 Qt가 Ctrl을 ⌘로 바꿉니다(메뉴·툴팁·팔레트 표시도 ⌘ 기호로).
+- **화면 기록 권한**: 스크린샷·녹화를 처음 하면 macOS가 권한을 묻습니다. 거절했거나 화면이 비어 찍히면
+  `시스템 설정 › 개인정보 보호 및 보안 › 화면 및 시스템 오디오 기록`에서 Hushpad를 켜고 다시 시작하라고 안내합니다.
+- ⚠ **캡처 숨기기의 한계**: macOS 15 이상에서 ScreenCaptureKit을 쓰는 일부 캡처·화면 공유 프로그램은 창의 공유 끔 설정을 무시하고 Hushpad 창을 찍을 수 있습니다. Windows만큼 믿지 마세요.
+- 클립보드 표시는 PySide6에 `QUtiMimeConverter`가 있을 때만 붙습니다(없으면 그냥 복사). Maccy·Raycast·Alfred처럼 nspasteboard.org 약속을 따르는 클립보드 관리 프로그램만 이 표시를 존중합니다. 비밀 메모 30초 뒤 지우기는 그대로 동작합니다.
+- **서명·공증 안 됨**: 받은 `Hushpad.app`을 처음 열 때 "확인되지 않은 개발자" 경고가 뜨면 Finder에서 오른쪽 클릭 › 열기(또는 `시스템 설정 › 개인정보 보호 및 보안`의 "그래도 열기"). Apple Developer ID(연 99달러)로 서명하고 공증(notarize)하면 이 경고 없이 열리고, 키체인·화면 기록 권한도 앱 업데이트 뒤에 다시 묻지 않습니다.
+- 아직 실제 Mac에서 확인하지 못했습니다. Windows에서는 `python tests/sim_platform.py darwin`으로 macOS 경로를 흉내 내어 import·창 만들기가 죽지 않는지만 봅니다.
+
 ## 개발
-- 실행: `python hushpad_main.py` · 점검: `python hushpad_main.py --selftest` (결과 `%TEMP%\hushpad_selftest.txt`)
-- 빌드: `python build.py` → `dist\Hushpad\Hushpad.exe` (빌드 후 exe 자체 점검까지)
-- 필요: Python 3.14, PySide6 6.12 (Essentials + Addons), cryptography, Pillow, PyInstaller
-- 구성: `hushpad_app\` — crypto(암호), store(저장), editors(편집기), capture(캡처·녹화), window(주 창), notepad_import
+- 실행: `python hushpad_main.py` · 점검: `python hushpad_main.py --selftest` (결과 `%TEMP%\hushpad_selftest.txt` — 번역 문구 목록 네 개가 서로 맞는지도 검사)
+- 다른 OS 흉내: `python tests/sim_platform.py darwin` / `linux`
+- 빌드: `python build.py` → Windows `dist\Hushpad\Hushpad.exe`, macOS `dist/Hushpad.app` (빌드 후 자체 점검까지)
+- macOS 빌드는 GitHub Actions `build-macos`를 손으로 실행(Run workflow)합니다. push에는 돌지 않습니다(비공개 저장소라 macOS 시간이 유료). Apple Silicon(macos-14)이 기본, "intel"을 고르면 Intel(macos-15-intel)도 만들어 `Hushpad-macos-*.zip`으로 올립니다.
+- 필요: Python 3.14, PySide6 6.12 (Essentials + Addons), cryptography, Pillow, PyInstaller — 새 패키지 없음(macOS 기능은 ctypes로 시스템 라이브러리를 직접 부름)
+- 구성: `hushpad_app\` — crypto(암호), store(저장), editors(편집기), capture(캡처·녹화), window(주 창), notepad_import, i18n(번역), plat(OS별 기능)
+- 번역: 화면 문구는 모두 `tr("열쇠")`로 `hushpad_app\locales\{ko,en,ja,zh}.json`에서 가져옵니다. 문구를 더하면 네 파일에 같은 열쇠를 넣으세요(`열쇠@mac`은 macOS에서만 쓰는 문구). 언어별 화면: `docs\i18n\`

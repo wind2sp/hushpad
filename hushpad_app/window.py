@@ -1,13 +1,10 @@
 """Hushpad 주 창."""
 from __future__ import annotations
 
-import ctypes
 import html as html_mod
 import json
-import os
 import shutil
 import time
-from ctypes import wintypes
 from pathlib import Path
 
 from PySide6.QtCore import QByteArray, QEvent, QMimeData, QObject, QSize, Qt, QTimer, Signal
@@ -19,10 +16,11 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFile
                                QSizePolicy, QStackedWidget, QSystemTrayIcon, QTabWidget, QToolBar, QToolButton, QTreeWidget, QTreeWidgetItem,
                                QVBoxLayout, QWidget)
 
-from . import capture, crypto, icons, notepad_import, theme
+from . import capture, crypto, i18n, icons, notepad_import, plat, theme
 from .widgets import CommandPalette, CountDelegate, EmptyState, NoteList, rel_time
-from .common import (APP_NAME, LOCAL_DIR, exclude_from_capture, fmt_full, fmt_time, resource, set_clipboard,
-                     text_mime)
+from .common import (APP_NAME, LOCAL_DIR, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
+                     set_clipboard, text_mime)
+from .i18n import tr
 from .dialogs import HistoryDialog, ImportDialog, PassphraseDialog, SetupDialog
 from .editors import CodeEdit, RichEdit, body_font, mono_font
 from .store import Note, Store
@@ -31,11 +29,9 @@ IDS_MIME = "application/x-hushpad-ids"
 SAVE_DELAY_MS = 600
 TEXT_EXT = {".txt", ".json", ".html", ".htm", ".md", ".csv", ".xml", ".yaml", ".yml", ".ini", ".log", ".py",
             ".js", ".ts", ".css", ".sql", ".env", ".cfg", ".toml", ".bat", ".ps1", ".sh"}
-WM_HOTKEY = 0x0312
-# Ctrl+Alt+S 스크린샷, R 녹화, N 새 메모, M 클립보드를 메모로
-HOTKEYS = {1: ("shot", 0x53), 2: ("record", 0x52), 3: ("quick", 0x4E), 4: ("clip", 0x4D)}
-WM_WTSSESSION_CHANGE = 0x02B1
-RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
+# 전역 단축키(Windows Ctrl+Alt / macOS ⌃⌥): S 스크린샷, R 녹화, N 새 메모, M 클립보드를 메모로 — plat 모듈
+K = plat.key_label      # 앱 안 단축키 표기 (macOS는 ⌘ 기호)
+G = plat.global_key     # 전역 단축키 표기
 
 
 # ====================================================================== 메모 한 장(탭)
@@ -131,7 +127,7 @@ class NoteTab(QWidget):
             self.dirty = False
             self.win.on_saved(self)
         except OSError as e:
-            self.win.status(f"⚠ 저장 실패 — 다시 시도합니다: {e}")
+            self.win.status(tr("tab.save_failed", err=e))
             self.timer.start(3000)
 
     def recover(self):
@@ -139,7 +135,7 @@ class NoteTab(QWidget):
         if self.note.secret:
             t = self.win.t
             self.cover.setIcon(icons.icon("eye", t["text2"]))
-            self.cover.setText("  비밀 메모 — 눌러서 보기 (Enter)")
+            self.cover.setText("  " + tr("tab.secret_cover"))
             self.stack.setCurrentWidget(self.cover)
         elif self.stack.currentWidget() is self.cover:
             self.stack.setCurrentWidget(self.edit)
@@ -260,7 +256,7 @@ class MainWindow(QMainWindow):
         self._force_plain = False
         self._filter = ("all",)
         self._recorder = None
-        self._hotkeys = []
+        self.native = plat.Integration(self, self._on_hotkey, self._on_session_lock)
         self.hider = _CaptureHider(cfg)
         QApplication.instance().installEventFilter(self.hider)
         self.t = theme.tokens(cfg.get("theme", "auto"))
@@ -290,8 +286,7 @@ class MainWindow(QMainWindow):
         self._restore_state()
         if store.broken:
             QTimer.singleShot(500, lambda: QMessageBox.warning(
-                self, APP_NAME, f"읽을 수 없는 메모 파일 {len(store.broken)}개가 있습니다 (다른 암호이거나 손상됨):\n"
-                + "\n".join(store.broken[:10])))
+                self, APP_NAME, tr("win.broken", n=len(store.broken)) + "\n" + "\n".join(store.broken[:10])))
         try:
             store.daily_backup(LOCAL_DIR / "backups")
         except Exception:
@@ -311,12 +306,12 @@ class MainWindow(QMainWindow):
         brand.addWidget(QLabel("Hushpad", objectName="Brand"))
         brand.addStretch(1)
         self.shield = QLabel()
-        self.shield.setToolTip("모든 메모가 암호화되어 저장됩니다")
+        self.shield.setToolTip(tr("side.shield_tip"))
         brand.addWidget(self.shield)
         lv.addLayout(brand)
         lv.addSpacing(4)
-        self.search = QLineEdit(objectName="Search", placeholderText="메모 찾기")
-        self.search.setToolTip("메모 찾기  Ctrl+E · 모든 곳에서 찾기 Ctrl+K")
+        self.search = QLineEdit(objectName="Search", placeholderText=tr("side.search"))
+        self.search.setToolTip(tr("side.search_tip", k1=K("Ctrl+E"), k2=K("Ctrl+K")))
         self.search.setClearButtonEnabled(True)
         self.search_act = self.search.addAction(QIcon(), QLineEdit.LeadingPosition)
         self._themed.append((self.search_act, "search", "muted"))
@@ -326,7 +321,7 @@ class MainWindow(QMainWindow):
         lv.addWidget(self.search)
         hrow = QHBoxLayout()
         hrow.setContentsMargins(0, 0, 0, 0)
-        hrow.addWidget(QLabel("보관함", objectName="SectionLabel"))
+        hrow.addWidget(QLabel(tr("side.vault"), objectName="SectionLabel"))
         hrow.addStretch(1)
         self._cat_header = hrow
         lv.addLayout(hrow)
@@ -342,17 +337,17 @@ class MainWindow(QMainWindow):
         lv.addWidget(self.cats)
         row = QHBoxLayout()
         row.setContentsMargins(0, 0, 0, 0)
-        row.addWidget(QLabel("메모", objectName="SectionLabel"))
+        row.addWidget(QLabel(tr("side.notes"), objectName="SectionLabel"))
         row.addStretch(1)
         self.sort = QComboBox()
-        self.sort.addItem("고친 순", "updated")
-        self.sort.addItem("만든 순", "created")
-        self.sort.addItem("제목 순", "title")
+        self.sort.addItem(tr("sort.updated"), "updated")
+        self.sort.addItem(tr("sort.created"), "created")
+        self.sort.addItem(tr("sort.title"), "title")
         i = self.sort.findData(self.cfg.get("sort", "updated"))
         self.sort.setCurrentIndex(max(0, i))
         self.sort.currentIndexChanged.connect(self._sort_changed)
         self.add_cat_btn = QPushButton(objectName="Ghost")
-        self.add_cat_btn.setToolTip("새 분류")
+        self.add_cat_btn.setToolTip(tr("dlg.new_cat"))
         self.add_cat_btn.clicked.connect(self.new_category)
         self._themed.append((self.add_cat_btn, "tag", "text2"))
         row.addWidget(self.sort)
@@ -384,7 +379,7 @@ class MainWindow(QMainWindow):
         self.tabs.tabBar().setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabs.tabBar().customContextMenuRequested.connect(self._tab_menu)
         newbtn = QToolButton(objectName="TabCorner")
-        newbtn.setToolTip("새 메모 (Ctrl+N)")
+        newbtn.setToolTip(tr("tab.new_tip", key=K("Ctrl+N")))
         self._themed.append((newbtn, "plus", "text2"))
         newbtn.clicked.connect(lambda: self.new_note("rich"))
         self.tabs.setCornerWidget(newbtn, Qt.TopRightCorner)
@@ -397,10 +392,10 @@ class MainWindow(QMainWindow):
         self.findbar.setAttribute(Qt.WA_StyledBackground, True)
         fl = QHBoxLayout(self.findbar)
         fl.setContentsMargins(10, 6, 10, 6)
-        self.find_in = QLineEdit(placeholderText="이 메모에서 찾기")
-        self.repl_in = QLineEdit(placeholderText="바꿀 내용")
+        self.find_in = QLineEdit(placeholderText=tr("find.placeholder"))
+        self.repl_in = QLineEdit(placeholderText=tr("find.replace_ph"))
         b_prev, b_next = QPushButton("▲"), QPushButton("▼")
-        b_rep, b_all, b_close = QPushButton("바꾸기"), QPushButton("모두 바꾸기"), QPushButton("✕")
+        b_rep, b_all, b_close = QPushButton(tr("act.replace")), QPushButton(tr("find.replace_all")), QPushButton("✕")
         for b in (b_prev, b_next, b_close):
             b.setFixedWidth(32)
         for w in (self.find_in, b_prev, b_next, self.repl_in, b_rep, b_all, b_close):
@@ -448,122 +443,144 @@ class MainWindow(QMainWindow):
         self.addAction(a)
         return a
 
+    def _menu(self, parent, key):
+        """하위 메뉴 — 이름은 번역, 열쇠(key)는 아이콘·명령 팔레트에서 쓴다."""
+        m = parent.addMenu(tr(f"menu.{key}"))
+        m.menuAction().setData(key)
+        return m
+
     def _build_actions(self):
         mb = self.more_menu = QMenu(self)
         self.menuBar().hide()
-        m = mb.addMenu("파일")
-        self.a_new = self._act(m, "새 서식 메모", lambda: self.new_note("rich"), "Ctrl+N")
-        self.a_new_text = self._act(m, "새 텍스트 메모 (HTML·JSON·코드)", lambda: self.new_note("text"), "Ctrl+Shift+N")
-        self._act(m, "탭 닫기 (메모는 목록에 남음)", lambda: self.close_tab(self.tabs.currentIndex()), "Ctrl+W")
+        m = self._menu(mb, "file")
+        self.a_new = self._act(m, tr("act.new_rich"), lambda: self.new_note("rich"), "Ctrl+N")
+        self.a_new_text = self._act(m, tr("act.new_code"), lambda: self.new_note("text"), "Ctrl+Shift+N")
+        self._act(m, tr("act.close_tab"), lambda: self.close_tab(self.tabs.currentIndex()), "Ctrl+W")
         m.addSeparator()
-        self._act(m, "Windows 메모장 탭 가져오기...", self.import_notepad)
-        self._act(m, "파일 가져오기 (txt·json·html…)...", self._import_files_dialog)
-        self._act(m, "선택한 메모 내보내기...", lambda: self.export_notes(self.selected_ids() or self._cur_ids()))
+        if plat.NOTEPAD_IMPORT_SUPPORTED:
+            self._act(m, tr("act.import_notepad"), self.import_notepad)
+        self._act(m, tr("act.import_files"), self._import_files_dialog)
+        self._act(m, tr("act.export_sel"), lambda: self.export_notes(self.selected_ids() or self._cur_ids()))
         m.addSeparator()
-        self._act(m, "보관 폴더 열기", lambda: os.startfile(str(self.store.folder)))
-        self._act(m, "보관 폴더 바꾸기/옮기기...", self.change_folder)
-        self._act(m, "암호 바꾸기...", self.change_passphrase)
+        self._act(m, tr("act.open_folder"), lambda: plat.open_path(self.store.folder))
+        self._act(m, tr("act.change_folder"), self.change_folder)
+        self._act(m, tr("act.change_pw"), self.change_passphrase)
         m.addSeparator()
-        self._act(m, "잠그기", self.lock, "Ctrl+L")
-        self._act(m, "끝내기", self.quit_app, "Ctrl+Q")
+        self._act(m, tr("act.lock"), self.lock, "Ctrl+L")
+        self._act(m, tr("act.quit"), self.quit_app, "Ctrl+Q")
 
-        m = mb.addMenu("편집")
-        self._act(m, "서식 없이 복사 (텍스트만)", lambda: self.copy_selection(self._cur_editor(), plain=True),
+        m = self._menu(mb, "edit")
+        self._act(m, tr("act.copy_plain"), lambda: self.copy_selection(self._cur_editor(), plain=True),
                   "Ctrl+Shift+C")
-        self._act(m, "서식 없이 붙여넣기", self.paste_plain, "Ctrl+Shift+V")
-        self.a_plain_paste = self._act(m, "늘 텍스트만 붙여넣기", self._toggle_plain_paste, checkable=True,
+        self._act(m, tr("act.paste_plain"), self.paste_plain, "Ctrl+Shift+V")
+        self.a_plain_paste = self._act(m, tr("act.always_plain"), self._toggle_plain_paste, checkable=True,
                                        checked=self.cfg["plain_paste"])
         m.addSeparator()
-        self._act(m, "메모 전체 복사 — 서식 포함", lambda: self.copy_all(plain=False), "Ctrl+Alt+C")
-        self._act(m, "메모 전체 복사 — 텍스트만", lambda: self.copy_all(plain=True), "Ctrl+Alt+Shift+C")
+        self._act(m, tr("act.copy_all_rich"), lambda: self.copy_all(plain=False), "Ctrl+Alt+C")
+        self._act(m, tr("act.copy_all_plain"), lambda: self.copy_all(plain=True), "Ctrl+Alt+Shift+C")
         m.addSeparator()
-        self._act(m, "선택 부분 서식 지우기", self.clear_format, "Ctrl+Space")
-        self._act(m, "굵게", self.toggle_bold, "Ctrl+B")
+        self._act(m, tr("act.clear_fmt"), self.clear_format, "Ctrl+Space")
+        self._act(m, tr("act.bold"), self.toggle_bold, "Ctrl+B")
         m.addSeparator()
-        self._act(m, "찾기", self.show_find, "Ctrl+F")
-        self._act(m, "바꾸기", lambda: self.show_find(replace=True), "Ctrl+H")
-        self._act(m, "다음 찾기", lambda: self.find_next(False), "F3")
-        self._act(m, "메모 목록에서 찾기", lambda: (self.search.setFocus(), self.search.selectAll()), "Ctrl+E")
+        self._act(m, tr("act.find"), self.show_find, "Ctrl+F")
+        self._act(m, tr("act.replace"), lambda: self.show_find(replace=True), "Ctrl+H")
+        self._act(m, tr("act.find_next"), lambda: self.find_next(False), "F3")
+        self._act(m, tr("act.find_list"), lambda: (self.search.setFocus(), self.search.selectAll()), "Ctrl+E")
         m.addSeparator()
-        self._act(m, "JSON 보기 좋게 정리", self.json_pretty, "Ctrl+Alt+J")
-        self._act(m, "JSON 한 줄로 줄이기", self.json_compact)
+        self._act(m, tr("act.json_pretty"), self.json_pretty, "Ctrl+Alt+J")
+        self._act(m, tr("act.json_compact"), self.json_compact)
 
-        m = mb.addMenu("메모")
-        self._act(m, "이름 정하기...", lambda: self.rename_note(self._cur_id()), "F2")
-        self._act(m, "분류 정하기...", lambda: self.pick_category(self.selected_ids() or self._cur_ids()), "Ctrl+M")
-        self._act(m, "고정/고정 풀기", lambda: self.toggle_pin(self.selected_ids() or self._cur_ids()), "Ctrl+P")
-        self._act(m, "비밀 메모 켜기/끄기", lambda: self.toggle_secret(self.selected_ids() or self._cur_ids()))
-        self._act(m, "서식 ↔ 텍스트 메모로 바꾸기", self.convert_kind)
-        self._act(m, "이전 버전 보기...", lambda: self.show_history(self._cur_id()), "Ctrl+Shift+H")
+        m = self._menu(mb, "note")
+        self._act(m, tr("act.rename"), lambda: self.rename_note(self._cur_id()), "F2")
+        self._act(m, tr("act.set_cat"), lambda: self.pick_category(self.selected_ids() or self._cur_ids()), "Ctrl+M")
+        self._act(m, tr("act.pin"), lambda: self.toggle_pin(self.selected_ids() or self._cur_ids()), "Ctrl+P")
+        self._act(m, tr("act.secret"), lambda: self.toggle_secret(self.selected_ids() or self._cur_ids()))
+        self._act(m, tr("act.convert"), self.convert_kind)
+        self._act(m, tr("act.history"), lambda: self.show_history(self._cur_id()), "Ctrl+Shift+H")
         m.addSeparator()
-        self._act(m, "선택한 메모 합치기", lambda: self.merge(self.selected_ids()), "Ctrl+Shift+M")
-        self._act(m, "휴지통으로", lambda: self.trash_ids(self.selected_ids() if self.tree.hasFocus()
-                                                         else self._cur_ids()), "Ctrl+Del")
+        self._act(m, tr("act.merge"), lambda: self.merge(self.selected_ids()), "Ctrl+Shift+M")
+        self._act(m, tr("act.trash"), lambda: self.trash_ids(self.selected_ids() if self.tree.hasFocus()
+                                                             else self._cur_ids()), "Ctrl+Del")
 
-        m = mb.addMenu("캡처")
-        self._act(m, "📷 영역 스크린샷", lambda: self.screenshot("region"), "Ctrl+Shift+S",
-                  tip="Hushpad 창은 찍히지 않습니다. 다른 곳에서도 Ctrl+Alt+S")
-        self._act(m, "🖥 화면 전체 스크린샷", lambda: self.screenshot("full"))
-        self._act(m, "🎬 화면 녹화 (짧은 동영상)", self.record_video, "Ctrl+Shift+R",
-                  tip="다른 곳에서도 Ctrl+Alt+R")
+        m = self._menu(mb, "capture")
+        anywhere = plat.HOTKEYS_SUPPORTED
+        self._act(m, tr("act.shot_region"), lambda: self.screenshot("region"), "Ctrl+Shift+S",
+                  tip=tr("act.shot_tip", gkey=G("S")) if anywhere else "")
+        self._act(m, tr("act.shot_full"), lambda: self.screenshot("full"))
+        self._act(m, tr("act.record"), self.record_video, "Ctrl+Shift+R",
+                  tip=tr("act.record_tip", gkey=G("R")) if anywhere else "")
         m.addSeparator()
-        self._act(m, "다른 프로그램의 캡처·화면 공유에서 Hushpad 창 숨기기", self._toggle_hide_capture,
+        self._act(m, tr("act.hide_capture"), self._toggle_hide_capture,
                   checkable=True, checked=self.cfg.get("hide_from_capture", True))
 
-        m = mb.addMenu("보기")
-        self.a_plainview = self._act(m, "텍스트만 보기 (서식 메모)", self._toggle_plain_view, "Ctrl+T",
+        m = self._menu(mb, "view")
+        self.a_plainview = self._act(m, tr("act.plain_view"), self._toggle_plain_view, "Ctrl+T",
                                      checkable=True)
-        self._act(m, "자동 줄 바꿈", self._toggle_wrap, "Alt+Z", checkable=True, checked=self.cfg["wrap"])
-        self._act(m, "글자 크게", lambda: self._zoom(1), "Ctrl+=")
-        self._act(m, "글자 작게", lambda: self._zoom(-1), "Ctrl+-")
-        self._act(m, "목록 보이기/숨기기", self._toggle_list, "Ctrl+\\")
-        self._act(m, "항상 위에 두기", self._toggle_topmost, "Ctrl+Alt+T", checkable=True)
+        self._act(m, tr("act.wrap"), self._toggle_wrap, "Alt+Z", checkable=True, checked=self.cfg["wrap"])
+        self._act(m, tr("act.zoom_in"), lambda: self._zoom(1), "Ctrl+=")
+        self._act(m, tr("act.zoom_out"), lambda: self._zoom(-1), "Ctrl+-")
+        self._act(m, tr("act.toggle_list"), self._toggle_list, "Ctrl+\\")
+        self._act(m, tr("act.topmost"), self._toggle_topmost, "Ctrl+Alt+T", checkable=True)
         m.addSeparator()
-        tm = m.addMenu("테마")
+        tm = self._menu(m, "theme")
         grp = QActionGroup(self)
-        for key, label in (("auto", "시스템 따라가기"), ("light", "밝게"), ("dark", "어둡게")):
-            a = tm.addAction(label)
+        for key in ("auto", "light", "dark"):
+            a = tm.addAction(tr(f"theme.{key}"))
             a.setCheckable(True)
             a.setChecked(self.cfg.get("theme", "auto") == key)
             a.triggered.connect(lambda _=False, k=key: self.set_theme(k))
             grp.addAction(a)
-        self.a_palette = self._act(m, "명령·메모 찾기 (명령 팔레트)", self.open_palette, "Ctrl+K")
-        m.addSeparator()
-        self._act(m, "다음 탭", lambda: self._cycle(1), "Ctrl+Tab")
-        self._act(m, "이전 탭", lambda: self._cycle(-1), "Ctrl+Shift+Tab")
-
-        m = mb.addMenu("보안")
-        self._act(m, "복사한 내용을 Windows 클립보드 기록·클라우드에 남기지 않기", self._toggle_clip_private,
-                  checkable=True, checked=self.cfg["clip_private"])
-        lm = m.addMenu("자리 비우면 잠그기")
+        lm = self._menu(m, "language")
         lgrp = QActionGroup(self)
-        for mins, label in ((0, "끔"), (5, "5분"), (10, "10분"), (30, "30분")):
+        cur_lang = self.cfg.get("language", "system")
+        for code in ("system",) + i18n.SUPPORTED:
+            label = tr("lang.system") if code == "system" else i18n.NATIVE_NAMES[code]
             a = lm.addAction(label)
+            a.setCheckable(True)
+            a.setChecked(cur_lang == code or (code == "system" and cur_lang not in i18n.SUPPORTED))
+            a.triggered.connect(lambda _=False, c=code: self.set_language(c))
+            lgrp.addAction(a)
+        self.a_palette = self._act(m, tr("act.palette"), self.open_palette, "Ctrl+K")
+        m.addSeparator()
+        self._act(m, tr("act.next_tab"), lambda: self._cycle(1), "Ctrl+Tab")
+        self._act(m, tr("act.prev_tab"), lambda: self._cycle(-1), "Ctrl+Shift+Tab")
+
+        m = self._menu(mb, "security")
+        if plat.CLIPBOARD_PRIVATE_SUPPORTED:
+            self._act(m, tr("act.clip_private"), self._toggle_clip_private,
+                      checkable=True, checked=self.cfg["clip_private"])
+        lm = self._menu(m, "idle_lock")
+        lgrp = QActionGroup(self)
+        for mins in (0, 5, 10, 30):
+            a = lm.addAction(tr("idle.off") if mins == 0 else tr("idle.min", n=mins))
             a.setCheckable(True)
             a.setChecked(self.cfg.get("lock_idle_min", 0) == mins)
             a.triggered.connect(lambda _=False, v=mins: self.cfg.__setitem__("lock_idle_min", v))
             lgrp.addAction(a)
-        self._act(m, "Windows를 잠그면 함께 잠그기", lambda on: self.cfg.__setitem__("lock_on_winlock", on),
-                  checkable=True, checked=self.cfg.get("lock_on_winlock", False))
-        self._act(m, "창을 닫으면 트레이에 남기 (단축키 계속 동작)", lambda on: self.cfg.__setitem__("close_to_tray", on),
+        if plat.SESSION_LOCK_SUPPORTED:
+            self._act(m, tr("act.lock_winlock"), lambda on: self.cfg.__setitem__("lock_on_winlock", on),
+                      checkable=True, checked=self.cfg.get("lock_on_winlock", False))
+        self._act(m, tr("act.close_tray"), lambda on: self.cfg.__setitem__("close_to_tray", on),
                   checkable=True, checked=self.cfg.get("close_to_tray", True))
-        self._act(m, "Windows 시작할 때 실행", self._toggle_autostart, checkable=True, checked=self._autostart_on())
+        if plat.AUTOSTART_SUPPORTED:
+            self.a_autostart = self._act(m, tr("act.autostart"), self._toggle_autostart, checkable=True,
+                                         checked=self._autostart_on())
         m.addSeparator()
-        self.a_clear = self._act(m, "비밀 메모에서 복사하면 30초 뒤 클립보드 비우기", self._toggle_secret_clear,
+        self.a_clear = self._act(m, tr("act.secret_clear"), self._toggle_secret_clear,
                                  checkable=True, checked=self.cfg["secret_clear_sec"] > 0)
         m.addSeparator()
-        self._act(m, "이 PC에서 암호 잊기 (다음 실행 때 다시 물음)", self.forget_here)
+        self._act(m, tr("act.forget"), self.forget_here)
 
-        tb = QToolBar("도구", objectName="TopBar")
+        tb = QToolBar(tr("tb.name"), objectName="TopBar")
         tb.setMovable(False)
         tb.setFloatable(False)
         tb.setIconSize(QSize(18, 18))
         tb.setContextMenuPolicy(Qt.PreventContextMenu)
         self.addToolBar(tb)
         new_btn = QToolButton(objectName="Primary")
-        new_btn.setText("새 메모")
+        new_btn.setText(tr("tb.new"))
         new_btn.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        new_btn.setToolTip("새 서식 메모  Ctrl+N\n▾ 코드 메모(HTML·JSON)  Ctrl+Shift+N")
+        new_btn.setToolTip(tr("tb.new_tip", k1=K("Ctrl+N"), k2=K("Ctrl+Shift+N")))
         new_btn.setPopupMode(QToolButton.MenuButtonPopup)
         nm = QMenu(new_btn)
         nm.addAction(self.a_new)
@@ -572,47 +589,48 @@ class MainWindow(QMainWindow):
         new_btn.clicked.connect(lambda: self.new_note("rich"))
         self._themed.append((new_btn, "plus", "accent_text"))
         tb.addWidget(new_btn)
-        self.a_new.setText("새 서식 메모")
-        self.a_new_text.setText("새 코드 메모 (HTML·JSON·키)")
         self._themed += [(self.a_new, "note", "text2"), (self.a_new_text, "code", "text2")]
         tb.addSeparator()
 
-        def tbtn(icon, tip, slot, color="text2"):
-            a = QAction(tip.split("  ")[0], self)
+        def tbtn(icon, label, keys, slot, color="text2", gkey=None):
+            tip = f"{label}  {K(keys)}"
+            if gkey and plat.HOTKEYS_SUPPORTED:
+                tip += " · " + tr("tb.anywhere", gkey=G(gkey))
+            a = QAction(label, self)
             a.setToolTip(tip)
             a.triggered.connect(lambda _=False: slot())
             tb.addAction(a)
             self._themed.append((a, icon, color))
             return a
-        tbtn("copy", "텍스트만 복사  Ctrl+Shift+C", lambda: self.copy_selection(self._cur_editor(), plain=True))
-        tbtn("paste", "텍스트만 붙여넣기  Ctrl+Shift+V", self.paste_plain)
-        self.a_tb_plain = QAction("늘 텍스트만 붙여넣기", self)
+        tbtn("copy", tr("tb.copy_plain"), "Ctrl+Shift+C", lambda: self.copy_selection(self._cur_editor(), plain=True))
+        tbtn("paste", tr("tb.paste_plain"), "Ctrl+Shift+V", self.paste_plain)
+        self.a_tb_plain = QAction(tr("act.always_plain"), self)
         self.a_tb_plain.setCheckable(True)
         self.a_tb_plain.setChecked(self.cfg["plain_paste"])
         self.a_tb_plain.toggled.connect(lambda on: self.a_plain_paste.setChecked(on))
         tb.addAction(self.a_tb_plain)
         self._themed.append((self.a_tb_plain, "text", "text2"))
         tb.addSeparator()
-        tbtn("camera", "영역 스크린샷  Ctrl+Shift+S · 어디서든 Ctrl+Alt+S", lambda: self.screenshot("region"))
-        self.a_tb_rec = tbtn("video", "화면 녹화  Ctrl+Shift+R · 어디서든 Ctrl+Alt+R", self.record_video)
+        tbtn("camera", tr("tb.shot"), "Ctrl+Shift+S", lambda: self.screenshot("region"), gkey="S")
+        self.a_tb_rec = tbtn("video", tr("tb.record"), "Ctrl+Shift+R", self.record_video, gkey="R")
         tb.addSeparator()
-        tbtn("history", "이전 버전  Ctrl+Shift+H", lambda: self.show_history(self._cur_id()))
+        tbtn("history", tr("tb.history"), "Ctrl+Shift+H", lambda: self.show_history(self._cur_id()))
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         tb.addWidget(spacer)
-        self.palette_btn = QPushButton("  찾기·명령…", objectName="CommandBtn")
+        self.palette_btn = QPushButton("  " + tr("tb.palette"), objectName="CommandBtn")
         self.palette_btn.setCursor(Qt.PointingHandCursor)
-        self.palette_btn.setToolTip("메모와 모든 명령 찾기  Ctrl+K")
+        self.palette_btn.setToolTip(tr("tb.palette_tip", key=K("Ctrl+K")))
         kl = QHBoxLayout(self.palette_btn)
         kl.setContentsMargins(0, 0, 8, 0)
         kl.addStretch(1)
-        kl.addWidget(QLabel("Ctrl+K", objectName="Kbd"))
+        kl.addWidget(QLabel(K("Ctrl+K"), objectName="Kbd"))
         self.palette_btn.clicked.connect(self.open_palette)
         self._themed.append((self.palette_btn, "search", "muted"))
         tb.addWidget(self.palette_btn)
         tb.addWidget(QLabel(" "))
         more = QToolButton()
-        more.setToolTip("메뉴 — 파일·편집·메모·캡처·보기·보안")
+        more.setToolTip(tr("tb.more_tip"))
         more.setPopupMode(QToolButton.InstantPopup)
         more.setMenu(self.more_menu)
         more.setStyleSheet("QToolButton::menu-indicator { image: none; width: 0; }")
@@ -667,8 +685,9 @@ class MainWindow(QMainWindow):
             self.hide()
             if not self.cfg.get("tray_told"):
                 self.cfg["tray_told"] = True
-                self.tray.showMessage(APP_NAME, "트레이에서 계속 실행 중이에요. Ctrl+Alt+N 새 메모 · Ctrl+Alt+M 클립보드를 메모로",
-                                      QSystemTrayIcon.Information, 5000)
+                msg = tr("tray.still_running", k1=G("N"), k2=G("M")) if plat.HOTKEYS_SUPPORTED \
+                    else tr("tray.still_running_nokeys")
+                self.tray.showMessage(APP_NAME, msg, QSystemTrayIcon.Information, 5000)
             return
         if self._recorder is not None:
             self._recorder.stop()
@@ -687,44 +706,31 @@ class MainWindow(QMainWindow):
         theme.style_titlebar(self, self.t)
         if self.cfg.get("hide_from_capture", True):
             exclude_from_capture(self, True)
-        if not self._hotkeys:
+        if not self.native.active:
             self._register_hotkeys()
-            try:
-                ctypes.windll.wtsapi32.WTSRegisterSessionNotification(wintypes.HWND(int(self.winId())), 0)
-            except Exception:
-                pass
 
-    # ------------------------------------------------------------ 전역 단축키
+    # ------------------------------------------------------------ 전역 단축키 (plat.Integration)
     def _register_hotkeys(self):
-        hwnd = int(self.winId())
-        failed = []
-        for hid, (name, vk) in HOTKEYS.items():
-            if ctypes.windll.user32.RegisterHotKey(wintypes.HWND(hwnd), hid, 0x0001 | 0x0002 | 0x4000, vk):
-                self._hotkeys.append(hid)
-            else:
-                failed.append("Ctrl+Alt+" + chr(vk))
+        failed = self.native.start()
         if failed:
-            self.status("다른 프로그램이 이미 쓰는 단축키라 등록하지 못함: " + ", ".join(failed))
+            self.status(tr("hk.failed", keys=", ".join(K(f) for f in failed)))
 
     def _unregister_hotkeys(self):
-        hwnd = int(self.winId())
-        for hid in self._hotkeys:
-            ctypes.windll.user32.UnregisterHotKey(wintypes.HWND(hwnd), hid)
-        self._hotkeys = []
+        self.native.stop()
+
+    def _on_hotkey(self, name):
+        fn = {"shot": lambda: self.screenshot("region"), "record": self.record_video,
+              "quick": self.quick_note, "clip": self.clip_to_note}.get(name)
+        if fn:
+            QTimer.singleShot(0, fn)
+
+    def _on_session_lock(self):
+        if self.cfg.get("lock_on_winlock"):
+            QTimer.singleShot(0, self.lock)
 
     def nativeEvent(self, etype, message):
-        try:
-            msg = wintypes.MSG.from_address(int(message))
-            if msg.message == WM_HOTKEY and msg.wParam in HOTKEYS:
-                name = HOTKEYS[msg.wParam][0]
-                fn = {"shot": lambda: self.screenshot("region"), "record": self.record_video,
-                      "quick": self.quick_note, "clip": self.clip_to_note}[name]
-                QTimer.singleShot(0, fn)
-                return True, 0
-            if msg.message == WM_WTSSESSION_CHANGE and msg.wParam == 7 and self.cfg.get("lock_on_winlock"):
-                QTimer.singleShot(0, self.lock)
-        except Exception:
-            pass
+        if self.native.native_event(etype, message):
+            return True, 0
         return super().nativeEvent(etype, message)
 
     # ------------------------------------------------------------ 빠른 메모·트레이·잠금
@@ -733,17 +739,20 @@ class MainWindow(QMainWindow):
         if not QSystemTrayIcon.isSystemTrayAvailable():
             return
         self.tray = QSystemTrayIcon(self.windowIcon(), self)
-        self.tray.setToolTip("Hushpad — 암호화 메모")
+        self.tray.setToolTip(tr("tray.tip"))
         m = QMenu()
-        m.addAction("열기", self.bring_to_front)
-        m.addAction("새 메모   Ctrl+Alt+N", self.quick_note)
-        m.addAction("클립보드를 메모로   Ctrl+Alt+M", self.clip_to_note)
+
+        def lbl(key, letter):
+            return tr(key) + (f"   {G(letter)}" if plat.HOTKEYS_SUPPORTED else "")
+        m.addAction(tr("common.open"), self.bring_to_front)
+        m.addAction(lbl("tb.new", "N"), self.quick_note)
+        m.addAction(lbl("tray.clip", "M"), self.clip_to_note)
         m.addSeparator()
-        m.addAction("스크린샷   Ctrl+Alt+S", lambda: self.screenshot("region"))
-        m.addAction("화면 녹화   Ctrl+Alt+R", self.record_video)
+        m.addAction(lbl("empty.k_shot", "S"), lambda: self.screenshot("region"))
+        m.addAction(lbl("tb.record", "R"), self.record_video)
         m.addSeparator()
-        m.addAction("잠그기", self.lock)
-        m.addAction("끝내기", self.quit_app)
+        m.addAction(tr("act.lock"), self.lock)
+        m.addAction(tr("act.quit"), self.quit_app)
         self._tray_menu = m
         self.tray.setContextMenu(m)
         self.tray.activated.connect(
@@ -769,21 +778,22 @@ class MainWindow(QMainWindow):
         text = md.text() if md.hasText() else ""
         if not img.isNull() and not text.strip():
             from .common import image_to_data_url
-            html = f'<p>📋 클립보드 {time.strftime("%m.%d %H:%M")}</p><p><img src="{image_to_data_url(img)}" width="{min(img.width(), 900)}"></p>'
-            n = self.store.create(kind="rich", html=html, text=f"📋 클립보드 {time.strftime('%m.%d %H:%M')}")
-            what = f"이미지 {img.width()}×{img.height()}"
+            title = html_mod.escape(tr("clip.title", time=fmt_stamp(key="fmt.clip")))
+            html = f'<p>{title}</p><p><img src="{image_to_data_url(img)}" width="{min(img.width(), 900)}"></p>'
+            n = self.store.create(kind="rich", html=html, text=tr("clip.title", time=fmt_stamp(key="fmt.clip")))
+            what = tr("clip.image", w=img.width(), h=img.height())
         elif text.strip():
             looks_code = text.lstrip()[:1] in "{[<" or "=" in text.split("\n", 1)[0] or "\t" in text
             if md.hasHtml() and not looks_code:
                 n = self.store.create(kind="rich", html=md.html(), text=text)
             else:
                 n = self.store.create(kind="text", text=text)
-            what = f"{len(text):,}자"
+            what = tr("note.chars", n=len(text))
         else:
-            self._notify("클립보드가 비어 있어요")
+            self._notify(tr("clip.empty"))
             return
         self.list_timer.start()
-        self._notify(f"클립보드를 메모로 저장했어요 ({what})")
+        self._notify(tr("clip.saved", what=what))
 
     def _notify(self, msg):
         if self.isVisible() and self.isActiveWindow():
@@ -800,14 +810,14 @@ class MainWindow(QMainWindow):
         lay.addStretch(3)
         self.lock_icon = QLabel(alignment=Qt.AlignCenter)
         lay.addWidget(self.lock_icon)
-        lay.addWidget(QLabel("잠겨 있어요", objectName="EmptyTitle", alignment=Qt.AlignCenter))
-        lay.addWidget(QLabel("보관 폴더 암호를 넣으면 열립니다", objectName="EmptyHint", alignment=Qt.AlignCenter))
+        lay.addWidget(QLabel(tr("lock.title"), objectName="EmptyTitle", alignment=Qt.AlignCenter))
+        lay.addWidget(QLabel(tr("lock.hint"), objectName="EmptyHint", alignment=Qt.AlignCenter))
         row = QHBoxLayout()
         row.addStretch(1)
-        self.lock_pw = QLineEdit(echoMode=QLineEdit.Password, placeholderText="암호")
+        self.lock_pw = QLineEdit(echoMode=QLineEdit.Password, placeholderText=tr("setup.pw"))
         self.lock_pw.setFixedWidth(260)
         self.lock_pw.returnPressed.connect(self.unlock)
-        ok = QPushButton("열기", objectName="Primary")
+        ok = QPushButton(tr("lock.open"), objectName="Primary")
         ok.clicked.connect(self.unlock)
         row.addWidget(self.lock_pw)
         row.addWidget(ok)
@@ -838,7 +848,7 @@ class MainWindow(QMainWindow):
         except Exception:
             key = None
         if key != self.store.key:
-            self.lock_msg.setText("암호가 맞지 않아요")
+            self.lock_msg.setText(tr("lock.wrong"))
             self.lock_pw.selectAll()
             return
         self.locked = False
@@ -856,36 +866,25 @@ class MainWindow(QMainWindow):
             self.lock()
 
     def _toggle_topmost(self, on):
-        HWND_TOPMOST, HWND_NOTOPMOST = -1, -2
-        ctypes.windll.user32.SetWindowPos(wintypes.HWND(int(self.winId())),
-                                          wintypes.HWND(HWND_TOPMOST if on else HWND_NOTOPMOST),
-                                          0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010)
-        self.status("항상 위에 " + ("켜짐" if on else "꺼짐"))
+        plat.set_topmost(self, on)
+        self.status(tr("topmost.on") if on else tr("topmost.off"))
 
     def _autostart_on(self) -> bool:
-        import winreg
         try:
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY) as k:
-                winreg.QueryValueEx(k, APP_NAME)
-                return True
-        except OSError:
+            return plat.autostart_enabled()
+        except Exception:
             return False
 
     def _toggle_autostart(self, on):
-        import sys
-        import winreg
-        if on and not getattr(sys, "frozen", False):
-            self.status("시작 프로그램 등록은 exe로 실행할 때만 할 수 있어요")
+        try:
+            done = plat.set_autostart(on)
+        except OSError as e:
+            self.status(str(e))
             return
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY, 0, winreg.KEY_SET_VALUE) as k:
-            if on:
-                winreg.SetValueEx(k, APP_NAME, 0, winreg.REG_SZ, f'"{sys.executable}" --tray')
-            else:
-                try:
-                    winreg.DeleteValue(k, APP_NAME)
-                except OSError:
-                    pass
-        self.status("Windows 시작할 때 " + ("트레이로 실행해요" if on else "실행하지 않아요"))
+        if not done:
+            self.status(tr("autostart.need_app"))
+            return
+        self.status(tr("autostart.on") if on else tr("autostart.off"))
 
     def copy_text(self, text, msg=""):
         t = self._cur_tab()
@@ -927,10 +926,11 @@ class MainWindow(QMainWindow):
         if note.title:
             base = note.title
         elif note.secret:
-            base = "비밀 메모"
+            base = tr("note.secret")
         else:
             fl = note.first_line()
-            base = (fl[:22] + ("…" if len(fl) > 22 else "")) if fl else ("(이미지)" if note.has_images() else "새 메모")
+            base = (fl[:22] + ("…" if len(fl) > 22 else "")) if fl else (tr("note.image") if note.has_images()
+                                                                       else tr("tb.new"))
         return base
 
     def _set_tab_look(self, i: int):
@@ -942,9 +942,9 @@ class MainWindow(QMainWindow):
         self.tabs.setTabIcon(i, icons.icon(ic, tk["gold"] if n.secret else (tk["muted"] if t.preview else tk["text2"])))
         f = self.tabs.tabBar().font()
         self.tabs.tabBar().setTabTextColor(i, QColor(tk["muted"]) if t.preview else QColor())
-        self.tabs.setTabToolTip(i, f"{n.display_title()}\n분류: {n.category or '없음'}\n"
-                                   f"만든 때: {fmt_full(n.created)}\n고친 때: {fmt_full(n.updated)}"
-                                   + ("\n(미리보기 탭 — 고치거나 두 번 클릭하면 고정)" if t.preview else ""))
+        self.tabs.setTabToolTip(i, tr("tab.tip", title=n.display_title(), cat=n.category or tr("cat.none_short"),
+                                      created=fmt_full(n.created), updated=fmt_full(n.updated))
+                                + ("\n" + tr("tab.tip_preview") if t.preview else ""))
 
     def _add_tab(self, note: Note, preview=False) -> int:
         t = NoteTab(self, note)
@@ -959,7 +959,7 @@ class MainWindow(QMainWindow):
         if not n:
             return
         if n.deleted is not None:
-            self.status("휴지통에 있는 메모예요. 오른쪽 클릭 → 되살리기")
+            self.status(tr("st.in_trash"))
             return
         i = self._tab_index(nid)
         if i >= 0:
@@ -996,8 +996,9 @@ class MainWindow(QMainWindow):
         self._update_empty()
 
     # ------------------------------------------------------------ 테마
-    MENU_ICONS = {"파일": "note", "편집": "copy", "메모": "note", "캡처": "camera", "보기": "eye", "보안": "shield",
-                  "테마": "settings", "자리 비우면 잠그기": "lock"}
+    MENU_ICONS = {"file": "note", "edit": "copy", "note": "note", "capture": "camera", "view": "eye",
+                  "security": "shield", "theme": "settings", "idle_lock": "lock", "language": "settings"}
+    PREFIXED = ("theme", "idle_lock", "language")   # 팔레트에서 '테마: 밝게'처럼 앞에 메뉴 이름을 붙임
 
     def palette_actions(self):
         """(동작, '메뉴: 이름', 아이콘) — 하위 메뉴 이름뿐인 항목·구분선은 뺀다."""
@@ -1008,16 +1009,16 @@ class MainWindow(QMainWindow):
                 if a.isSeparator() or not a.isVisible():
                     continue
                 if a.menu() is not None:
-                    walk(a.menu(), path + [a.text().replace("&", "")])
+                    walk(a.menu(), path + [(a.data() or "", a.text().replace("&", ""))])
                     continue
                 txt = a.text().replace("&", "").split("\t")[0].strip()
                 if not txt or a is self.a_palette:
                     continue
-                label = f"{path[-1]}: {txt}" if path and path[-1] in ("테마", "자리 비우면 잠그기") else txt
+                label = f"{path[-1][1]}: {txt}" if path and path[-1][0] in self.PREFIXED else txt
                 if label in seen:
                     continue
                 seen.add(label)
-                group = path[-1] if path else ""
+                group = path[-1][0] if path else ""
                 ic = a.icon() if not a.icon().isNull() else icons.icon(self.MENU_ICONS.get(group, "command"),
                                                                        self.t["text2"])
                 out.append((a, label, ic))
@@ -1087,15 +1088,15 @@ class MainWindow(QMainWindow):
             return
         nid = self.tabs.widget(i).note.id
         m = QMenu(self)
-        m.addAction("이름 정하기...", lambda: self.rename_note(nid))
-        m.addAction("분류 정하기...", lambda: self.pick_category([nid]))
-        m.addAction("이전 버전 보기...", lambda: self.show_history(nid))
+        m.addAction(tr("act.rename"), lambda: self.rename_note(nid))
+        m.addAction(tr("act.set_cat"), lambda: self.pick_category([nid]))
+        m.addAction(tr("act.history"), lambda: self.show_history(nid))
         m.addSeparator()
-        m.addAction("탭 닫기", lambda: self.close_tab(self._tab_index(nid)))
-        m.addAction("다른 탭 모두 닫기", lambda: self._close_others(nid))
-        m.addAction("오른쪽 탭 모두 닫기", lambda: self._close_right(nid))
+        m.addAction(tr("tabm.close"), lambda: self.close_tab(self._tab_index(nid)))
+        m.addAction(tr("tabm.close_others"), lambda: self._close_others(nid))
+        m.addAction(tr("tabm.close_right"), lambda: self._close_right(nid))
         m.addSeparator()
-        m.addAction("휴지통으로", lambda: self.trash_ids([nid]))
+        m.addAction(tr("act.trash"), lambda: self.trash_ids([nid]))
         m.exec(self.tabs.tabBar().mapToGlobal(pos))
 
     def _close_others(self, nid):
@@ -1116,7 +1117,7 @@ class MainWindow(QMainWindow):
         if t.preview:
             t.preview = False
         self._set_tab_look(self.tabs.indexOf(t))
-        self.status_lbl.setText("저장 중…")
+        self.status_lbl.setText(tr("status.saving"))
 
     def on_saved(self, t: NoteTab):
         i = self.tabs.indexOf(t)
@@ -1138,9 +1139,11 @@ class MainWindow(QMainWindow):
         line = c.blockNumber() + 1
         col = c.positionInBlock() + 1
         chars = len(t.note.text) if not t.dirty else ed.document().characterCount() - 1
-        kind = "텍스트 메모" if t.note.kind == "text" else "서식 메모"
-        state = "저장 중…" if t.dirty else f"저장됨 {time.strftime('%H:%M:%S', time.localtime(t.note.updated))}"
-        self.status_lbl.setText(f"{kind} · 줄 {line}, 칸 {col} · {chars:,}자 · {state}")
+        kind = tr("kind.text") if t.note.kind == "text" else tr("kind.rich")
+        state = tr("status.saving") if t.dirty else tr("status.saved", time=time.strftime(
+            '%H:%M:%S', time.localtime(t.note.updated)))
+        self.status_lbl.setText(tr("status.line", kind=kind, line=line, col=col,
+                                   chars=tr("note.chars", n=chars), state=state))
 
     # ------------------------------------------------------------ 목록
     def refresh_categories(self):
@@ -1149,14 +1152,14 @@ class MainWindow(QMainWindow):
         self.cats.clear()
         live = [n for n in self.store.notes.values() if n.deleted is None]
         trash = sum(1 for n in self.store.notes.values() if n.deleted is not None)
-        entries = [("inbox", "모든 메모", ("all",), len(live)),
-                   ("pin", "고정", ("pinned",), sum(1 for n in live if n.pinned)),
-                   ("calendar", "오늘", ("today",), sum(1 for n in live if self._is_today(n))),
-                   ("archive", "30일 넘게 안 본 메모", ("stale",), sum(1 for n in live if self._is_stale(n))),
-                   ("folder", "분류 없음", ("none",), sum(1 for n in live if not n.category))]
+        entries = [("inbox", tr("cat.all"), ("all",), len(live)),
+                   ("pin", tr("cat.pinned"), ("pinned",), sum(1 for n in live if n.pinned)),
+                   ("calendar", tr("cat.today"), ("today",), sum(1 for n in live if self._is_today(n))),
+                   ("archive", tr("cat.stale"), ("stale",), sum(1 for n in live if self._is_stale(n))),
+                   ("folder", tr("cat.none"), ("none",), sum(1 for n in live if not n.category))]
         for c in self.store.all_categories():
             entries.append(("tag", c, ("cat", c), sum(1 for n in live if n.category == c)))
-        entries.append(("trash", "휴지통", ("trash",), trash))
+        entries.append(("trash", tr("cat.trash"), ("trash",), trash))
         sel = None
         t = self.t
         for ic, text, key, cnt in entries:
@@ -1164,6 +1167,7 @@ class MainWindow(QMainWindow):
             it.setData(Qt.UserRole, key)
             it.setData(Qt.UserRole + 2, cnt)
             it.setText(text)
+            it.setToolTip(text)
             self.cats.addItem(it)
             if key == cur:
                 sel = it
@@ -1235,14 +1239,15 @@ class MainWindow(QMainWindow):
         for n in self.filtered_notes():
             snippet = "" if n.secret else n.snippet()
             if not snippet:
-                snippet = "비밀 메모 — 내용 숨김" if n.secret else ("이미지" if n.has_images() else "")
+                snippet = tr("list.secret") if n.secret else (tr("list.image") if n.has_images() else "")
             it = QListWidgetItem()
             it.setData(Qt.UserRole, n.id)
             it.setData(Qt.UserRole + 1, {
                 "title": n.display_title(), "snippet": snippet, "category": n.category,
                 "time": rel_time(n.created if key == "created" else n.updated),
                 "pinned": n.pinned, "secret": n.secret, "kind": n.kind, "open": n.id in open_ids})
-            it.setToolTip(f"{n.display_title()}\n만든 때 {fmt_full(n.created)}\n고친 때 {fmt_full(n.updated)}")
+            it.setToolTip(tr("list.tip", title=n.display_title(), created=fmt_full(n.created),
+                             updated=fmt_full(n.updated)))
             self.tree.addItem(it)
             if n.id in selected or (not selected and n.id == cur_tab):
                 it.setSelected(True)
@@ -1284,32 +1289,32 @@ class MainWindow(QMainWindow):
             return
         m = QMenu(self)
         if self._filter[0] == "trash":
-            m.addAction(f"되살리기 ({len(ids)})", lambda: self.restore_ids(ids))
-            m.addAction(f"영구 삭제 ({len(ids)})...", lambda: self.purge_ids(ids))
+            m.addAction(tr("lm.restore", n=len(ids)), lambda: self.restore_ids(ids))
+            m.addAction(tr("lm.purge", n=len(ids)), lambda: self.purge_ids(ids))
             m.addSeparator()
-            m.addAction("휴지통 비우기...", self.empty_trash)
+            m.addAction(tr("lm.empty_trash"), self.empty_trash)
         else:
-            m.addAction("열기", lambda: [self.open_note(i) for i in ids])
+            m.addAction(tr("common.open"), lambda: [self.open_note(i) for i in ids])
             if len(ids) == 1:
-                m.addAction("이름 정하기...", lambda: self.rename_note(ids[0]))
-            cm = m.addMenu("분류 정하기")
+                m.addAction(tr("act.rename"), lambda: self.rename_note(ids[0]))
+            cm = m.addMenu(tr("lm.set_cat"))
             for c in self.store.all_categories():
                 cm.addAction(c, lambda c=c: self.set_category(ids, c))
             cm.addSeparator()
-            cm.addAction("새 분류...", lambda: self.pick_category(ids, new=True))
-            cm.addAction("분류 없음", lambda: self.set_category(ids, ""))
-            m.addAction("고정/고정 풀기", lambda: self.toggle_pin(ids))
-            m.addAction("비밀 메모 켜기/끄기", lambda: self.toggle_secret(ids))
+            cm.addAction(tr("lm.new_cat"), lambda: self.pick_category(ids, new=True))
+            cm.addAction(tr("cat.none"), lambda: self.set_category(ids, ""))
+            m.addAction(tr("act.pin"), lambda: self.toggle_pin(ids))
+            m.addAction(tr("act.secret"), lambda: self.toggle_secret(ids))
             if len(ids) >= 2:
                 m.addSeparator()
-                m.addAction(f"메모 {len(ids)}개 합치기", lambda: self.merge(ids))
+                m.addAction(tr("lm.merge", n=len(ids)), lambda: self.merge(ids))
             m.addSeparator()
-            m.addAction("텍스트만 복사", lambda: self._copy_notes(ids, True))
-            m.addAction("내보내기...", lambda: self.export_notes(ids))
+            m.addAction(tr("tb.copy_plain"), lambda: self._copy_notes(ids, True))
+            m.addAction(tr("lm.export"), lambda: self.export_notes(ids))
             if len(ids) == 1:
-                m.addAction("이전 버전 보기...", lambda: self.show_history(ids[0]))
+                m.addAction(tr("act.history"), lambda: self.show_history(ids[0]))
             m.addSeparator()
-            m.addAction(f"휴지통으로 ({len(ids)})", lambda: self.trash_ids(ids))
+            m.addAction(tr("lm.trash", n=len(ids)), lambda: self.trash_ids(ids))
         m.exec(self.tree.viewport().mapToGlobal(pos))
 
     def _cat_menu(self, pos):
@@ -1319,11 +1324,11 @@ class MainWindow(QMainWindow):
         key = it.data(Qt.UserRole)
         m = QMenu(self)
         if key[0] == "cat":
-            m.addAction("분류 이름 바꾸기...", lambda: self.rename_category(key[1]))
-            m.addAction("분류 지우기 (메모는 '분류 없음'으로)", lambda: self.delete_category(key[1]))
+            m.addAction(tr("cm.rename"), lambda: self.rename_category(key[1]))
+            m.addAction(tr("cm.delete"), lambda: self.delete_category(key[1]))
         elif key[0] == "trash":
-            m.addAction("휴지통 비우기...", self.empty_trash)
-        m.addAction("새 분류...", self.new_category)
+            m.addAction(tr("lm.empty_trash"), self.empty_trash)
+        m.addAction(tr("lm.new_cat"), self.new_category)
         m.exec(self.cats.mapToGlobal(pos))
 
     def _drop_on_category(self, key, ids):
@@ -1370,7 +1375,7 @@ class MainWindow(QMainWindow):
         n = self.store.notes.get(nid)
         if not n:
             return
-        name, ok = QInputDialog.getText(self, "이름 정하기", "메모 이름 (비우면 첫 줄과 만든 때로 자동):", text=n.title)
+        name, ok = QInputDialog.getText(self, tr("dlg.rename_title"), tr("dlg.rename_label"), text=n.title)
         if ok:
             self._flush([nid])
             n.title = name.strip()
@@ -1389,28 +1394,27 @@ class MainWindow(QMainWindow):
                 self.store.save(n, touch=False, snapshot=False)
                 self._sync_tab_note(nid)
         self.list_timer.start()
-        self.status(f"{len(ids)}개 → {cat or '분류 없음'}")
+        self.status(tr("st.set_cat", n=len(ids), cat=cat or tr("cat.none")))
 
     def pick_category(self, ids, new=False):
         if not ids:
             return
         cats = self.store.all_categories()
         if new or not cats:
-            name, ok = QInputDialog.getText(self, "새 분류", "분류 이름:")
+            name, ok = QInputDialog.getText(self, tr("dlg.new_cat"), tr("dlg.cat_name"))
         else:
-            name, ok = QInputDialog.getItem(self, "분류 정하기", "분류 (새 이름을 써도 됩니다, 비우면 분류 없음):",
-                                            cats, 0, True)
+            name, ok = QInputDialog.getItem(self, tr("lm.set_cat"), tr("dlg.pick_cat_label"), cats, 0, True)
         if ok:
             self.set_category(ids, name.strip())
 
     def new_category(self):
-        name, ok = QInputDialog.getText(self, "새 분류", "분류 이름:")
+        name, ok = QInputDialog.getText(self, tr("dlg.new_cat"), tr("dlg.cat_name"))
         if ok and name.strip():
             self.store.add_category(name.strip())
             self.refresh_categories()
 
     def rename_category(self, old):
-        name, ok = QInputDialog.getText(self, "분류 이름 바꾸기", "새 이름:", text=old)
+        name, ok = QInputDialog.getText(self, tr("dlg.rename_cat"), tr("dlg.new_name"), text=old)
         if ok and name.strip() and name.strip() != old:
             self.save_all()
             self.store.rename_category(old, name.strip())
@@ -1450,8 +1454,7 @@ class MainWindow(QMainWindow):
             if i >= 0 and not on:
                 self.tabs.widget(i).recover()
         self.list_timer.start()
-        self.status("비밀 메모: 목록에 첫 줄이 보이지 않고, 복사하면 30초 뒤 클립보드에서 지워집니다." if on
-                    else "비밀 메모를 껐습니다.")
+        self.status(tr("st.secret_on") if on else tr("st.secret_off"))
 
     def trash_ids(self, ids):
         ids = [i for i in ids if i]
@@ -1470,14 +1473,14 @@ class MainWindow(QMainWindow):
         self.store.trash([i for i in ids if i not in empties])
         self._update_empty()
         self.refresh_list()
-        self.status(f"{len(ids)}개를 휴지통으로 옮겼어요 (휴지통에서 되살릴 수 있어요)")
+        self.status(tr("st.trashed", n=len(ids)))
 
     def restore_ids(self, ids):
         self.store.restore(ids)
         self.refresh_list()
 
     def purge_ids(self, ids):
-        if QMessageBox.question(self, "영구 삭제", f"메모 {len(ids)}개를 완전히 지울까요?\n이전 버전까지 지워지고 되돌릴 수 없습니다.") \
+        if QMessageBox.question(self, tr("dlg.purge_title"), tr("dlg.purge_q", n=len(ids))) \
                 != QMessageBox.Yes:
             return
         self.store.purge(ids)
@@ -1490,7 +1493,7 @@ class MainWindow(QMainWindow):
 
     def merge(self, ids):
         if len(ids) < 2:
-            self.status("목록에서 Ctrl/Shift로 메모를 2개 이상 고른 뒤 합치세요.")
+            self.status(tr("st.merge_need"))
             return
         self._flush(ids)
         notes = sorted([self.store.notes[i] for i in ids if i in self.store.notes], key=lambda n: n.created)
@@ -1517,9 +1520,9 @@ class MainWindow(QMainWindow):
                     c.insertText(n.text)
             merged = self.store.create(kind="rich", html=doc.toHtml(), text=doc.toPlainText().replace("￼", ""),
                                        category=notes[0].category, created=notes[0].created)
-        merged.title = f"합친 메모 ({len(notes)}개) · {time.strftime('%m-%d %H:%M')}"
+        merged.title = tr("merge.title", n=len(notes), time=fmt_stamp())
         self.store.save(merged, snapshot=False)
-        r = QMessageBox.question(self, "합치기", f"메모 {len(notes)}개를 하나로 합쳤어요.\n원래 메모들은 휴지통으로 옮길까요?")
+        r = QMessageBox.question(self, tr("dlg.merge_title"), tr("dlg.merge_q", n=len(notes)))
         if r == QMessageBox.Yes:
             self.trash_ids([n.id for n in notes])
         self.refresh_list()
@@ -1532,7 +1535,7 @@ class MainWindow(QMainWindow):
         t.save()
         n = t.note
         if n.kind == "rich":
-            if QMessageBox.question(self, "텍스트 메모로", "서식·이미지가 빠지고 글자만 남습니다. 바꿀까요?\n(이전 버전에서 되돌릴 수 있어요)") \
+            if QMessageBox.question(self, tr("dlg.to_text_title"), tr("dlg.to_text_q")) \
                     != QMessageBox.Yes:
                 return
             self.store.snapshot(n, force=True)
@@ -1563,7 +1566,7 @@ class MainWindow(QMainWindow):
                 t.note = n
                 t._make_editor()
             self.list_timer.start()
-            self.status("이전 버전으로 되돌렸어요. (되돌리기 직전 내용도 이전 버전에 남아 있어요)")
+            self.status(tr("st.restored"))
 
     # ------------------------------------------------------------ 복사·붙여넣기
     def plain_paste_now(self) -> bool:
@@ -1580,7 +1583,7 @@ class MainWindow(QMainWindow):
         set_clipboard(md, private=self.cfg["clip_private"], strict=secret,
                       clear_after=self.cfg["secret_clear_sec"] if secret else 0)
         if secret and self.cfg["secret_clear_sec"]:
-            self.status(f"🔒 비밀 메모 — {self.cfg['secret_clear_sec']}초 뒤 클립보드를 비웁니다")
+            self.status(tr("st.secret_clip", n=self.cfg["secret_clear_sec"]))
 
     def copy_selection(self, ed, plain=False):
         if ed is None:
@@ -1596,7 +1599,7 @@ class MainWindow(QMainWindow):
             text = c.selection().toPlainText().replace("￼", "")
             self._clip(text_mime(text), note)
             if plain:
-                self.status("텍스트만 복사했어요")
+                self.status(tr("st.copied_plain"))
         else:
             md = ed.createMimeDataFromSelection()
             self._clip(md, note)
@@ -1613,14 +1616,14 @@ class MainWindow(QMainWindow):
             md.setHtml(t.edit.toHtml())
             md.setText(t.edit.toPlainText().replace("￼", ""))
             self._clip(md, t.note)
-        self.status("메모 전체를 " + ("텍스트만" if plain else "서식 포함으로") + " 복사했어요")
+        self.status(tr("st.copied_all_plain") if plain else tr("st.copied_all_rich"))
 
     def _copy_notes(self, ids, plain=True):
         self._flush(ids)
         notes = [self.store.notes[i] for i in ids if i in self.store.notes]
         txt = "\n\n".join(n.text for n in notes)
         self._clip(text_mime(txt), notes[0] if len(notes) == 1 else None)
-        self.status(f"메모 {len(notes)}개를 텍스트로 복사했어요")
+        self.status(tr("st.copied_notes", n=len(notes)))
 
     def copy_image(self, img: QImage):
         md = QMimeData()
@@ -1646,7 +1649,7 @@ class MainWindow(QMainWindow):
         self.a_tb_plain.blockSignals(True)
         self.a_tb_plain.setChecked(on)
         self.a_tb_plain.blockSignals(False)
-        self.a_tb_plain.setToolTip("붙여넣기: " + ("늘 텍스트만 (켜짐)" if on else "서식 유지 — 누르면 늘 텍스트만"))
+        self.a_tb_plain.setToolTip(tr("tip.paste_on") if on else tr("tip.paste_off"))
 
     def clear_format(self):
         ed = self._cur_editor()
@@ -1675,7 +1678,7 @@ class MainWindow(QMainWindow):
         try:
             obj = json.loads(src)
         except json.JSONDecodeError as e:
-            self.status(f"⚠ JSON 오류: 줄 {e.lineno}, 칸 {e.colno} — {e.msg}", 10000)
+            self.status(tr("st.json_err", line=e.lineno, col=e.colno, msg=e.msg), 10000)
             if whole:
                 cc = ed.textCursor()
                 cc.setPosition(min(e.pos, len(src)))
@@ -1686,7 +1689,7 @@ class MainWindow(QMainWindow):
         if whole:
             c.select(QTextCursor.Document)
         c.insertText(out)
-        self.status("JSON을 " + ("한 줄로 줄였어요" if compact else "정리했어요") + " (Ctrl+Z로 되돌리기)")
+        self.status(tr("st.json_compact" if compact else "st.json_pretty", undo=K("Ctrl+Z")))
 
     def json_pretty(self):
         self._json_apply(False)
@@ -1714,7 +1717,7 @@ class MainWindow(QMainWindow):
             c.movePosition(QTextCursor.End if back else QTextCursor.Start)
             ed.setTextCursor(c)
             if not ed.find(s, flags):
-                self.status("찾는 내용이 없어요")
+                self.status(tr("st.not_found"))
 
     def replace_one(self):
         ed = self._cur_editor()
@@ -1738,7 +1741,7 @@ class MainWindow(QMainWindow):
             cc.insertText(r)
             n += 1
         c.endEditBlock()
-        self.status(f"{n}곳을 바꿨어요")
+        self.status(tr("st.replaced", n=n))
 
     # ------------------------------------------------------------ 보기
     def _toggle_plain_view(self, on):
@@ -1761,7 +1764,7 @@ class MainWindow(QMainWindow):
                 ed.document().setDefaultFont(body_font(self.cfg["font_pt"]))
             else:
                 ed.setFont(mono_font(self.cfg["font_pt"]))
-        self.status(f"글자 크기 {self.cfg['font_pt']}pt")
+        self.status(tr("st.font_size", n=self.cfg["font_pt"]))
 
     def _toggle_list(self):
         w = self.split.widget(0)
@@ -1772,7 +1775,7 @@ class MainWindow(QMainWindow):
         for w in QApplication.topLevelWidgets():
             if w.isVisible():
                 exclude_from_capture(w, on)
-        self.status("다른 프로그램의 캡처·화면 공유에 Hushpad 창이 " + ("보이지 않아요" if on else "보입니다"))
+        self.status(tr("st.capture_hidden") if on else tr("st.capture_visible"))
 
     def _toggle_clip_private(self, on):
         self.cfg["clip_private"] = on
@@ -1786,16 +1789,21 @@ class MainWindow(QMainWindow):
         if t and t.note.kind == "rich" and not t.showing_plain():
             return t
         t = self.new_note("rich")
-        t.edit.insert_plain(f"📷 캡처 {time.strftime('%m-%d %H:%M')}\n")
+        t.edit.insert_plain(tr("cap.note_title", time=fmt_stamp()) + "\n")
         return t
 
     def screenshot(self, mode="region"):
         if self._recorder is not None:
             return
+        if not capture.screen_capture_ok():
+            self._capture_denied()
+            return
         screen = capture.screen_under_cursor()
 
         def go():
             pix = capture.grab_screen(screen)
+            if self._blank_capture(pix):
+                return
             if mode == "full":
                 self._insert_shot(pix.toImage())
                 return
@@ -1805,19 +1813,36 @@ class MainWindow(QMainWindow):
             self._overlay = ov
         QTimer.singleShot(60, go)
 
+    def _capture_denied(self):
+        """macOS: 화면 기록 권한이 없을 때 어디서 켜는지 알려 준다."""
+        self.bring_to_front()
+        QMessageBox.information(self, tr("perm.title"), tr("perm.msg"))
+
+    def _blank_capture(self, pix) -> bool:
+        """찍은 화면이 비었으면(권한 없음 등) 알리고 True."""
+        if pix.isNull() or (plat.IS_MAC and capture.looks_blank(pix)):
+            self._capture_denied()
+            return True
+        return False
+
     def _insert_shot(self, img: QImage):
         t = self._capture_target()
         t.edit.insert_image(img)
         self.copy_image(img)
         self.bring_to_front()
-        self.status(f"스크린샷 {img.width()}×{img.height()} — 메모에 넣고 클립보드에도 복사했어요")
+        self.status(tr("st.shot", w=img.width(), h=img.height()))
 
     def record_video(self):
         if self._recorder is not None:
             self._recorder.stop()
             return
+        if not capture.screen_capture_ok():
+            self._capture_denied()
+            return
         screen = capture.screen_under_cursor()
         pix = capture.grab_screen(screen)
+        if self._blank_capture(pix):
+            return
         ov = capture.RegionOverlay(screen, pix, "video")
         ov.chosen.connect(lambda r: self._start_record(screen, r))
         ov.start()
@@ -1828,14 +1853,14 @@ class MainWindow(QMainWindow):
             rec = capture.Recorder(screen, rect, fps=self.cfg.get("video_fps", 12),
                                    max_sec=self.cfg.get("video_max_sec", 180))
         except Exception as e:
-            QMessageBox.warning(self, "녹화", f"녹화를 시작할 수 없어요.\n{e}")
+            QMessageBox.warning(self, tr("dlg.rec_title"), tr("dlg.rec_cant", err=e))
             return
         self._recorder = rec
         rec.finished.connect(self._video_done)
         rec.failed.connect(self._video_failed)
         rec.cancelled.connect(self._video_cancelled)
         rec.start()
-        self.status("🎬 녹화 중 — 빨간 테두리 안이 녹화돼요. 다시 Ctrl+Alt+R 또는 ⏹ 저장으로 끝내기", 0)
+        self.status(tr("st.recording", gkey=G("R") if plat.HOTKEYS_SUPPORTED else K("Ctrl+Shift+R")), 0)
 
     def _video_done(self, data: bytes, first: QImage, secs: float):
         self._recorder = None
@@ -1843,38 +1868,38 @@ class MainWindow(QMainWindow):
         t = self._capture_target()
         t.edit.insert_image(capture.video_thumbnail(first, secs), href=f"owvideo:{mid}")
         self.bring_to_front()
-        self.status(f"🎬 동영상 {secs:.0f}초 ({len(data) / 1e6:.1f}MB, 암호화 저장) — 그림을 두 번 클릭하면 재생", 8000)
+        self.status(tr("st.video_done", s=f"{secs:.0f}", mb=f"{len(data) / 1e6:.1f}"), 8000)
 
     def _video_failed(self, msg):
         self._recorder = None
         self.statusBar().clearMessage()
-        QMessageBox.warning(self, "녹화", f"녹화에 실패했어요.\n{msg}")
+        QMessageBox.warning(self, tr("dlg.rec_title"), tr("dlg.rec_failed", msg=msg))
 
     def _video_cancelled(self):
         self._recorder = None
-        self.status("녹화를 취소했어요")
+        self.status(tr("st.rec_cancelled"))
 
     def play_video(self, mid):
         try:
             data = self.store.get_media(mid)
         except Exception:
-            QMessageBox.warning(self, "동영상", "동영상 파일을 찾을 수 없어요 (다른 PC에서 아직 동기화되지 않았을 수 있어요).")
+            QMessageBox.warning(self, tr("dlg.video"), tr("dlg.video_missing"))
             return
-        d = capture.VideoDialog(self, data, "동영상", lambda: self.export_video(mid))
+        d = capture.VideoDialog(self, data, tr("dlg.video"), lambda: self.export_video(mid))
         d.setAttribute(Qt.WA_DeleteOnClose)
         d.show()
 
     def export_video(self, mid):
-        fn, _ = QFileDialog.getSaveFileName(self, "동영상 저장 (암호화되지 않은 파일)", f"{mid}.mp4", "MP4 (*.mp4)")
+        fn, _ = QFileDialog.getSaveFileName(self, tr("dlg.save_video"), f"{mid}.mp4", "MP4 (*.mp4)")
         if fn:
             Path(fn).write_bytes(self.store.get_media(mid))
-            self.status(f"저장: {fn}")
+            self.status(tr("st.saved_to", path=fn))
 
     # ------------------------------------------------------------ 가져오기·내보내기
     def import_notepad(self):
         tabs = notepad_import.read_tabs()
         if not tabs:
-            QMessageBox.information(self, "메모장 가져오기", "Windows 메모장 탭을 찾지 못했어요.")
+            QMessageBox.information(self, tr("dlg.np_title"), tr("dlg.np_none"))
             return
         already = {n.text for n in self.store.notes.values()}
         d = ImportDialog(self, tabs, already)
@@ -1882,17 +1907,17 @@ class MainWindow(QMainWindow):
             return
         chosen = d.selected()
         kind = "text" if d.as_text.isChecked() else "rich"
-        cat = "메모장에서 가져옴"
+        cat = tr("np.category")
         self.store.add_category(cat)
         for t in chosen:
             title = Path(t.path).name if t.path else ""
             self.store.create(kind=kind, text=t.text, category=cat, title=title, created=t.mtime)
         self._filter = ("cat", cat)
         self.refresh_list()
-        self.status(f"메모장 탭 {len(chosen)}개를 가져왔어요 (분류: {cat})")
+        self.status(tr("st.np_done", n=len(chosen), cat=cat))
 
     def _import_files_dialog(self):
-        fns, _ = QFileDialog.getOpenFileNames(self, "가져올 파일", "", "텍스트 파일 (*.*)")
+        fns, _ = QFileDialog.getOpenFileNames(self, tr("dlg.import_files"), "", tr("dlg.text_filter"))
         if fns:
             self.import_files(fns)
 
@@ -1922,16 +1947,16 @@ class MainWindow(QMainWindow):
             self.store.create(kind=kind, text=text, title=p.name, created=p.stat().st_mtime)
             n += 1
         self.refresh_list()
-        self.status(f"파일 {n}개를 가져왔어요")
+        self.status(tr("st.files_imported", n=n))
 
     def export_notes(self, ids):
         ids = [i for i in ids if i in self.store.notes]
         if not ids:
             return
-        if QMessageBox.question(self, "내보내기", "내보낸 파일은 암호화되지 않은 일반 파일이라 다른 프로그램이 읽을 수 있어요.\n계속할까요?") \
+        if QMessageBox.question(self, tr("dlg.export_title"), tr("dlg.export_q")) \
                 != QMessageBox.Yes:
             return
-        d = QFileDialog.getExistingDirectory(self, "내보낼 폴더")
+        d = QFileDialog.getExistingDirectory(self, tr("dlg.export_dir"))
         if not d:
             return
         self._flush(ids)
@@ -1942,21 +1967,20 @@ class MainWindow(QMainWindow):
             if n.kind == "rich" and n.html:
                 base.with_suffix(".html").write_text(n.html, "utf-8")
             base.with_suffix(".txt").write_text(n.text, "utf-8")
-        self.status(f"{len(ids)}개를 내보냈어요: {d}")
+        self.status(tr("st.exported", n=len(ids), path=d))
 
     # ------------------------------------------------------------ 보관 폴더·암호
     def change_folder(self):
         cur = str(self.store.folder)
-        d = QFileDialog.getExistingDirectory(self, "새 보관 폴더 (예: Dropbox 안)", cur)
+        d = QFileDialog.getExistingDirectory(self, tr("dlg.new_folder"), cur)
         if not d or Path(d).resolve() == self.store.folder.resolve():
             return
         dest = Path(d)
         self.save_all()
         if crypto.vault_exists(dest):
-            QMessageBox.information(self, "보관 폴더", "그 폴더에 이미 Hushpad 메모가 있어요. 다시 시작하면서 그 폴더의 암호를 물어볼게요.")
+            QMessageBox.information(self, tr("setup.folder"), tr("dlg.folder_exists"))
         else:
-            r = QMessageBox.question(self, "보관 폴더 옮기기",
-                                     f"지금 메모들을 새 폴더로 복사할까요?\n{cur}\n→ {dest}\n(원래 폴더는 그대로 남겨 둡니다)")
+            r = QMessageBox.question(self, tr("dlg.move_title"), tr("dlg.move_q", cur=cur, dest=dest))
             if r != QMessageBox.Yes:
                 return
             dest.mkdir(parents=True, exist_ok=True)
@@ -1968,19 +1992,49 @@ class MainWindow(QMainWindow):
                     shutil.copytree(self.store.folder / sub, dest / sub, dirs_exist_ok=True)
         self.cfg["data_dir"] = str(dest)
         self.save_state()
-        QMessageBox.information(self, "보관 폴더", "Hushpad를 다시 시작합니다.")
+        QMessageBox.information(self, tr("setup.folder"), tr("dlg.restarting"))
+        self.restart_app()
+
+    def restart_app(self):
+        """열린 메모를 모두 저장하고 끝낸 뒤 다시 실행 (hushpad_main.py가 'restart' 속성을 보고 새로 띄움)."""
+        self.save_all()
+        self.save_state()
         QApplication.instance().setProperty("restart", True)
-        self.close()
+        self.quit_app()   # close()만 하면 '트레이에 남기'일 때 숨기만 하므로 quit_app으로 끝낸다
+
+    # ------------------------------------------------------------ 언어
+    def set_language(self, code):
+        old = i18n.current()
+        self.cfg["language"] = code
+        try:
+            self.cfg.save()
+        except OSError:
+            pass
+        new = i18n.resolve(code)
+        if new == old:
+            return
+        msg = tr("lang.restart_msg")
+        other = i18n.tr_in(new, "lang.restart_msg")
+        box = QMessageBox(QMessageBox.Question, tr("menu.language"), msg if other == msg else f"{msg}\n\n{other}",
+                          parent=self)
+        now = box.addButton(tr("lang.restart_now"), QMessageBox.AcceptRole)
+        box.addButton(tr("lang.later"), QMessageBox.RejectRole)
+        box.setDefaultButton(now)
+        box.exec()
+        if box.clickedButton() is now:
+            self.restart_app()
+        else:
+            self.status(tr("st.lang_later"))
 
     def change_passphrase(self):
         d = PassphraseDialog(self)
         if d.exec():
             crypto.change_passphrase(self.store.folder, self.store.key, d.pw1.text())
-            self.status("암호를 바꿨어요. 다른 PC에서는 다음에 열 때 새 암호를 넣으세요.")
+            self.status(tr("st.pw_changed"))
 
     def forget_here(self):
         crypto.forget_key(crypto.vault_id(self.store.folder))
-        self.status("이 PC에서 암호를 잊었어요. 다음 실행 때 다시 물어봅니다.")
+        self.status(tr("st.forgot"))
 
     # ------------------------------------------------------------ 다른 PC 동기화
     def scan_remote(self):
@@ -1997,8 +2051,8 @@ class MainWindow(QMainWindow):
                 t.collect()
                 copy = self.store.create(kind=t.note.kind, text=t.note.text, html=t.note.html,
                                          category=t.note.category,
-                                         title=f"(충돌 사본) {t.note.display_title()}")
-                self.status(f"다른 PC에서도 같은 메모를 고쳐서, 이 PC 내용을 '{copy.title}'로 따로 저장했어요", 10000)
+                                         title=tr("conflict.title", title=t.note.display_title()))
+                self.status(tr("st.conflict", title=copy.title), 10000)
             t.reload(remote)
             self._set_tab_look(i)
         for nid in removed:
