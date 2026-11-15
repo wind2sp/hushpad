@@ -1,6 +1,6 @@
 # macOS 앱 빌드 — 손으로만 실행 (Actions › build-macos › Run workflow).
 # 비공개 저장소라 macOS 실행 시간이 유료이므로 push·PR에는 돌지 않는다.
-# 결과: Hushpad-macos-<arm64|x86_64>.zip (서명·공증 없음 — 처음 열 때 오른쪽 클릭 › 열기)
+# 결과: Hushpad-macos-<arm64|x86_64>.zip → 초안 릴리스 "mac-build"에 올라감 (서명·공증 없음 — 처음 열 때 오른쪽 클릭 › 열기)
 name: build-macos
 
 on:
@@ -10,6 +10,9 @@ on:
         description: "Intel(x86_64)용도 만들기 (macos-15-intel 러너, 시간이 더 듦)"
         type: boolean
         default: false
+
+permissions:
+  contents: write   # 초안(draft) 릴리스에 zip을 올리기 위해
 
 jobs:
   build:
@@ -46,7 +49,19 @@ jobs:
       - name: Zip
         run: ditto -c -k --keepParent dist/Hushpad.app "Hushpad-macos-${{ matrix.arch }}.zip"
 
+      # 결과물 보관함(artifact)은 계정 전체 용량을 함께 써서 가득 찰 수 있다 → 공개되지 않는 초안 릴리스에 올린다.
+      - name: Upload to draft release "mac-build" (not public)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=mac-build
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --draft --prerelease --target "$GITHUB_SHA"               --title "macOS 테스트 빌드 (비공개 초안)"               --notes "build-macos 워크플로가 자동으로 올리는 Mac 테스트 빌드입니다. 서명·공증 없음. 공개 릴리스가 아닙니다."
+          fi
+          gh release upload "$TAG" "Hushpad-macos-${{ matrix.arch }}.zip" --clobber
+
       - uses: actions/upload-artifact@v4
+        continue-on-error: true   # 용량이 비어 있을 때만 덤으로
         with:
           name: Hushpad-macos-${{ matrix.arch }}
           path: Hushpad-macos-${{ matrix.arch }}.zip
