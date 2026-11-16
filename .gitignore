@@ -9,3 +9,4 @@ build.log
 marketing/video/*.mp4
 marketing/video/qa/
 marketing/video/music/*.wav
+marketing/video/store_trailer/*.mp4
