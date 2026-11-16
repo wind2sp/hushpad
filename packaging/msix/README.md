@@ -27,8 +27,8 @@ python packaging\msix\make_msix.py    # dist\Hushpad-<버전>.msix
 
 - 최소 Windows 10 2004(10.0.19041) — 캡처에서 창 숨기기가 여기부터 됩니다.
 - 권한은 `runFullTrust` 하나뿐 (일반 데스크톱 앱으로 실행).
-- 앱 두 개: 시작 메뉴에 보이는 `Hushpad`, 시작 메뉴에 안 보이는 `HushpadTray`(`--tray`로 실행).
-  `HushpadTray`에 시작 작업(`HushpadStartup`, 처음부터 켜짐)이 붙어 있어 Windows를 켜면 트레이로 시작합니다.
+- 앱은 `Hushpad` 하나. 시작 작업(`HushpadStartup`, 처음부터 켜짐)은 같은 앱의 복사본 `Hushpad\HushpadStartup.exe`를 실행하고,
+  앱은 이 이름으로 시작되면 창 없이 트레이로 뜹니다. (숨은 앱 항목 `AppListEntry="none"`은 Store에서 별도 허가가 필요해 쓰지 않습니다.)
 - 앱은 패키지로 실행 중인지 스스로 알아내고(`GetCurrentPackageFullName`), 그때는 레지스트리 Run 키를 쓰지 않습니다.
   메뉴의 "Windows 시작할 때 실행" 체크 대신 **Windows 시작 프로그램 설정 열기…**가 나와 `설정 › 앱 › 시작 프로그램`을 엽니다.
 - 설정(`%APPDATA%\Hushpad`)·백업·기억한 암호(`%LOCALAPPDATA%\Hushpad`)는 Windows가 패키지 전용 폴더

@@ -127,7 +127,9 @@ def main() -> int:
             c.readyRead.connect(lambda: (c.readAll(), win.bring_to_front()))
     server.newConnection.connect(_incoming)
     app.setQuitOnLastWindowClosed(False)   # 창을 닫아도 트레이에서 계속
-    if "--tray" in sys.argv and win.tray is not None:
+    # --tray(zip판의 Run 키) 또는 Store판 시작 작업의 복사본 HushpadStartup.exe로 실행되면 창 없이 트레이로
+    tray_start = "--tray" in sys.argv or os.path.splitext(os.path.basename(sys.executable))[0].lower() == "hushpadstartup"
+    if tray_start and win.tray is not None:
         win._register_hotkeys()            # 창 없이 시작해도 전역 단축키는 동작
     else:
         win.show()
@@ -136,7 +138,10 @@ def main() -> int:
     server.close()
     if app.property("restart"):
         import subprocess
-        args = [sys.executable] + ([] if getattr(sys, "frozen", False) else [os.path.abspath(__file__)])
+        exe = sys.executable
+        if os.path.basename(exe).lower() == "hushpadstartup.exe":     # 다시 켤 때는 창이 보이는 보통 exe로
+            exe = os.path.join(os.path.dirname(exe), "Hushpad.exe")
+        args = [exe] + ([] if getattr(sys, "frozen", False) else [os.path.abspath(__file__)])
         subprocess.Popen(args, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0), close_fds=True)
     return rc
 

@@ -190,6 +190,8 @@ def main() -> None:
 
     # 1) 앱 파일: layout\Hushpad\  (zip과 같은 내용 — 라이선스 파일 포함)
     shutil.copytree(APP_DIR, LAYOUT / "Hushpad")
+    # Windows 시작 작업용 복사본: 이 이름으로 실행되면 앱이 트레이로만 뜬다 (hushpad_main.tray_start)
+    shutil.copy2(LAYOUT / "Hushpad" / "Hushpad.exe", LAYOUT / "Hushpad" / "HushpadStartup.exe")
     for n in LEGAL:
         if not (LAYOUT / "Hushpad" / n).is_file():
             shutil.copy2(ROOT / n, LAYOUT / "Hushpad" / n)
