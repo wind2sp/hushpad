@@ -54,6 +54,12 @@
 - 처음 실행하면 "Windows 시작할 때 실행"(macOS: 로그인할 때 실행)이 켜집니다. 트레이(메뉴 막대) 아이콘 오른쪽 클릭으로 끌 수 있어요.
 - 받은 파일이 맞는지는 릴리스 페이지의 SHA-256 값과 비교해 확인하세요 (Windows: `Get-FileHash 파일.zip`, macOS: `shasum -a 256 파일.zip`).
 
+### Microsoft Store 버전 (준비 중)
+zip과 같은 프로그램을 MSIX 패키지로 묶은 것입니다(`packaging\msix\`). 다른 점은 이것뿐입니다.
+- 시작할 때 실행은 레지스트리 대신 패키지의 시작 작업으로 합니다. 설치 뒤 처음부터 켜져 있고, 끄고 켜기는 `⋯ › 보안` 또는 트레이 메뉴의 **Windows 시작 프로그램 설정 열기…**(Windows `설정 › 앱 › 시작 프로그램`)에서 합니다.
+- 설정·백업·이 PC에 기억한 암호는 Windows가 패키지 전용 폴더로 옮겨 보관합니다. 그래서 **Store 앱을 제거하면 설정·하루 백업·기억한 암호가 함께 지워집니다.** 보관 폴더(기본 `문서\Hushpad`)의 메모는 지워지지 않으며, 다시 설치하면 같은 폴더를 고르고 암호를 넣으면 됩니다.
+- zip 버전과 함께 쓰면 두 쪽의 설정은 따로 저장됩니다. 같은 보관 폴더를 고르면 메모는 함께 씁니다.
+
 ## 언어
 - 한국어 · English · 日本語 · 简体中文. `⋯ › 보기 › 언어`에서 바꾸고, **지금 다시 시작**을 누르면 열린 메모를 모두 저장한 뒤 다시 켜집니다.
 - 기본은 **시스템 따라가기**: 운영체제 언어가 위 넷 중 하나면 그 언어, 아니면 영어(번체 중국어도 아직은 영어). 설정 파일의 `"language"`에 저장됩니다.
@@ -165,5 +171,6 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes save as you type, every note is encrypted (AES-256-GCM, scrypt-derived vault key, cached per device with DPAPI / the macOS Keychain), and on Windows the window is hidden from screenshots and screen sharing (on macOS 15+ some capture apps may still show it). Rich notes take images, screenshots and short screen recordings; code notes are for HTML/JSON and keys. The UI comes in Korean, English, Japanese and Simplified Chinese.
 
 - Download: [Windows](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip) · [macOS (Apple Silicon)](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip). Portable, no installer, unsigned (Windows: "More info › Run anyway"; macOS: right-click › Open). No Intel Mac build.
+- Microsoft Store build (in preparation, `packaging/msix/`): start-at-login comes from the package's startup task and is switched in Windows Settings › Apps › Startup. Windows keeps the Store app's settings, daily backups and remembered key in the package's private folder, so uninstalling it removes them; notes in the vault folder (default `Documents\Hushpad`) stay.
 - Run from source: `pip install -r requirements.txt`, then `python hushpad_main.py`. Build: `python build.py`.
 - License: GPL-3.0-or-later. © 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors. See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

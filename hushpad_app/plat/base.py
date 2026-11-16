@@ -93,6 +93,15 @@ def request_screen_capture() -> None:
     pass
 
 
+# ------------------------------------------------------------------ 패키지 앱(Microsoft Store MSIX)으로 실행 중인가
+IS_PACKAGED = False
+
+
+def open_startup_settings() -> bool:
+    """OS의 시작 프로그램 설정 화면을 연다 (패키지 앱 전용). 못 열면 False."""
+    return False
+
+
 # ------------------------------------------------------------------ 로그인할 때 실행
 AUTOSTART_SUPPORTED = False
 

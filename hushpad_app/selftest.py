@@ -226,6 +226,38 @@ def run() -> int:
         _auto_before = None
     check("editors", editors)
 
+    def packaged_detection():
+        if not plat.IS_WIN:
+            assert plat.IS_PACKAGED is False
+            return "not Windows → False"
+        r = plat._impl.detect_packaged()
+        assert isinstance(r, bool) and r == plat.IS_PACKAGED, (r, plat.IS_PACKAGED)
+        if "\\WindowsApps\\" not in sys.executable:
+            assert r is False, "unpackaged run detected as packaged"
+        return f"packaged={r}"
+    check("Store package detection", packaged_detection)
+
+    def store_mode_menus():
+        """Store 앱 모드: 시작 프로그램 체크 대신 'Windows 설정 열기', 레지스트리는 건드리지 않음."""
+        from .window import MainWindow, autostart_allowed
+        from PySide6.QtGui import QIcon
+        saved = plat.IS_PACKAGED
+        plat.IS_PACKAGED = True
+        try:
+            assert autostart_allowed() is False
+            cfg = Config()
+            cfg["open_tabs"] = []
+            cfg.save = lambda: None
+            w = MainWindow(st, cfg, QIcon())
+            texts = [a.text() for a in w.findChildren(type(w.a_palette))]
+            assert i18n.tr("act.startup_settings") in texts, "no startup-settings action"
+            assert getattr(w, "a_autostart", None) is None, "start-up checkbox still shown"
+            w.close()
+        finally:
+            plat.IS_PACKAGED = saved
+        return "settings link instead of checkbox"
+    check("Store mode menus", store_mode_menus)
+
     def autostart_untouched():
         try:
             now = _plat.autostart_enabled()

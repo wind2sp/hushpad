@@ -251,8 +251,11 @@ def autostart_allowed() -> bool:
     """자동 실행 등록을 건드려도 되는 실행인가.
     - 배포된 앱(exe/.app)에서만. python으로 돌리는 개발 실행은 아님
     - 자체 점검(--selftest)·시험용 프로필(HUSHPAD_PROFILE)·HUSHPAD_NO_AUTOSTART=1 이면 절대 안 건드림
-    - macOS에서 서명 없는 앱을 다운로드 폴더에서 바로 열면 임시 경로(App Translocation)라 등록하지 않음"""
+    - macOS에서 서명 없는 앱을 다운로드 폴더에서 바로 열면 임시 경로(App Translocation)라 등록하지 않음
+    - Microsoft Store(MSIX) 패키지 앱은 매니페스트의 시작 작업이 맡으므로 레지스트리를 건드리지 않음"""
     import sys
+    if plat.IS_PACKAGED:
+        return False
     if not plat.AUTOSTART_SUPPORTED or not getattr(sys, "frozen", False):
         return False
     if "--selftest" in sys.argv or os.environ.get("HUSHPAD_PROFILE") or os.environ.get("HUSHPAD_NO_AUTOSTART"):
@@ -580,7 +583,9 @@ class MainWindow(QMainWindow):
                       checkable=True, checked=self.cfg.get("lock_on_winlock", False))
         self._act(m, tr("act.close_tray"), lambda on: self.cfg.__setitem__("close_to_tray", on),
                   checkable=True, checked=self.cfg.get("close_to_tray", True))
-        if plat.AUTOSTART_SUPPORTED:
+        if plat.IS_PACKAGED:      # Store 앱: 시작 작업은 Windows 설정에서 켜고 끈다
+            self._act(m, tr("act.startup_settings"), self._open_startup_settings)
+        elif plat.AUTOSTART_SUPPORTED:
             self.a_autostart = self._act(m, tr("act.autostart"), self._toggle_autostart, checkable=True,
                                          checked=self._autostart_on())
         m.addSeparator()
@@ -772,7 +777,9 @@ class MainWindow(QMainWindow):
         m.addAction(lbl("empty.k_shot", "S"), lambda: self.screenshot("region"))
         m.addAction(lbl("tb.record", "R"), self.record_video)
         m.addSeparator()
-        if plat.AUTOSTART_SUPPORTED:
+        if plat.IS_PACKAGED:
+            m.addAction(tr("act.startup_settings"), self._open_startup_settings)
+        elif plat.AUTOSTART_SUPPORTED:
             self.tray_autostart = m.addAction(tr("act.autostart"))
             self.tray_autostart.setCheckable(True)
             self.tray_autostart.setChecked(self._autostart_on())
@@ -918,6 +925,10 @@ class MainWindow(QMainWindow):
         self.cfg["autostart"] = on
         self._sync_autostart_checks()
         self._notify(tr("autostart.on") if on else tr("autostart.off"))
+
+    def _open_startup_settings(self):
+        if not plat.open_startup_settings():
+            self.status(tr("startup_settings.fail"))
 
     def _sync_autostart_checks(self):
         """보안 메뉴와 트레이 메뉴의 체크를 실제 등록 상태에 맞춘다."""

@@ -57,6 +57,10 @@ CLIPBOARD_PRIVATE_SUPPORTED = _impl.CLIPBOARD_PRIVATE_SUPPORTED
 screen_capture_allowed = _impl.screen_capture_allowed   # () -> bool
 request_screen_capture = _impl.request_screen_capture   # () -> None
 
+# ---- Microsoft Store(MSIX) 패키지 앱: 자동 실행은 매니페스트의 시작 작업, 켜고 끄기는 OS 설정에서
+IS_PACKAGED = getattr(_impl, "IS_PACKAGED", False)
+open_startup_settings = getattr(_impl, "open_startup_settings", lambda: False)   # () -> bool
+
 # ---- 로그인할 때 실행
 AUTOSTART_SUPPORTED = _impl.AUTOSTART_SUPPORTED
 autostart_enabled = _impl.autostart_enabled  # () -> bool

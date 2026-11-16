@@ -1,5 +1,6 @@
 """Windows 구현: DPAPI 키 기억, 캡처 제외(SetWindowDisplayAffinity), DWM 제목 표시줄,
-RegisterHotKey 전역 단축키, WTS 잠금 알림, Run 키 자동 실행, 클립보드 기록 제외 형식.
+RegisterHotKey 전역 단축키, WTS 잠금 알림, Run 키 자동 실행, 클립보드 기록 제외 형식,
+Microsoft Store(MSIX) 패키지 앱 감지.
 
 이 모듈은 sys.platform == 'win32'일 때만 import된다."""
 from __future__ import annotations
@@ -114,8 +115,44 @@ def key_forget(vid: str) -> None:
         pass
 
 
+# ------------------------------------------------------------------ 패키지 앱(MSIX) 감지
+APPMODEL_ERROR_NO_PACKAGE = 15700
+ERROR_INSUFFICIENT_BUFFER = 122
+
+
+def detect_packaged() -> bool:
+    """Microsoft Store(MSIX)로 설치된 패키지 앱으로 실행 중이면 True.
+    GetCurrentPackageFullName: 패키지 아님 → 15700, 패키지 → 0 또는 122(버퍼 부족). Windows 8 미만엔 함수가 없음."""
+    try:
+        fn = _kernel32.GetCurrentPackageFullName
+    except AttributeError:
+        return False
+    try:
+        fn.argtypes = [ctypes.POINTER(ctypes.c_uint32), wintypes.LPWSTR]
+        fn.restype = ctypes.c_long
+        n = ctypes.c_uint32(0)
+        rc = fn(ctypes.byref(n), None)
+    except Exception:
+        return False
+    return rc in (0, ERROR_INSUFFICIENT_BUFFER)
+
+
+IS_PACKAGED = detect_packaged()
+
+
+def open_startup_settings() -> bool:
+    """설정 › 앱 › 시작 프로그램. 패키지 앱의 시작 작업(StartupTask)은 여기서 켜고 끈다."""
+    try:
+        os.startfile("ms-settings:startupapps")
+        return True
+    except OSError:
+        return False
+
+
 # ------------------------------------------------------------------ 창
 def set_app_id(app_id: str) -> None:
+    if IS_PACKAGED:      # 패키지 앱은 패키지의 앱 ID를 그대로 써야 시작 메뉴·작업 표시줄 고정과 묶인다
+        return
     try:
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
     except Exception:
@@ -193,11 +230,14 @@ def request_screen_capture() -> None:
 
 
 # ------------------------------------------------------------------ Windows 시작할 때 실행 (HKCU Run)
+# 패키지 앱(Store)은 Run 키를 쓰지 않는다: 매니페스트의 시작 작업(StartupTask)이 대신하고, 켜고 끄기는 Windows 설정에서.
 AUTOSTART_SUPPORTED = True
 RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
 
 
 def autostart_enabled() -> bool:
+    if IS_PACKAGED:
+        return False
     import winreg
     try:
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY) as k:
@@ -208,6 +248,8 @@ def autostart_enabled() -> bool:
 
 
 def set_autostart(on: bool) -> bool:
+    if IS_PACKAGED:
+        return False
     import winreg
     if on and not getattr(sys, "frozen", False):
         return False
