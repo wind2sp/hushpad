@@ -34,7 +34,8 @@
       "licenseOn": "License text",
       "licenseOff": "License text (after release)",
       "licenseH": "License",
-      "license": "Hushpad is free, open-source software released under GPL-3.0-or-later. It is provided as is, without any warranty."
+      "license": "Hushpad is free, open-source software released under GPL-3.0-or-later. It is provided as is, without any warranty.",
+      "privacyLink": "Privacy policy"
     }
   },
   "index": {

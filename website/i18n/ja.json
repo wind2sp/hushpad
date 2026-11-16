@@ -34,7 +34,8 @@
       "licenseOn": "ライセンス全文",
       "licenseOff": "ライセンス全文（公開後）",
       "licenseH": "ライセンス",
-      "license": "Hushpad は GPL-3.0-or-later で配布する無料のオープンソースソフトウェアです。現状のまま提供され、いかなる保証もありません。"
+      "license": "Hushpad は GPL-3.0-or-later で配布する無料のオープンソースソフトウェアです。現状のまま提供され、いかなる保証もありません。",
+      "privacyLink": "プライバシーポリシー"
     }
   },
   "index": {

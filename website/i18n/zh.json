@@ -34,7 +34,8 @@
       "licenseOn": "许可证全文",
       "licenseOff": "许可证全文（公开后）",
       "licenseH": "许可证",
-      "license": "Hushpad 是以 GPL-3.0-or-later 发布的免费开源软件，按“原样”提供，不附带任何担保。"
+      "license": "Hushpad 是以 GPL-3.0-or-later 发布的免费开源软件，按“原样”提供，不附带任何担保。",
+      "privacyLink": "隐私政策"
     }
   },
   "index": {
