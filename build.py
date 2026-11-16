@@ -41,6 +41,8 @@ def main():
     cmd += ["--hidden-import", "PySide6.QtMultimedia", "--hidden-import", "PySide6.QtMultimediaWidgets"]
     if IS_MAC:
         cmd += ["--osx-bundle-identifier", "com.hushpad.app"]
+    else:
+        cmd += ["--version-file", str(write_version_file())]   # exe 속성: 제품·회사·버전·저작권
     for e in excludes:
         cmd += ["--exclude-module", e]
     cmd.append(str(HERE / "hushpad_main.py"))
@@ -58,6 +60,35 @@ def main():
     if r.returncode == 0 and not IS_MAC:
         print(make_windows_zip())
     sys.exit(r.returncode)
+
+
+def write_version_file() -> Path:
+    """Windows exe의 버전 정보(파일 속성 › 자세히). 코드 서명·Store가 제품 이름과 버전을 확인한다."""
+    sys.path.insert(0, str(HERE))
+    from hushpad_app import __version__
+    nums = [int(x) for x in __version__.split(".")] + [0] * 4
+    v = tuple(nums[:4])
+    text = f"""VSVersionInfo(
+  ffi=FixedFileInfo(filevers={v}, prodvers={v}, mask=0x3f, flags=0x0, OS=0x40004, fileType=0x1,
+                    subtype=0x0, date=(0, 0)),
+  kids=[
+    StringFileInfo([StringTable('040904B0', [
+      StringStruct('CompanyName', 'NINEROW partners Co., Ltd.'),
+      StringStruct('FileDescription', 'Hushpad - quiet, private notepad'),
+      StringStruct('FileVersion', '{__version__}'),
+      StringStruct('InternalName', 'Hushpad'),
+      StringStruct('LegalCopyright', '(C) 2026 NINEROW partners Co., Ltd. and Hushpad contributors. GPL-3.0-or-later'),
+      StringStruct('OriginalFilename', 'Hushpad.exe'),
+      StringStruct('ProductName', 'Hushpad'),
+      StringStruct('ProductVersion', '{__version__}')])]),
+    VarFileInfo([VarStruct('Translation', [0x0409, 1200])])
+  ]
+)
+"""
+    out = HERE / "build" / "version_info.txt"
+    out.parent.mkdir(exist_ok=True)
+    out.write_text(text, "utf-8")
+    return out
 
 
 # 쓰지 않는데 PySide6가 끌어오는 것: Qt 가상 키보드(GPL 전용 구성요소), QML·Quick, Mesa 소프트웨어 OpenGL.
