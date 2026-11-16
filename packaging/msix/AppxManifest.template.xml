@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hushpad MSIX 매니페스트 틀. make_msix.py가 $NAME 같은 자리를 채워 layout\AppxManifest.xml로 쓴다.
+     Identity(Name·Publisher)는 Partner Center › 제품 ID에 나오는 값을 store_identity.json에 넣는다. -->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap10 desktop rescap">
+
+  <Identity Name="$NAME" Publisher="$PUBLISHER" Version="$VERSION" ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>ms-resource:AppDisplayName</DisplayName>
+    <PublisherDisplayName>$PUBLISHER_DISPLAY_NAME</PublisherDisplayName>
+    <Description>ms-resource:AppDescription</Description>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <!-- 10.0.19041 = Windows 10 2004: 캡처에서 창 숨기기(WDA_EXCLUDEFROMCAPTURE)가 여기부터 된다 -->
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="$MAX_TESTED" />
+  </Dependencies>
+
+  <!-- 첫 줄이 기본 언어 -->
+  <Resources>
+    <Resource Language="ko-KR" />
+    <Resource Language="en-US" />
+    <Resource Language="ja-JP" />
+    <Resource Language="zh-CN" />
+  </Resources>
+
+  <Applications>
+    <!-- 시작 메뉴에 보이는 앱 -->
+    <Application Id="Hushpad" Executable="Hushpad\Hushpad.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="ms-resource:AppDisplayName"
+        Description="ms-resource:AppDescription"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Hushpad" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+    </Application>
+
+    <!-- Windows 시작할 때 트레이로 실행 (Parameters = tray 옵션). 시작 메뉴에는 보이지 않는다.
+         켜고 끄기: 설정 › 앱 › 시작 프로그램 (앱 메뉴의 'Windows 시작 프로그램 설정 열기…') -->
+    <Application Id="HushpadTray" Executable="Hushpad\Hushpad.exe" EntryPoint="Windows.FullTrustApplication"
+                 uap10:Parameters="--tray">
+      <uap:VisualElements
+        DisplayName="ms-resource:AppDisplayName"
+        Description="ms-resource:AppDescription"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        AppListEntry="none" />
+      <Extensions>
+        <desktop:Extension Category="windows.startupTask" Executable="Hushpad\Hushpad.exe"
+                           EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="HushpadStartup" Enabled="true" DisplayName="Hushpad" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
