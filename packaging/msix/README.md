@@ -42,9 +42,9 @@ python packaging\msix\make_msix.py    # dist\Hushpad-<버전>.msix
 
 | store_identity.json | Partner Center 표시 | 예 |
 |---|---|---|
-| `Name` | Package/Identity/Name | `12345NINEROWpartners.Hushpad` |
+| `Name` | Package/Identity/Name | `12345KyeongjinHwang.Hushpad` |
 | `Publisher` | Package/Identity/Publisher | `CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX` |
-| `PublisherDisplayName` | Package/Properties/PublisherDisplayName | `NINEROW partners Co., Ltd.` |
+| `PublisherDisplayName` | Package/Properties/PublisherDisplayName | `Kyeongjin Hwang` (개인 계정의 게시자 표시 이름) |
 
 값이 `TODO-from-Partner-Center`이면 만들 수는 있지만 Store에 올리면 거절됩니다(만들 때 경고가 나옵니다).
 
