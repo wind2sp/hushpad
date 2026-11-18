@@ -71,7 +71,9 @@
             <h2>Windows</h2>
             <p class="os-req">Windows 10 (version 2004 or later) or 11, 64-bit</p>
             <div class="when-public">
-              <a class="btn primary" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ Download for Windows</a>
+              <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">Get it from Microsoft Store</a>
+              <p class="os-note">Recommended. Installs without the SmartScreen warning and updates itself.</p>
+              <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ Download zip (portable)</a>
               <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
               <div class="sum-label">SHA-256</div>
               <code class="sum" id="sha-win" data-dl-sha="win">Shown at release</code>
@@ -103,6 +105,7 @@
       <div class="req">
         <div class="box" data-os-box="win">
           <h3>First run on Windows</h3>
+          <p>Installed from the Microsoft Store? Open Hushpad from the Start menu and do step 4 only. Steps 1–3 are for the zip.</p>
           <ol><li>Download the zip file and extract it wherever you like (your Documents folder, for example). There's no installer.</li><li>Open the extracted <code>Hushpad</code> folder and run <code>Hushpad.exe</code>.</li><li>If “Windows protected your PC” appears, click “More info › Run anyway.” Hushpad isn't code-signed yet, so SmartScreen may warn you about it. If you'd like to be sure first, check the SHA-256 value as described below.</li><li>Choose a folder for your notes and set a password. To use Hushpad on several PCs, pick a folder inside Dropbox or OneDrive.</li></ol>
         </div>
         <div class="box" data-os-box="mac">
@@ -123,7 +126,7 @@
         </div>
         <div class="box">
           <h3>Uninstalling</h3>
-          <p>If auto-start is on, turn it off from the tray or menu bar icon first, then delete the program folder (Hushpad.app on a Mac). Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too.</p>
+          <p>If auto-start is on, turn it off from the tray or menu bar icon first, then delete the program folder (Hushpad.app on a Mac). Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too. If you installed from the Microsoft Store, uninstall it in Windows Settings › Apps. Its settings and remembered key go with it; the notes in your vault folder stay.</p>
         </div>
       </div>
     </div>
@@ -160,6 +163,6 @@
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=4" defer></script>
+<script src="../assets/js/site.js?v=4" defer></script>
 </body>
 </html>

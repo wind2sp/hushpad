@@ -218,7 +218,11 @@
         "Open the extracted <code>Hushpad</code> folder and run <code>Hushpad.exe</code>.",
         "If “Windows protected your PC” appears, click “More info › Run anyway.” Hushpad isn't code-signed yet, so SmartScreen may warn you about it. If you'd like to be sure first, check the SHA-256 value as described below.",
         "Choose a folder for your notes and set a password. To use Hushpad on several PCs, pick a folder inside Dropbox or OneDrive."
-      ]
+      ],
+      "store": "Get it from Microsoft Store",
+      "storeNote": "Recommended. Installs without the SmartScreen warning and updates itself.",
+      "zip": "Download zip (portable)",
+      "storeFirst": "Installed from the Microsoft Store? Open Hushpad from the Start menu and do step 4 only. Steps 1–3 are for the zip."
     },
     "mac": {
       "req": "Macs with Apple silicon (M1 or later)",
@@ -253,7 +257,7 @@
     },
     "remove": {
       "h": "Uninstalling",
-      "p": "If auto-start is on, turn it off from the tray or menu bar icon first, then delete the program folder (Hushpad.app on a Mac). Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too."
+      "p": "If auto-start is on, turn it off from the tray or menu bar icon first, then delete the program folder (Hushpad.app on a Mac). Your notes stay in the vault folder, still encrypted. To remove the notes as well, delete the vault folder too. If you installed from the Microsoft Store, uninstall it in Windows Settings › Apps. Its settings and remembered key go with it; the notes in your vault folder stay."
     }
   }
 }

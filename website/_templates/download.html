@@ -27,7 +27,9 @@
             <h2>Windows</h2>
             <p class="os-req">{{dl.win.req}}</p>
             <div class="when-public">
-              <a class="btn primary" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ {{dl.win.get}}</a>
+              <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">{{dl.win.store}}</a>
+              <p class="os-note">{{dl.win.storeNote}}</p>
+              <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ {{dl.win.zip}}</a>
               <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
               <div class="sum-label">SHA-256</div>
               <code class="sum" id="sha-win" data-dl-sha="win">{{dl.hash.pending}}</code>
@@ -59,6 +61,7 @@
       <div class="req">
         <div class="box" data-os-box="win">
           <h3>{{dl.win.firstH}}</h3>
+          <p>{{dl.win.storeFirst}}</p>
           <ol>{{dl.win.first}}</ol>
         </div>
         <div class="box" data-os-box="mac">
