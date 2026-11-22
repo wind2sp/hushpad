@@ -164,6 +164,10 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 - 구성: `hushpad_app\` — crypto(암호), store(저장), editors(편집기), capture(캡처·녹화), window(주 창), notepad_import, i18n(번역), plat(OS별 기능)
 - 번역: 화면 문구는 모두 `tr("열쇠")`로 `hushpad_app\locales\{ko,en,ja,zh}.json`에서 가져옵니다. 문구를 더하면 네 파일에 같은 열쇠를 넣으세요(`열쇠@mac`은 macOS에서만 쓰는 문구). 언어별 화면: `docs\i18n\`
 
+## 문의
+
+- 사용·제휴·버그 문의는 **wind2sp@9rowpar.com**으로 보내 주세요. 버그는 [GitHub Issues](https://github.com/wind2sp/hushpad/issues)에 올려도 됩니다. 보안 문제는 [SECURITY.md](SECURITY.md)를 따라 주세요.
+
 ## 라이선스
 
 - **무료 오픈소스, [GPL-3.0-or-later](LICENSE)** (GNU 일반 공중 사용 허가서 3판 또는 그 이후 판). 소프트웨어는 "있는 그대로" 제공되며 어떠한 보증도 하지 않습니다. 수정본을 배포할 때는 같은 라이선스로 소스 코드를 함께 공개해야 합니다.
@@ -178,4 +182,5 @@ Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes
 - Download: [Microsoft Store (Windows, recommended)](https://apps.microsoft.com/detail/9P73RW8W1FQV) · [Windows zip](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip) · [macOS (Apple Silicon)](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip). Portable, no installer, unsigned (Windows: "More info › Run anyway"; macOS: right-click › Open). No Intel Mac build.
 - Microsoft Store build (`packaging/msix/`): signed by Microsoft, so there's no SmartScreen warning, and updates are automatic. Start-at-login comes from the package's startup task and is switched in Windows Settings › Apps › Startup. Windows keeps the Store app's settings, daily backups and remembered key in the package's private folder, so uninstalling it removes them; notes in the vault folder (default `Documents\Hushpad`) stay.
 - Run from source: `pip install -r requirements.txt`, then `python hushpad_main.py`. Build: `python build.py`.
+- Contact: **wind2sp@9rowpar.com** (questions, partnerships, bugs; bugs can also go to [GitHub Issues](https://github.com/wind2sp/hushpad/issues)).
 - License: GPL-3.0-or-later. © 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors. See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
