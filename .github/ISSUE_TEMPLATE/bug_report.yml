@@ -12,7 +12,7 @@ body:
     attributes:
       label: Hushpad 버전 / Version
       description: 프로그램 정보(⋯ › 프로그램 정보)에 나오는 버전 / Shown in ⋯ › About
-      placeholder: "1.0.0"
+      placeholder: "1.0.1"
     validations:
       required: true
   - type: dropdown
