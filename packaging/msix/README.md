@@ -115,3 +115,19 @@ Store가 올린 패키지를 자동으로 검사하지만, 미리 보려면 SDK�
 ## Store 등록 문구·스크린샷
 
 `store_listing\` 폴더를 보세요.
+
+## 자동 제출 (GitHub Actions `store-submit`)
+GitHub › Actions › **store-submit** › Run workflow 에서 `mode`를 고릅니다.
+
+| mode | 하는 일 |
+|---|---|
+| `check` | Partner Center 연결만 확인 (Hushpad 제출 상태를 읽기만 함) |
+| `draft` | Windows 앱 빌드 → `.msix` → Hushpad의 새 제출(초안)에 패키지 교체. 제출은 Partner Center에서 직접 |
+| `submit` | 위와 같고, 바로 **인증을 위해 제출**까지 |
+
+- 순서: 먼저 `hushpad_app/__init__.py`의 버전을 올려 push → `submit`(또는 `draft`) 실행.
+- 인증 중인 제출이 있으면 `draft`·`submit`은 실패합니다. 끝난 뒤 다시 실행하세요.
+- 언어별 "이번 버전의 새로운 기능" 문구는 바뀌지 않습니다. 바꾸려면 `draft`로 올린 뒤 Partner Center에서 고치고 제출하세요.
+- 연결: Partner Center의 Entra 테넌트 `windspgmail.onmicrosoft.com`, Entra 앱 `hushpad-store-submit`(Manager).
+  저장소 변수 `MSSTORE_TENANT_ID`·`MSSTORE_CLIENT_ID`·`MSSTORE_SELLER_ID`·`MSSTORE_PRODUCT_ID`, 비밀 `MSSTORE_CLIENT_SECRET`.
+  키가 만료되면 Partner Center › 사용자 관리 › Microsoft Entra 애플리케이션 › hushpad-store-submit › Add new key로 새로 만들어 비밀만 바꿉니다.
