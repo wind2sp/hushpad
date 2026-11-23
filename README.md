@@ -57,6 +57,7 @@
 - **zip은** 설치 과정이 없는 포터블 앱입니다. zip을 풀고 `Hushpad.exe`(macOS는 `Hushpad.app`)를 실행하면 처음에 보관 폴더와 암호(8자 이상)를 정합니다.
 - zip은 서명하지 않은 앱이라 Windows는 "PC 보호" 창에서 **추가 정보 › 실행**, macOS는 처음 한 번 **오른쪽 클릭 › 열기**가 필요합니다.
 - 처음 실행하면 "Windows 시작할 때 실행"(macOS: 로그인할 때 실행)이 켜집니다. 트레이(메뉴 막대) 아이콘 오른쪽 클릭으로 끌 수 있어요.
+- Windows 10 2004(빌드 19041) 이전 버전과 macOS 15 이상에서는 Hushpad의 스크린샷·녹화가 찍는 동안 Hushpad 창을 잠깐 숨겼다가 다시 보입니다. 이런 OS에서는 창을 캡처에서 빼는 기능이 제대로 듣지 않기 때문입니다(오래된 Windows 10은 다른 캡처 프로그램에서 창이 검게 찍힙니다).
 - 받은 파일이 맞는지는 릴리스 페이지의 SHA-256 값과 비교해 확인하세요 (Windows: `Get-FileHash 파일.zip`, macOS: `shasum -a 256 파일.zip`).
 
 ### Microsoft Store 버전
@@ -181,6 +182,7 @@ Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes
 
 - Download: [Microsoft Store (Windows, recommended)](https://apps.microsoft.com/detail/9P73RW8W1FQV) · [Windows zip](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip) · [macOS (Apple Silicon)](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip). Portable, no installer, unsigned (Windows: "More info › Run anyway"; macOS: right-click › Open). No Intel Mac build.
 - Microsoft Store build (`packaging/msix/`): signed by Microsoft, so there's no SmartScreen warning, and updates are automatic. Start-at-login comes from the package's startup task and is switched in Windows Settings › Apps › Startup. Windows keeps the Store app's settings, daily backups and remembered key in the package's private folder, so uninstalling it removes them; notes in the vault folder (default `Documents\Hushpad`) stay.
+- On Windows 10 before version 2004 (build 19041) and on macOS 15+, Hushpad's own screenshot and recording briefly hide its windows while capturing, because excluding a window from capture doesn't fully work there (older Windows 10 shows the window as a black box in other capture tools).
 - Run from source: `pip install -r requirements.txt`, then `python hushpad_main.py`. Build: `python build.py`.
 - Contact: **wind2sp@9rowpar.com** (questions, partnerships, bugs; bugs can also go to [GitHub Issues](https://github.com/wind2sp/hushpad/issues)).
 - License: GPL-3.0-or-later. © 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors. See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

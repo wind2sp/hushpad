@@ -266,7 +266,8 @@ class Recorder(QObject):
         g = self.rect.translated(self.screen_.geometry().topLeft())
         for w in (self.frame_win, self.bar):
             w.show()
-            exclude_from_capture(w)
+            if plat.CAPTURE_EXCLUDE_WORKS:      # 오래된 Windows 10에선 검은 상자로 찍히므로 제외하지 않는다
+                exclude_from_capture(w)
         sg = self.screen_.availableGeometry()
         self.bar.adjustSize()
         x = min(max(sg.left(), g.right() - self.bar.width()), sg.right() - self.bar.width())

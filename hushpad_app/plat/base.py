@@ -57,6 +57,11 @@ def exclude_from_capture(widget, on: bool = True) -> bool:
     return False
 
 
+# 캡처 제외가 창을 '빼 주는지'(True) 아니면 검게 찍히게 하는지(False, 오래된 Windows 10).
+# False면 Hushpad 자체 캡처·녹화 때 창을 잠깐 숨긴다.
+CAPTURE_EXCLUDE_WORKS = True
+
+
 def style_titlebar(widget, t: dict) -> None:
     pass
 

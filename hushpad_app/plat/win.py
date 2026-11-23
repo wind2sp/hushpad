@@ -161,6 +161,10 @@ def set_app_id(app_id: str) -> None:
 
 WDA_NONE = 0
 WDA_EXCLUDEFROMCAPTURE = 0x11
+# Windows 10 2004(빌드 19041)부터 '캡처 제외'가 창을 아예 빼 준다. 그 전 버전은 같은 설정이 창을 검게 찍히게 한다
+# (Microsoft 문서: 이전 버전에서는 WDA_MONITOR처럼 동작). HUSHPAD_OLD_CAPTURE=1 이면 오래된 버전처럼 동작(시험용).
+WIN_BUILD = getattr(sys.getwindowsversion(), "build", 0)
+CAPTURE_EXCLUDE_WORKS = WIN_BUILD >= 19041 and not os.environ.get("HUSHPAD_OLD_CAPTURE")
 
 
 def exclude_from_capture(widget, on: bool = True) -> bool:

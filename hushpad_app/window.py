@@ -241,7 +241,8 @@ class _CaptureHider(QObject):
         if self.win is not None and ev.type() in (QEvent.KeyPress, QEvent.MouseButtonPress):
             self.win._last_input = time.time()
         if ev.type() == QEvent.Show and isinstance(obj, QWidget) and obj.isWindow() \
-                and self.cfg.get("hide_from_capture", True) and not isinstance(obj, capture.RegionOverlay):
+                and self.cfg.get("hide_from_capture", True) and not isinstance(obj, capture.RegionOverlay) \
+                and (plat.CAPTURE_EXCLUDE_WORKS or not isinstance(obj, (capture.RecordBar, capture._Frame))):
             exclude_from_capture(obj, True)
         return False
 
@@ -1887,9 +1888,11 @@ class MainWindow(QMainWindow):
             self._capture_denied()
             return
         screen = capture.screen_under_cursor()
+        hidden = self._hide_for_capture()
 
         def go():
             pix = capture.grab_screen(screen)
+            self._restore_after_capture(hidden)
             if self._blank_capture(pix):
                 return
             if mode == "full":
@@ -1899,7 +1902,28 @@ class MainWindow(QMainWindow):
             ov.chosen.connect(lambda r: self._insert_shot(capture.crop(pix, r)))
             ov.start()
             self._overlay = ov
-        QTimer.singleShot(60, go)
+        QTimer.singleShot(250 if hidden else 60, go)
+
+    # 오래된 Windows 10(빌드 19041 미만)은 '캡처 제외' 창이 검게 찍히고, macOS 15 이상은 창이 찍힐 수 있다.
+    # 그런 곳(plat.CAPTURE_EXCLUDE_WORKS가 False)에서는 Hushpad 자체 캡처·녹화 때만 열린 Hushpad 창을
+    # 잠깐 숨겼다가(찍는 동안·녹화하는 동안) 다시 보인다.
+    def _hide_for_capture(self) -> list:
+        if plat.CAPTURE_EXCLUDE_WORKS or not self.cfg.get("hide_from_capture", True):
+            return []
+        hidden = [w for w in QApplication.topLevelWidgets()
+                  if w.isVisible() and not isinstance(w, (capture.RegionOverlay, capture.RecordBar, capture._Frame))]
+        for w in hidden:
+            w.hide()
+        return hidden
+
+    def _restore_after_capture(self, hidden: list) -> None:
+        for w in hidden:
+            try:
+                w.show()
+            except RuntimeError:        # 그 사이 닫힌 창
+                pass
+        if self in hidden:
+            self.bring_to_front()
 
     def _capture_denied(self):
         """macOS: 화면 기록 권한이 없을 때 어디서 켜는지 알려 준다."""
@@ -1928,19 +1952,33 @@ class MainWindow(QMainWindow):
             self._capture_denied()
             return
         screen = capture.screen_under_cursor()
-        pix = capture.grab_screen(screen)
-        if self._blank_capture(pix):
-            return
-        ov = capture.RegionOverlay(screen, pix, "video")
-        ov.chosen.connect(lambda r: self._start_record(screen, r))
-        ov.start()
-        self._overlay = ov
+        self._rec_hidden = self._hide_for_capture()     # 녹화가 끝날 때까지 숨겨 둠 (오래된 Windows 10·macOS 15 이상)
+
+        def go():
+            pix = capture.grab_screen(screen)
+            if self._blank_capture(pix):
+                self._rec_restore()
+                return
+            ov = capture.RegionOverlay(screen, pix, "video")
+            ov.chosen.connect(lambda r: self._start_record(screen, r))
+            ov.cancelled.connect(self._rec_restore)
+            ov.start()
+            self._overlay = ov
+        if self._rec_hidden:
+            QTimer.singleShot(250, go)
+        else:
+            go()
+
+    def _rec_restore(self):
+        hidden, self._rec_hidden = getattr(self, "_rec_hidden", []), []
+        self._restore_after_capture(hidden)
 
     def _start_record(self, screen, rect):
         try:
             rec = capture.Recorder(screen, rect, fps=self.cfg.get("video_fps", 12),
                                    max_sec=self.cfg.get("video_max_sec", 180))
         except Exception as e:
+            self._rec_restore()
             QMessageBox.warning(self, tr("dlg.rec_title"), tr("dlg.rec_cant", err=e))
             return
         self._recorder = rec
@@ -1952,6 +1990,7 @@ class MainWindow(QMainWindow):
 
     def _video_done(self, data: bytes, first: QImage, secs: float):
         self._recorder = None
+        self._rec_restore()
         mid = self.store.put_media(data)
         t = self._capture_target()
         t.edit.insert_image(capture.video_thumbnail(first, secs), href=f"owvideo:{mid}")
@@ -1960,11 +1999,13 @@ class MainWindow(QMainWindow):
 
     def _video_failed(self, msg):
         self._recorder = None
+        self._rec_restore()
         self.statusBar().clearMessage()
         QMessageBox.warning(self, tr("dlg.rec_title"), tr("dlg.rec_failed", msg=msg))
 
     def _video_cancelled(self):
         self._recorder = None
+        self._rec_restore()
         self.status(tr("st.rec_cancelled"))
 
     def play_video(self, mid):

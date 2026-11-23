@@ -258,6 +258,32 @@ def run() -> int:
         return "settings link instead of checkbox"
     check("Store mode menus", store_mode_menus)
 
+    def capture_hide_fallback():
+        """오래된 Windows 10·macOS 15+: 자체 캡처 때 창을 숨겼다가 다시 보인다. 그 밖에는 숨기지 않는다."""
+        from .window import MainWindow
+        from PySide6.QtGui import QIcon
+        cfg = Config()
+        cfg["open_tabs"] = []
+        cfg.save = lambda: None
+        w = MainWindow(st, cfg, QIcon())
+        w.show()
+        saved = plat.CAPTURE_EXCLUDE_WORKS
+        try:
+            plat.CAPTURE_EXCLUDE_WORKS = True
+            assert w._hide_for_capture() == [] and w.isVisible(), "hid windows on a supported OS"
+            plat.CAPTURE_EXCLUDE_WORKS = False
+            hidden = w._hide_for_capture()
+            assert w in hidden and not w.isVisible(), "window not hidden for capture"
+            w._restore_after_capture(hidden)
+            assert w.isVisible(), "window not restored after capture"
+            cfg["hide_from_capture"] = False
+            assert w._hide_for_capture() == [], "hid windows although capture hiding is off"
+        finally:
+            plat.CAPTURE_EXCLUDE_WORKS = saved
+            w.close()
+        return f"supported here={saved}"
+    check("capture hide fallback", capture_hide_fallback)
+
     def autostart_untouched():
         try:
             now = _plat.autostart_enabled()

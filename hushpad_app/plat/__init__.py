@@ -45,6 +45,7 @@ key_forget = _impl.key_forget            # (vault_id) -> None
 # ---- 창
 set_app_id = _impl.set_app_id            # (app_id) -> None   창을 만들기 전에
 exclude_from_capture = _impl.exclude_from_capture   # (widget, on) -> bool
+CAPTURE_EXCLUDE_WORKS = getattr(_impl, "CAPTURE_EXCLUDE_WORKS", True)   # False: 자체 캡처 때 창을 잠깐 숨김
 style_titlebar = _impl.style_titlebar    # (widget, tokens) -> None
 set_topmost = _impl.set_topmost          # (widget, on) -> None
 open_path = _impl.open_path              # (path) -> None  탐색기/Finder로 열기

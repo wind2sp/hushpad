@@ -164,6 +164,20 @@ def set_app_id(app_id: str) -> None:
 NSWindowSharingNone, NSWindowSharingReadOnly = 0, 1
 
 
+def _macos_major() -> int:
+    import platform
+    try:
+        return int(platform.mac_ver()[0].split(".")[0])
+    except (ValueError, IndexError):
+        return 0
+
+
+# macOS 15부터는 새 캡처 방식(ScreenCaptureKit)이 sharingType을 따르지 않는 경우가 있어 창이 찍힐 수 있다.
+# 그래서 15 이상에서는 Hushpad 자체 캡처·녹화 때 창을 잠깐 숨긴다. HUSHPAD_OLD_CAPTURE=1 이면 숨기기(시험용).
+import os as _os
+CAPTURE_EXCLUDE_WORKS = _macos_major() < 15 and not _os.environ.get("HUSHPAD_OLD_CAPTURE")
+
+
 def exclude_from_capture(widget, on: bool = True) -> bool:
     return _on_window(widget, lambda w: _send(w, "setSharingType:", None, [c_ulong],
                                               NSWindowSharingNone if on else NSWindowSharingReadOnly))
