@@ -1,0 +1,92 @@
+# Microsoft Store 제출 — 손으로 실행 (Actions › store-submit › Run workflow).
+# Windows 앱을 빌드해 Store용 .msix를 만들고, Microsoft Store Developer CLI(msstore)로 Hushpad에 올린다.
+#
+# mode
+#   check  : 연결만 확인 (Hushpad 제출 상태를 읽기만 함, 아무것도 바꾸지 않음)
+#   draft  : 패키지를 새 제출(초안)에 올리기만 하고 제출은 하지 않음 → Partner Center에서 보고 직접 제출
+#   submit : 패키지를 올리고 바로 인증을 위해 제출
+#
+# 필요한 값 (저장소 Settings › Secrets and variables › Actions)
+#   변수(Variables): MSSTORE_TENANT_ID, MSSTORE_CLIENT_ID, MSSTORE_SELLER_ID, MSSTORE_PRODUCT_ID(9P73RW8W1FQV)
+#   비밀(Secrets):   MSSTORE_CLIENT_SECRET  — Partner Center › 사용자 관리 › Microsoft Entra 애플리케이션 ›
+#                     hushpad-store-submit › Add new key 에서 만든 키
+# 진행 중인 제출(인증 중)이 있으면 draft·submit은 실패한다. 그때는 끝날 때까지 기다린다.
+name: store-submit
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "check = 연결 확인만 / draft = 초안까지 / submit = 인증 제출까지"
+        type: choice
+        options: [check, draft, submit]
+        default: check
+
+permissions:
+  contents: read
+
+jobs:
+  store:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      PRODUCT_ID: ${{ vars.MSSTORE_PRODUCT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: microsoft/setup-msstore-cli@v1
+
+      - name: Sign in to Partner Center (msstore)
+        shell: pwsh
+        run: |
+          msstore reconfigure --tenantId "${{ vars.MSSTORE_TENANT_ID }}" --sellerId "${{ vars.MSSTORE_SELLER_ID }}" `
+            --clientId "${{ vars.MSSTORE_CLIENT_ID }}" --clientSecret "${{ secrets.MSSTORE_CLIENT_SECRET }}"
+
+      - name: Check connection (Hushpad submission status)
+        shell: pwsh
+        run: msstore submission status $env:PRODUCT_ID
+
+      - uses: actions/setup-python@v5
+        if: inputs.mode != 'check'
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        if: inputs.mode != 'check'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build Hushpad (includes self-test of the exe)
+        if: inputs.mode != 'check'
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python build.py
+
+      - name: Make the Store package (.msix)
+        if: inputs.mode != 'check'
+        shell: pwsh
+        run: |
+          python packaging/msix/make_msix.py
+          Get-ChildItem dist/*.msix | Format-Table Name, Length
+
+      - name: Upload to Hushpad (draft only)
+        if: inputs.mode == 'draft'
+        shell: pwsh
+        run: |
+          $msix = (Get-ChildItem dist/*.msix | Select-Object -First 1).FullName
+          msstore publish $msix --appId $env:PRODUCT_ID --noCommit
+
+      - name: Upload and submit for certification
+        if: inputs.mode == 'submit'
+        shell: pwsh
+        run: |
+          $msix = (Get-ChildItem dist/*.msix | Select-Object -First 1).FullName
+          msstore publish $msix --appId $env:PRODUCT_ID
+
+      - uses: actions/upload-artifact@v4
+        if: inputs.mode != 'check'
+        with:
+          name: Hushpad-store-msix
+          path: dist/*.msix
+          retention-days: 14
