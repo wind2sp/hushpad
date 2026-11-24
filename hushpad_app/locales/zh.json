@@ -61,6 +61,7 @@
  "ed.save_image_title": "保存图片",
  "ed.copy_plain": "复制为纯文本",
  "ed.no_image": "代码笔记不能插入图片，请使用富文本笔记（{key}）。",
+ "ed.image_unreadable": "有 {n} 个图片文件无法读取。",
  "ed.copy_value": "仅复制此行的值  （{v}）",
  "ed.copied_value": "已复制值",
  "ed.copy_line": "复制此行",

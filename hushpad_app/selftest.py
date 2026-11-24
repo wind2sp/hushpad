@@ -313,6 +313,13 @@ def run() -> int:
             ed.setTextCursor(c)
             md = ed.createMimeDataFromSelection()
             assert md.hasImage() and not md.text().strip(), "image selection not copied as an image"
+            assert not md.hasUrls(), "clipboard copy must not carry file paths"
+            from .common import share_image_files
+            files = [Path(u.toLocalFile()) for u in share_image_files(ed._images_in_selection(c))]
+            assert files and all(f.is_file() and f.suffix == ".png" for f in files), "image not shared as a file"
+            from .common import cleanup_share_files
+            cleanup_share_files()
+            assert not any(f.exists() for f in files), "shared image file not cleaned up"
             c.setPosition(0)
             c.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
             ed.setTextCursor(c)
@@ -320,9 +327,25 @@ def run() -> int:
             assert "￼" not in md.text() and "a" in md.text() and md.hasHtml(), "mixed selection text wrong"
             if plat.IS_WIN and cfg["clip_private"]:        # Windows 형식 이름으로 확인 (macOS는 표시 이름이 다름)
                 assert any("CanIncludeInClipboardHistory" in f for f in md.formats()), "privacy mark lost"
+            # 탐색기에서 그림 파일을 끌어 놓기: '일반 텍스트로 붙여넣기'가 켜져 있어도 경로 글자 대신 그림
+            from PySide6.QtCore import QMimeData, QUrl
+            png = tmp / "drop.png"
+            img.save(str(png))
+            drop = QMimeData()
+            drop.setUrls([QUrl.fromLocalFile(str(png))])
+            ed.clear()
+            cfg["plain_paste"] = True
+            ed.insertFromMimeData(drop)
+            cfg["plain_paste"] = False
+            assert "drop.png" not in ed.toPlainText() and "<img" in ed.toHtml(), "dropped image became a path"
+            t = st.create(kind="text", text="")
+            w.open_note(t.id)
+            ced = w._cur_tab().edit
+            ced.insertFromMimeData(drop)
+            assert "drop.png" not in ced.toPlainText(), "image path pasted into text note"
         finally:
             w.close()
-        return "image only -> picture, mixed -> html+text"
+        return "image only -> picture (drag: png file), mixed -> html+text"
     check("image copy", image_copy)
 
     def autostart_untouched():

@@ -61,6 +61,7 @@
  "ed.save_image_title": "이미지 저장",
  "ed.copy_plain": "서식 없이 복사",
  "ed.no_image": "텍스트 메모에는 이미지를 넣을 수 없어요. 서식 메모({key})를 쓰세요.",
+ "ed.image_unreadable": "그림 파일 {n}개를 읽지 못했어요.",
  "ed.copy_value": "이 줄 값만 복사  ({v})",
  "ed.copied_value": "값만 복사했어요",
  "ed.copy_line": "이 줄 복사",

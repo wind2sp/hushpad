@@ -61,6 +61,7 @@
  "ed.save_image_title": "画像を保存",
  "ed.copy_plain": "書式なしでコピー",
  "ed.no_image": "コードメモには画像を入れられません。書式付きメモ（{key}）を使ってください。",
+ "ed.image_unreadable": "画像ファイル {n} 個を読み込めませんでした。",
  "ed.copy_value": "この行の値だけコピー  （{v}）",
  "ed.copied_value": "値をコピーしました",
  "ed.copy_line": "この行をコピー",

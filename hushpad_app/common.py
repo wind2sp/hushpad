@@ -7,6 +7,7 @@ import base64
 import json
 import os
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -86,6 +87,49 @@ def exclude_from_capture(widget, on: bool = True) -> bool:
 
 # ------------------------------------------------------------------ 클립보드
 TOKEN_MIME = "application/x-hushpad-token"
+
+
+# ---------------------------------------------------------------- 파일로 붙여 넣을 그림
+# 그림을 복사·끌어놓기 할 때 임시 PNG 파일도 함께 준다. 파일 첨부만 받는 곳(웹 채팅의 첨부 칸,
+# 파일 탐색기, 메일 첨부)에 저장·불러오기 없이 바로 붙여 넣거나 끌어다 놓을 수 있게.
+# 암호가 풀린 그림이 디스크에 남으므로 SHARE_KEEP_SEC가 지나면, 그리고 프로그램을 끝낼 때 지운다.
+SHARE_DIR = Path(tempfile.gettempdir()).resolve() / "Hushpad-share"
+SHARE_KEEP_SEC = 30 * 60
+
+
+def cleanup_share_files(max_age: float = 0) -> None:
+    """임시 그림 파일 지우기 (max_age초보다 오래된 것만, 0이면 모두)."""
+    if not SHARE_DIR.is_dir():
+        return
+    now = time.time()
+    for f in SHARE_DIR.iterdir():
+        try:
+            if not max_age or now - f.stat().st_mtime > max_age:
+                f.unlink()
+        except OSError:
+            pass
+
+
+def share_image_files(imgs: list) -> list:
+    """그림들을 임시 PNG로 저장하고 그 파일 주소(QUrl) 목록을 돌려준다. 실패하면 빈 목록."""
+    from PySide6.QtCore import QUrl
+    cleanup_share_files(SHARE_KEEP_SEC)
+    try:
+        SHARE_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return []
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    urls = []
+    for i, img in enumerate(imgs):
+        name = f"image-{stamp}" + (f"-{i + 1}" if len(imgs) > 1 else "") + ".png"
+        f = SHARE_DIR / name
+        n = 2
+        while f.exists():
+            f = SHARE_DIR / name.replace(".png", f"_{n}.png")
+            n += 1
+        if img.save(str(f), "PNG"):
+            urls.append(QUrl.fromLocalFile(str(f)))
+    return urls
 
 
 def mark_private(md: QMimeData, strict: bool = False) -> QMimeData:

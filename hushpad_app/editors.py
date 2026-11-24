@@ -10,15 +10,26 @@ import re
 from pathlib import Path
 
 from PySide6.QtCore import QMimeData, QRect, QRegularExpression, QSize, Qt, QUrl, Signal
-from PySide6.QtGui import (QColor, QDesktopServices, QFont, QFontDatabase, QImage, QKeySequence, QPainter,
+from PySide6.QtGui import (QColor, QDesktopServices, QDrag, QPixmap, QFont, QFontDatabase, QImage, QKeySequence, QPainter,
                            QSyntaxHighlighter, QTextCharFormat, QTextCursor, QTextFormat, QTextImageFormat)
-from PySide6.QtWidgets import QFileDialog, QPlainTextEdit, QTextEdit, QWidget
+from PySide6.QtWidgets import QApplication, QFileDialog, QPlainTextEdit, QTextEdit, QWidget
 
 from . import plat
-from .common import data_url_to_image, image_to_data_url, mark_private
+from .common import data_url_to_image, image_to_data_url, mark_private, share_image_files
 from .i18n import tr
 
-IMAGE_EXT = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
+IMAGE_EXT = {".png", ".jpg", ".jpeg", ".jfif", ".gif", ".bmp", ".webp", ".tif", ".tiff", ".ico"}
+
+
+def _dropped_images(src: QMimeData) -> list | None:
+    """탐색기에서 끌어온 것이 모두 그림 파일이면 그 경로 목록, 아니면 None."""
+    if not src.hasUrls():
+        return None
+    urls = src.urls()
+    files = [Path(u.toLocalFile()) for u in urls if u.isLocalFile()]
+    if files and len(files) == len(urls) and all(f.suffix.lower() in IMAGE_EXT for f in files):
+        return files
+    return None
 _REMOTE_IMG = re.compile(r"<img\b[^>]*\bsrc\s*=\s*[\"']?(?:https?:|file:|//)[^>]*>", re.I)
 MAX_DISPLAY_W = 900
 
@@ -117,6 +128,20 @@ class RichEdit(_CopyMixin, QTextEdit):
         return src.hasImage() or src.hasUrls() or super().canInsertFromMimeData(src)
 
     def insertFromMimeData(self, src: QMimeData) -> None:
+        # 탐색기에서 끌어온 그림 파일: '일반 텍스트로 붙여넣기'가 켜져 있어도 그림으로 넣는다
+        # (예전에는 이때 파일 경로 글자가 들어갔다). 못 읽는 그림도 경로 대신 안내만.
+        files = _dropped_images(src)
+        if files:
+            bad = 0
+            for f in files:
+                img = QImage(str(f))
+                if img.isNull():
+                    bad += 1
+                else:
+                    self.insert_image(img)
+            if bad:
+                self.host.status(tr("ed.image_unreadable", n=bad))
+            return
         if self.host.plain_paste_now():
             self.insert_plain(src.text())
             return
@@ -124,15 +149,6 @@ class RichEdit(_CopyMixin, QTextEdit):
             img = QImage(src.imageData())
             if not img.isNull():
                 self.insert_image(img)
-                return
-        if src.hasUrls():
-            files = [Path(u.toLocalFile()) for u in src.urls() if u.isLocalFile()]
-            imgs = [f for f in files if f.suffix.lower() in IMAGE_EXT]
-            if imgs and len(imgs) == len(files):
-                for f in imgs:
-                    img = QImage(str(f))
-                    if not img.isNull():
-                        self.insert_image(img)
                 return
         if src.hasHtml():
             md = QMimeData()
@@ -180,6 +196,7 @@ class RichEdit(_CopyMixin, QTextEdit):
             md.setImageData(imgs[0])
             if len(imgs) > 1:
                 md.setHtml(src.html())
+
         else:
             md.setHtml(src.html())
             md.setText(text)
@@ -229,10 +246,35 @@ class RichEdit(_CopyMixin, QTextEdit):
     def mousePressEvent(self, e):
         """그림을 한 번 누르면 그 그림을 고른다 (Ctrl+C로 바로 복사할 수 있게)."""
         super().mousePressEvent(e)
+        self._drag_from = None
         if e.button() == Qt.LeftButton and not e.modifiers():
             c = self._image_cursor(e.position().toPoint())
             if c is not None:
                 self.setTextCursor(c)
+                self._drag_from = e.position().toPoint()
+
+    def mouseMoveEvent(self, e):
+        """그림을 눌러 끌면 그림 파일로 끌어 나간다 (웹 첨부 칸·탐색기·메일에 바로 놓기).
+        복사만 한다. 옮기기로 놓으면 메모에서 그림이 지워지므로."""
+        start = getattr(self, "_drag_from", None)
+        if start is not None and e.buttons() & Qt.LeftButton:
+            if (e.position().toPoint() - start).manhattanLength() >= QApplication.startDragDistance():
+                self._drag_from = None
+                md = self.createMimeDataFromSelection()
+                imgs = self._images_in_selection(self.textCursor())
+                # 끌 때만 파일로도 준다 (클립보드에 파일을 넣으면 파일 경로가 글자로도 붙어 메신저에 경로가 들어감)
+                urls = share_image_files(imgs)
+                if urls:
+                    md.setUrls(urls)
+                drag = QDrag(self)
+                drag.setMimeData(md)
+                if imgs:
+                    drag.setPixmap(QPixmap.fromImage(imgs[0]).scaled(
+                        160, 160, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                drag.exec(Qt.CopyAction)
+                return
+            return
+        super().mouseMoveEvent(e)
 
     def _image_cursor(self, pos) -> QTextCursor | None:
         """pos 위치의 그림 한 칸을 고른 커서. 그림이 아니면 None."""
@@ -428,15 +470,18 @@ class CodeEdit(_CopyMixin, QPlainTextEdit):
         return src.hasText() or src.hasUrls() or src.hasImage()
 
     def insertFromMimeData(self, src: QMimeData):
-        if src.hasText():
-            self.insertPlainText(src.text().replace("\r\n", "\n"))
-        elif src.hasUrls():
+        # 탐색기에서 끌어온 파일은 text()가 파일 경로라서 먼저 살핀다 (경로 글자가 들어가지 않게)
+        if _dropped_images(src):
+            self.host.status(tr("ed.no_image", key=plat.key_label("Ctrl+N")))  # 글 메모에는 그림을 못 넣음
+        elif src.hasUrls() and all(u.isLocalFile() for u in src.urls()):
             for u in src.urls():
                 if u.isLocalFile():
                     try:
                         self.insertPlainText(Path(u.toLocalFile()).read_text("utf-8", errors="replace"))
                     except OSError:
                         pass
+        elif src.hasText():
+            self.insertPlainText(src.text().replace("\r\n", "\n"))
         elif src.hasImage():
             self.host.status(tr("ed.no_image", key=plat.key_label("Ctrl+N")))
 

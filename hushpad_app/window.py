@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFile
 
 from . import __version__, capture, crypto, i18n, icons, notepad_import, plat, theme, updater
 from .widgets import CommandPalette, CountDelegate, EmptyState, NoteList, rel_time
-from .common import (APP_NAME, LOCAL_DIR, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
+from .common import (APP_NAME, LOCAL_DIR, cleanup_share_files, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
                      set_clipboard, text_mime)
 from .i18n import tr
 from .dialogs import HistoryDialog, ImportDialog, PassphraseDialog, SetupDialog
@@ -726,6 +726,7 @@ class MainWindow(QMainWindow):
         self._unregister_hotkeys()
         if self.tray is not None:
             self.tray.hide()
+        cleanup_share_files()  # 붙여 넣기용 임시 그림 파일
         super().closeEvent(e)
         QApplication.instance().quit()
 

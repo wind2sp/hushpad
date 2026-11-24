@@ -61,6 +61,7 @@
  "ed.save_image_title": "Save image",
  "ed.copy_plain": "Copy as plain text",
  "ed.no_image": "Code notes can’t hold images. Use a rich note ({key}).",
+ "ed.image_unreadable": "Couldn't read {n} image file(s).",
  "ed.copy_value": "Copy only this line’s value  ({v})",
  "ed.copied_value": "Value copied",
  "ed.copy_line": "Copy this line",
