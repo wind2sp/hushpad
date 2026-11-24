@@ -285,6 +285,32 @@ def run() -> int:
         return f"supported here={saved}"
     check("capture hide fallback", capture_hide_fallback)
 
+    def remote_view():
+        """원격으로 볼 때 잠깐 보이기: 맞는 암호만 통과, 잠그면 끝, 암호 창은 캡처 숨김 안 함."""
+        from .window import MainWindow
+        from .dialogs import RemoteViewDialog
+        from PySide6.QtGui import QIcon
+        import time as _t
+        cfg = Config()
+        cfg["open_tabs"] = []
+        cfg.save = lambda: None
+        w = MainWindow(st, cfg, QIcon())
+        try:
+            assert not w.remote_view_on()
+            assert w._verify_pw("new-pass-2") and not w._verify_pw("wrong-pass"), "passphrase check wrong"
+            d = RemoteViewDialog(None, w._verify_pw)
+            assert d.objectName() == "RemoteViewDialog" and d.minutes() == 30
+            d.deleteLater()
+            w._rv_until = _t.time() + 60
+            w._rv_tick()
+            assert w.remote_view_on() and not w.rv_btn.isHidden(), "remote view not on"
+            w.lock()
+            assert not w.remote_view_on() and w.rv_btn.isHidden(), "lock did not end remote view"
+        finally:
+            w.close()
+        return "passphrase-gated, ends on lock"
+    check("remote view", remote_view)
+
     def image_copy():
         """서식 메모에서 그림만 골라 복사하면 클립보드에 그림으로 들어간다 (글자 자리표 없이)."""
         from .window import MainWindow

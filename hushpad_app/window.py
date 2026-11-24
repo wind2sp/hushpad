@@ -11,7 +11,7 @@ from pathlib import Path
 from PySide6.QtCore import QByteArray, QEvent, QMimeData, QObject, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import (QAction, QActionGroup, QColor, QFont, QIcon, QImage, QKeySequence, QShortcut,
                            QTextCharFormat, QTextCursor, QTextDocument, QTextDocumentFragment)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFileDialog, QHBoxLayout,
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QDialog, QFileDialog, QHBoxLayout,
                                QHeaderView, QInputDialog, QLabel, QLineEdit, QListWidget, QListWidgetItem,
                                QMainWindow, QMenu, QMessageBox, QPlainTextEdit, QPushButton, QSplitter,
                                QSizePolicy, QStackedWidget, QSystemTrayIcon, QTabWidget, QToolBar, QToolButton, QTreeWidget, QTreeWidgetItem,
@@ -22,7 +22,7 @@ from .widgets import CommandPalette, CountDelegate, EmptyState, NoteList, rel_ti
 from .common import (APP_NAME, LOCAL_DIR, cleanup_share_files, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
                      set_clipboard, text_mime)
 from .i18n import tr
-from .dialogs import HistoryDialog, ImportDialog, PassphraseDialog, SetupDialog
+from .dialogs import HistoryDialog, ImportDialog, PassphraseDialog, RemoteViewDialog, SetupDialog
 from .editors import CodeEdit, RichEdit, body_font, mono_font
 from .store import Note, Store
 
@@ -242,6 +242,8 @@ class _CaptureHider(QObject):
             self.win._last_input = time.time()
         if ev.type() == QEvent.Show and isinstance(obj, QWidget) and obj.isWindow() \
                 and self.cfg.get("hide_from_capture", True) and not isinstance(obj, capture.RegionOverlay) \
+                and not (self.win is not None and self.win.remote_view_on()) \
+                and obj.objectName() != "RemoteViewDialog" \
                 and (plat.CAPTURE_EXCLUDE_WORKS or not isinstance(obj, (capture.RecordBar, capture._Frame))):
             exclude_from_capture(obj, True)
         return False
@@ -447,6 +449,14 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central)
         self.status_lbl = QLabel()
         self.statusBar().addPermanentWidget(self.status_lbl)
+        # 원격으로 볼 때 잠깐 보이는 중이면 남은 시간 (누르면 다시 숨김)
+        self.rv_btn = QPushButton("", flat=True, cursor=Qt.PointingHandCursor)
+        self.rv_btn.setStyleSheet("color:#e0a020; font-weight:600; padding:0 6px")
+        self.rv_btn.clicked.connect(lambda: self.stop_remote_view())
+        self.rv_btn.hide()
+        self.statusBar().addPermanentWidget(self.rv_btn)
+        self._rv_until = 0.0
+        self.rv_timer = QTimer(self, interval=15000, timeout=self._rv_tick)
 
     def _act(self, menu, text, slot, key=None, checkable=False, checked=False, tip=""):
         a = QAction(text, self)
@@ -535,6 +545,7 @@ class MainWindow(QMainWindow):
         m.addSeparator()
         self._act(m, tr("act.hide_capture"), self._toggle_hide_capture,
                   checkable=True, checked=self.cfg.get("hide_from_capture", True))
+        self._act(m, tr("act.remote_view"), self.start_remote_view)
 
         m = self._menu(mb, "view")
         self.a_plainview = self._act(m, tr("act.plain_view"), self._toggle_plain_view, "Ctrl+T",
@@ -737,7 +748,7 @@ class MainWindow(QMainWindow):
     def showEvent(self, e):
         super().showEvent(e)
         theme.style_titlebar(self, self.t)
-        if self.cfg.get("hide_from_capture", True):
+        if self.cfg.get("hide_from_capture", True) and not self.remote_view_on():
             exclude_from_capture(self, True)
         if not self.native.active:
             self._register_hotkeys()
@@ -779,6 +790,8 @@ class MainWindow(QMainWindow):
         def lbl(key, letter):
             return tr(key) + (f"   {G(letter)}" if plat.HOTKEYS_SUPPORTED else "")
         m.addAction(tr("common.open"), self.bring_to_front)
+        # 원격에서 Hushpad 창은 검게 보여도 트레이 메뉴는 보이므로 여기서 켠다
+        self.tray_rv = m.addAction(tr("act.remote_view"), self._tray_remote_view)
         m.addAction(lbl("tb.new", "N"), self.quick_note)
         m.addAction(lbl("tray.clip", "M"), self.clip_to_note)
         m.addSeparator()
@@ -799,6 +812,8 @@ class MainWindow(QMainWindow):
         m.addAction(tr("act.lock"), self.lock)
         m.addAction(tr("act.quit"), self.quit_app)
         m.aboutToShow.connect(self._sync_autostart_checks)
+        m.aboutToShow.connect(lambda: self.tray_rv.setText(
+            tr("rv.hide_now") if self.remote_view_on() else tr("act.remote_view")))
         self._tray_menu = m
         self.tray.setContextMenu(m)
         self.tray.activated.connect(
@@ -910,6 +925,7 @@ class MainWindow(QMainWindow):
         return w
 
     def lock(self):
+        self.stop_remote_view(quiet=True)
         if self.locked:
             return
         self.save_all()
@@ -1909,6 +1925,66 @@ class MainWindow(QMainWindow):
                 exclude_from_capture(w, on)
         self.status(tr("st.capture_hidden") if on else tr("st.capture_visible"))
 
+    # ------------------------------------------------------------ 원격으로 볼 때 잠깐 보이기
+    # 원격 접속·화면 공유에서는 Hushpad 창이 검게 보인다. 암호를 확인하고 정한 시간 동안만 캡처 숨김을 푼다.
+    # 설정(hide_from_capture)은 바꾸지 않는다. 시간이 지나거나 잠그거나 끝내면 다시 숨긴다.
+    def remote_view_on(self) -> bool:
+        return getattr(self, "_rv_until", 0.0) > time.time()
+
+    def _tray_remote_view(self):
+        if self.remote_view_on():
+            self.stop_remote_view()
+        else:
+            self.start_remote_view()
+
+    def _verify_pw(self, pw: str) -> bool:
+        try:
+            return crypto.unlock_vault(self.store.folder, pw) == self.store.key
+        except Exception:
+            return False
+
+    def start_remote_view(self):
+        if not self.cfg.get("hide_from_capture", True):
+            self.status(tr("rv.already"))
+            if self.tray is not None:
+                self.tray.showMessage(APP_NAME, tr("rv.already"), QSystemTrayIcon.Information, 4000)
+            return
+        dlg = RemoteViewDialog(self if self.isVisible() else None, self._verify_pw)
+        if dlg.exec() != QDialog.Accepted:
+            return
+        self._rv_until = time.time() + dlg.minutes() * 60
+        if self.locked:                      # 잠겨 있었으면 같은 암호로 함께 푼다
+            self.lock_pw.setText(dlg.passphrase())
+            self.unlock()
+        for w in QApplication.topLevelWidgets():
+            if w.isVisible():
+                exclude_from_capture(w, False)
+        self.rv_timer.start()
+        self._rv_tick()
+        self.bring_to_front()
+
+    def stop_remote_view(self, quiet: bool = False):
+        was = self._rv_until > 0
+        self._rv_until = 0.0
+        self.rv_timer.stop()
+        self.rv_btn.hide()
+        if not was:
+            return
+        if self.cfg.get("hide_from_capture", True):
+            for w in QApplication.topLevelWidgets():
+                if w.isVisible() and not isinstance(w, capture.RegionOverlay):
+                    exclude_from_capture(w, True)
+        if not quiet:
+            self.status(tr("rv.off"))
+
+    def _rv_tick(self):
+        left = self._rv_until - time.time()
+        if left <= 0:
+            self.stop_remote_view()
+            return
+        self.rv_btn.setText(tr("rv.on", n=max(1, -int(-left // 60))))
+        self.rv_btn.show()
+
     def _toggle_clip_private(self, on):
         self.cfg["clip_private"] = on
 
@@ -1951,7 +2027,7 @@ class MainWindow(QMainWindow):
     # 그런 곳(plat.CAPTURE_EXCLUDE_WORKS가 False)에서는 Hushpad 자체 캡처·녹화 때만 열린 Hushpad 창을
     # 잠깐 숨겼다가(찍는 동안·녹화하는 동안) 다시 보인다.
     def _hide_for_capture(self) -> list:
-        if plat.CAPTURE_EXCLUDE_WORKS or not self.cfg.get("hide_from_capture", True):
+        if (plat.CAPTURE_EXCLUDE_WORKS and not self.remote_view_on()) or not self.cfg.get("hide_from_capture", True):
             return []
         hidden = [w for w in QApplication.topLevelWidgets()
                   if w.isVisible() and not isinstance(w, (capture.RegionOverlay, capture.RecordBar, capture._Frame))]

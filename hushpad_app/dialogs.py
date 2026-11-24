@@ -5,7 +5,7 @@ import html
 from pathlib import Path
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QCheckBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout, QHBoxLayout,
                                QLabel, QLineEdit, QListWidget, QListWidgetItem, QMessageBox, QPushButton,
                                QSplitter, QTextBrowser, QVBoxLayout)
 
@@ -301,3 +301,49 @@ class ImportDialog(QDialog):
 
 def esc(s: str) -> str:
     return html.escape(s)
+
+
+class RemoteViewDialog(QDialog):
+    """원격으로 볼 때 잠깐 보이기: 암호를 확인하고 몇 분 동안 보일지 고른다.
+    이 창은 캡처 숨김을 하지 않는다 (원격에서 검게 보이면 암호를 넣을 수 없으므로)."""
+    MINUTES = (15, 30, 60, 120)
+
+    def __init__(self, parent, verify):
+        super().__init__(parent)
+        self.setObjectName("RemoteViewDialog")
+        self.setWindowTitle(tr("rv.title"))
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)
+        self._verify = verify
+        lay = QFormLayout(self)
+        body = QLabel(tr("rv.body"))
+        body.setWordWrap(True)
+        body.setMinimumWidth(380)
+        lay.addRow(body)
+        self.pw = QLineEdit(echoMode=QLineEdit.Password)
+        lay.addRow(tr("rv.pw"), self.pw)
+        self.dur = QComboBox()
+        for n in self.MINUTES:
+            self.dur.addItem(tr("rv.min", n=n), n)
+        self.dur.setCurrentIndex(1)
+        lay.addRow(tr("rv.for"), self.dur)
+        self.msg = QLabel("")
+        self.msg.setStyleSheet("color:#d9534f")
+        lay.addRow(self.msg)
+        bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        bb.accepted.connect(self._ok)
+        bb.rejected.connect(self.reject)
+        lay.addRow(bb)
+        self.pw.setFocus()
+
+    def minutes(self) -> int:
+        return int(self.dur.currentData())
+
+    def passphrase(self) -> str:
+        return self.pw.text()
+
+    def _ok(self):
+        if not self._verify(self.pw.text()):
+            self.msg.setText(tr("lock.wrong"))
+            self.pw.selectAll()
+            return
+        self.accept()
