@@ -49,6 +49,19 @@
 - **어디서든 단축키로:** Ctrl+Alt+N 새 메모, Ctrl+Alt+M 클립보드를 메모로, Ctrl+Alt+S 스크린샷.
 - **화면 언어:** 한국어 · English · 日本語 · 简体中文.
 
+## 여러 PC에서 꺼내 쓰는 나만의 보안 지갑
+
+<p align="center"><img src="marketing/sync/sync_ko.png" width="860" alt="클라우드 폴더를 가운데 두고 데스크톱과 노트북의 Hushpad가 같은 메모를 함께 쓰는 그림"></p>
+
+보관 폴더를 **OneDrive·Dropbox·Google Drive나 회사 공유 폴더(NAS)** 안에 두면, 집과 회사의 여러 PC가 같은 메모를 함께 씁니다. 서버 비밀번호, API 키, 계정 정보처럼 늘 들고 다녀야 하는 비밀을 어느 PC에서든 꺼내 쓰는 **나만의 보안 지갑**이 됩니다.
+
+- **바로 반영돼요.** Hushpad는 보관 폴더를 3초마다 확인해서, 다른 PC에서 쓴 메모가 동기화되는 대로 목록과 열린 탭에 나타납니다(도착 속도는 클라우드 동기화 속도를 따릅니다).
+- **클라우드에는 암호화된 파일만 올라가요.** 메모마다 AES-256-GCM으로 암호화된 파일이라 클라우드 회사도 내용을 읽을 수 없습니다.
+- **따로 가입할 서버가 없어요.** 이미 쓰는 클라우드 폴더를 그대로 씁니다. 새 PC에서는 같은 폴더를 고르고 암호를 한 번만 넣으면 됩니다(Windows·Mac 함께).
+- **동시에 고쳐도 사라지지 않아요.** 두 PC에서 같은 메모를 동시에 고치면 한쪽을 "충돌 사본"으로 남깁니다.
+- 지금 쓰는 메모를 옮기려면 `⋯ › 파일 › 보관 폴더 바꾸기/옮기기...`에서 클라우드 폴더를 고르세요.
+- 클라우드 파일이 새더라도 안전하려면 **여러 단어로 된 긴 암호**를 쓰세요. 아주 중요한 PC에서는 `⋯ › 보안 › 이 PC에서 암호 잊기`로 켤 때마다 암호를 묻게 할 수 있습니다.
+
 ## 받기
 | | 받는 곳 | 지원 |
 |---|---|---|
@@ -185,6 +198,7 @@ Ctrl+C 서식 포함 복사 · **Ctrl+Shift+C 텍스트만 복사** · Ctrl+Alt+
 
 Hushpad is a quiet, private notepad for Windows and macOS (Apple Silicon). Notes save as you type, every note is encrypted (AES-256-GCM, scrypt-derived vault key, cached per device with DPAPI / the macOS Keychain), and on Windows the window is hidden from screenshots and screen sharing (on macOS 15+ some capture apps may still show it). Rich notes take images, screenshots and short screen recordings; code notes are for HTML/JSON and keys. The UI comes in Korean, English, Japanese and Simplified Chinese.
 
+- **Your own security wallet on every PC**: put the vault folder in OneDrive, Dropbox, Google Drive or a shared folder (NAS) and all your PCs use the same notes — server passwords, API keys, account details, available wherever you sit. Hushpad checks the folder every 3 seconds, so changes show up as soon as they sync. Only encrypted files (AES-256-GCM) reach the cloud, so the provider can't read them; no extra account or server; a new PC needs only the folder and your passphrase (Windows and Mac). Editing the same note on two PCs at once keeps a conflict copy instead of losing text.
 - Download: [Microsoft Store (Windows, recommended)](https://apps.microsoft.com/detail/9P73RW8W1FQV) · [Windows installer](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe) (per-user, no admin rights, uninstall from Settings › Apps) · [Windows portable zip](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip) · [macOS (Apple Silicon)](https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip). Portable, no installer, unsigned (Windows: "More info › Run anyway"; macOS: right-click › Open). No Intel Mac build.
 - Microsoft Store build (`packaging/msix/`): signed by Microsoft, so there's no SmartScreen warning, and updates are automatic. Start-at-login comes from the package's startup task and is switched in Windows Settings › Apps › Startup. Windows keeps the Store app's settings, daily backups and remembered key in the package's private folder, so uninstalling it removes them; notes in the vault folder (default `Documents\Hushpad`) stay.
 - On Windows 10 before version 2004 (build 19041) and on macOS 15+, Hushpad's own screenshot and recording briefly hide its windows while capturing, because excluding a window from capture doesn't fully work there (older Windows 10 shows the window as a black box in other capture tools).
