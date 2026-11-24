@@ -4,6 +4,9 @@ r"""Windows 설치 프로그램 만들기 (NSIS).
 그다음: python packaging\installer\make_installer.py
 결과:   dist\Hushpad-win64-setup.exe (+ .sha256)
 
+시험용 빌드(화면 스크린샷, README.md): 뒤에 /D 정의와 --out <경로>를 붙인다. 예:
+        python packaging\installer\make_installer.py --out %TEMP%\shot.exe /DSCREENSHOT_PAGE=finish /DFORCE_LANG=1033
+
 makensis.exe가 필요하다 (NSIS 3). PATH 또는 C:\Program Files (x86)\NSIS\makensis.exe.
 GitHub Actions(windows-latest)에서는 build-windows 워크플로가 설치해 쓴다.
 """
@@ -37,12 +40,19 @@ def main() -> int:
     from hushpad_app import __version__
     src = ROOT / "dist" / "Hushpad"
     if not (src / "Hushpad.exe").is_file():
-        sys.exit("make_installer: dist\Hushpad\Hushpad.exe not found — run build.py first")
+        sys.exit(r"make_installer: dist\Hushpad\Hushpad.exe not found — run build.py first")
+    args = sys.argv[1:]
     out = ROOT / "dist" / OUT_NAME
+    if "--out" in args:
+        i = args.index("--out")
+        out = Path(args[i + 1]).resolve()
+        del args[i:i + 2]
+    extra = [a for a in args if a.startswith("/D")]
     out.unlink(missing_ok=True)
+    size_kb = sum(p.stat().st_size for p in src.rglob("*") if p.is_file()) // 1024
     cmd = [find_makensis(), "/V2", "/INPUTCHARSET", "UTF8",
            f"/DVERSION={__version__}", f"/DSRC={src}", f"/DOUT={out}",
-           f"/DICON={ROOT / 'assets' / 'app.ico'}",
+           f"/DICON={ROOT / 'assets' / 'app.ico'}", f"/DSIZE_KB={size_kb}", *extra,
            str(Path(__file__).with_name("hushpad.nsi"))]
     r = subprocess.run(cmd, capture_output=True, text=True, creationflags=NOWIN)
     if r.returncode != 0 or not out.is_file():
