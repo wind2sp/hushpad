@@ -29,9 +29,13 @@
             <div class="when-public">
               <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">{{dl.win.store}}</a>
               <p class="os-note">{{dl.win.storeNote}}</p>
-              <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ {{dl.win.zip}}</a>
-              <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">{{dl.win.setup}}</a>
+              <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
               <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-setup" data-dl-sha="setup">{{dl.hash.pending}}</code>
+              <button class="btn small" type="button" data-copy="sha-setup" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+              <div class="file"><a data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">{{dl.win.zip}}</a> · <span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <div class="sum-label">SHA-256 (zip)</div>
               <code class="sum" id="sha-win" data-dl-sha="win">{{dl.hash.pending}}</code>
               <button class="btn small" type="button" data-copy="sha-win" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
             </div>
