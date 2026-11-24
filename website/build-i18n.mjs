@@ -30,7 +30,7 @@ const PAGES = ['index.html', 'download.html'];
 // 실제 주소(hreflang·canonical·og:url·og:image는 절대 주소여야 검색엔진·SNS가 제대로 읽습니다).
 const SITE = 'https://gdra.mycafe24.com/hushpad/';
 // CSS·JS를 고치면 이 숫자를 올리고 다시 생성하세요(.htaccess가 CSS·JS를 7일 캐시하므로 ?v=로 갱신).
-const ASSET_VERSION = '5';
+const ASSET_VERSION = '6';
 
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 const dict = Object.fromEntries(LANGS.map((l) => [l.code, JSON.parse(read(`i18n/${l.code}.json`))]));

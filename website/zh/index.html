@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
-<link rel="stylesheet" href="../assets/css/site.css?v=5">
-<script src="../assets/js/lang.js?v=5"></script>
+<link rel="stylesheet" href="../assets/css/site.css?v=6">
+<script src="../assets/js/lang.js?v=6"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -56,6 +56,7 @@
     <a class="brand" href="./"><img src="../assets/img/icon-64.png" alt="" width="28" height="28">Hushpad</a>
     <nav aria-label="主菜单">
       <a href="#features" class="hide-sm">功能</a>
+      <a href="#sync" class="hide-sm">多台电脑</a>
       <a href="#security" class="hide-sm">安全</a>
       <a href="#faq" class="hide-sm">常见问题</a>
       <a href="download.html">下载</a>
@@ -120,13 +121,31 @@
         <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>HTML、JSON 随手处理</h3><p>代码笔记带行号、语法着色和自动缩进，JSON 也能马上格式化。在 <code>KEY=值</code> 这样的行上，还能只复制值。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>截图与短录屏</h3><p>随时随地按 <kbd>Ctrl+Alt+S</kbd> 区域截图，按 <kbd>Ctrl+Alt+R</kbd> 录制屏幕。结果直接放进笔记，视频同样加密。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>分类、合并、回收站</h3><p>拖动即可分类，多条笔记可合并为一条，删除的笔记能从回收站恢复。还能把很久没看的笔记集中整理。</p></div>
-        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>在你的多台电脑上</h3><p>把存储文件夹放进 Dropbox 或 OneDrive，用同一个密码就能在其他电脑上打开。一条笔记就是一个文件，很少发生冲突。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>在你的多台电脑上</h3><p>把保管文件夹放在 OneDrive、Dropbox、Google Drive 或共享文件夹里，多台电脑就能使用同一套笔记。云端只保存加密后的文件。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>一个 Ctrl+K 全搞定</h3><p>在一个输入框里搜索笔记标题、内容和所有功能，按 Enter 即可执行。按 <kbd>Ctrl+Alt+M</kbd> 还能直接把剪贴板内容存为笔记。</p></div>
       </div>
     </div>
   </section>
 
-  <section class="alt" id="capture">
+  <section class="alt" id="sync">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>在任何电脑上都能取用的私人安全钱包</h2>
+        <p>把保管文件夹放在 OneDrive、Dropbox、Google Drive 或公司的共享文件夹里，家里和公司的多台电脑就能使用同一套笔记。在一台电脑上写的笔记，同步完成后就会出现在其他电脑上。云端只保存加密后的文件，云服务商也无法读取内容。</p>
+      </div>
+      <figure class="sync-art">
+        <img src="../assets/img/sync-zh.webp" alt="台式机和笔记本上的 Hushpad 通过一个上锁的云文件夹共用同一套笔记的示意图" width="1280" height="720" loading="lazy" decoding="async">
+      </figure>
+      <ul class="sync-points">
+        <li><svg><use href="#i-folder"/></svg><div><b>直接用你现有的云盘</b><span>不用注册新账号，也不需要服务器。OneDrive、Dropbox、Google Drive、共享文件夹（NAS）都可以。</span></div></li>
+        <li><svg><use href="#i-lock"/></svg><div><b>新电脑只需文件夹和密码</b><span>选择同一个保管文件夹，输入一次密码即可。Windows 和 Mac 可以一起用。</span></div></li>
+        <li><svg><use href="#i-sync"/></svg><div><b>同时编辑也不会丢失</b><span>两台电脑同时修改同一条笔记时，会把其中一份保留为冲突副本。</span></div></li>
+      </ul>
+      <p class="sync-note">Hushpad 每 3 秒检查一次保管文件夹，其他电脑上的笔记多快到达取决于云盘的同步速度。文件放在云端，建议使用由多个单词组成的长密码。</p>
+    </div>
+  </section>
+
+  <section id="capture">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -148,7 +167,7 @@
     </div>
   </section>
 
-  <section id="security">
+  <section class="alt" id="security">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -178,7 +197,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section class="alt" id="keys">
+  <section id="keys">
     <div class="wrap">
       <div class="sec-head"><h2>顺手的快捷键</h2><p>有些快捷键即使窗口已关闭（在托盘中，Mac 上为菜单栏）也能使用。在 Mac 上，Ctrl+Alt 换成 ⌃⌥（Control+Option），应用内的 Ctrl 换成 ⌘。</p></div>
       <div class="keys">
@@ -194,7 +213,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section id="faq">
+  <section class="alt" id="faq">
     <div class="wrap">
       <div class="sec-head"><h2>常见问题</h2></div>
       <div class="faq">
@@ -203,7 +222,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <details><summary>能把 Windows 记事本里打开的标签页搬过来吗？</summary><p>可以。在 Windows 版的“菜单 › 文件 › 导入 Windows 记事本标签页”中，连未保存的标签页也能复制过来，Windows 记事本本身不受影响。</p></details>
         <details><summary>忘记密码怎么办？</summary><p>无法找回。Hushpad 的设计就是不知道密码，任何人（包括开发者）都打不开。首次设置时，请把密码记在安全的地方。</p></details>
         <details><summary>重启电脑后笔记还在吗？</summary><p>在。笔记一边输入一边加密写入磁盘，重启后依然保留。首次运行后，Hushpad 会在 Windows 启动时（Mac 上为登录时）自动在托盘（Mac 上为菜单栏）中运行。如不需要，可在托盘图标的菜单或“安全”菜单中关闭。</p></details>
-        <details><summary>如何在多台电脑上使用？</summary><p>把存储文件夹放进 Dropbox、OneDrive 等同步文件夹，在另一台电脑上选择同一文件夹并输入相同密码即可。其他电脑上的修改几秒内就会同步过来；如果两边同时修改，会把其中一份另存为“冲突副本”。</p></details>
+        <details><summary>如何在多台电脑上使用？</summary><p>把保管文件夹放在 OneDrive、Dropbox、Google Drive 或共享文件夹（NAS）中，在另一台电脑上选择同一个文件夹并输入同一个密码即可。Hushpad 每 3 秒检查一次文件夹，其他电脑写的笔记同步后就会出现。两边同时修改同一条笔记时，会把其中一份另存为“冲突副本”。</p></details>
         <details><summary>可以放入图片或视频吗？</summary><p>富文本笔记可以粘贴或拖入图片，截图和短录屏（最长 3 分钟）也会直接放进去。视频在应用内播放，并加密保存。</p></details>
         <details><summary>会向网络发送任何数据吗？</summary><p>不会。笔记、设置和使用情况都不会发送。zip 版每天在 GitHub 上检查一次新版本，只有在你选择更新时才下载新文件（可在菜单中关闭）。Microsoft Store 版由 Store 负责更新。</p></details>
         <details><summary>在 Mac 上也不会被截图拍到吗？</summary><p>在 macOS 上，Hushpad 通过关闭窗口共享来隐藏窗口。不过在 macOS 15 及以上版本中，部分使用 ScreenCaptureKit 的截图和屏幕共享应用会忽略这一设置，仍可能拍到窗口。在 Mac 上共享屏幕前，请先自行确认。</p></details>
@@ -243,6 +262,6 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=5" defer></script>
+<script src="../assets/js/site.js?v=6" defer></script>
 </body>
 </html>

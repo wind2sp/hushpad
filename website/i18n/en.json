@@ -14,7 +14,8 @@
       "features": "Features",
       "security": "Security",
       "faq": "FAQ",
-      "download": "Download"
+      "download": "Download",
+      "sync": "Every PC"
     },
     "footer": {
       "tagline": "Write quietly. Seen by no one. A notepad for Windows and Mac that saves as you type and encrypts every note.",
@@ -96,7 +97,7 @@
       },
       "sync": {
         "h": "Across your own PCs",
-        "p": "Keep your vault folder in Dropbox or OneDrive and open it on another PC with the same password. One note is one file, so conflicts are rare."
+        "p": "Keep the vault folder in OneDrive, Dropbox, Google Drive or a shared folder and all your PCs use the same notes. Only encrypted files reach the cloud."
       },
       "search": {
         "h": "Everything from Ctrl+K",
@@ -173,7 +174,7 @@
         },
         {
           "q": "How do I use it on more than one PC?",
-          "a": "Keep your vault folder inside a synced folder such as Dropbox or OneDrive, then choose the same folder on your other PC and enter the same password. Changes made on another PC show up within seconds, and if both sides edit at the same time, one version is kept separately as a “conflict copy.”"
+          "a": "Keep the vault folder in OneDrive, Dropbox, Google Drive or a shared folder (NAS), then on the other PC choose the same folder and enter the same passphrase. Hushpad checks the folder every 3 seconds, so notes written elsewhere appear as soon as they sync. If both PCs edit the same note at once, one version is kept as a separate “conflict copy.”"
         },
         {
           "q": "Can I add images or videos?",
@@ -194,7 +195,19 @@
       ]
     },
     "metaPlatforms": "Windows 10 & 11 · Macs with Apple silicon · No account, server or ads · Works fully offline",
-    "shotSuffix": "-en"
+    "shotSuffix": "-en",
+    "sync": {
+      "h2": "Your own security wallet, on every PC",
+      "p": "Keep the vault folder in OneDrive, Dropbox, Google Drive or a shared folder. Your PCs at home and at work share the same notes, and a note you write on one shows up on the others as soon as it syncs. Only encrypted files reach the cloud, so the provider can't read them.",
+      "alt": "Hushpad on a desktop and a laptop sharing the same notes through a locked cloud folder",
+      "b1": "The cloud you already use",
+      "s1": "No new account or server. OneDrive, Dropbox, Google Drive or a shared folder (NAS) all work.",
+      "b2": "A new PC needs only the folder and passphrase",
+      "s2": "Pick the same vault folder and enter your passphrase once. Windows and Mac can share it.",
+      "b3": "Nothing lost when two PCs edit at once",
+      "s3": "If the same note is changed on two PCs at the same time, one version is kept as a conflict copy.",
+      "note": "Hushpad checks the vault folder every 3 seconds; how fast a note arrives from another PC depends on your cloud's sync speed. Since the files live in the cloud, use a long passphrase of several words."
+    }
   },
   "dl": {
     "title": "Download — Hushpad",

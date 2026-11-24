@@ -82,7 +82,25 @@
     </div>
   </section>
 
-  <section class="alt" id="capture">
+  <section class="alt" id="sync">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>{{index.sync.h2}}</h2>
+        <p>{{index.sync.p}}</p>
+      </div>
+      <figure class="sync-art">
+        <img src="{{_root}}assets/img/sync{{index.shotSuffix}}.webp" alt="{{index.sync.alt|a}}" width="1280" height="720" loading="lazy" decoding="async">
+      </figure>
+      <ul class="sync-points">
+        <li><svg><use href="#i-folder"/></svg><div><b>{{index.sync.b1}}</b><span>{{index.sync.s1}}</span></div></li>
+        <li><svg><use href="#i-lock"/></svg><div><b>{{index.sync.b2}}</b><span>{{index.sync.s2}}</span></div></li>
+        <li><svg><use href="#i-sync"/></svg><div><b>{{index.sync.b3}}</b><span>{{index.sync.s3}}</span></div></li>
+      </ul>
+      <p class="sync-note">{{index.sync.note}}</p>
+    </div>
+  </section>
+
+  <section id="capture">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -104,7 +122,7 @@
     </div>
   </section>
 
-  <section id="security">
+  <section class="alt" id="security">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -134,7 +152,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section class="alt" id="keys">
+  <section id="keys">
     <div class="wrap">
       <div class="sec-head"><h2>{{index.keys.h2}}</h2><p>{{index.keys.p}}</p></div>
       <div class="keys">
@@ -150,7 +168,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section id="faq">
+  <section class="alt" id="faq">
     <div class="wrap">
       <div class="sec-head"><h2>{{index.faq.h2}}</h2></div>
       <div class="faq">

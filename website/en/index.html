@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
-<link rel="stylesheet" href="../assets/css/site.css?v=5">
-<script src="../assets/js/lang.js?v=5"></script>
+<link rel="stylesheet" href="../assets/css/site.css?v=6">
+<script src="../assets/js/lang.js?v=6"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -56,6 +56,7 @@
     <a class="brand" href="./"><img src="../assets/img/icon-64.png" alt="" width="28" height="28">Hushpad</a>
     <nav aria-label="Main menu">
       <a href="#features" class="hide-sm">Features</a>
+      <a href="#sync" class="hide-sm">Every PC</a>
       <a href="#security" class="hide-sm">Security</a>
       <a href="#faq" class="hide-sm">FAQ</a>
       <a href="download.html">Download</a>
@@ -120,13 +121,31 @@
         <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>HTML & JSON in a hurry</h3><p>Code notes come with line numbers, syntax colors and auto-indent, plus one-step JSON formatting. On a <code>KEY=value</code> line, copy just the value.</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>Screenshots & short recordings</h3><p>From anywhere, press <kbd>Ctrl+Alt+S</kbd> to capture an area or <kbd>Ctrl+Alt+R</kbd> to record the screen. Results land straight in a note, and videos are encrypted too.</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>Folders, merge, trash</h3><p>Drag notes into folders, merge several into one, and restore deleted notes from the trash. You can even round up notes you haven't opened in a while and tidy them away.</p></div>
-        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>Across your own PCs</h3><p>Keep your vault folder in Dropbox or OneDrive and open it on another PC with the same password. One note is one file, so conflicts are rare.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>Across your own PCs</h3><p>Keep the vault folder in OneDrive, Dropbox, Google Drive or a shared folder and all your PCs use the same notes. Only encrypted files reach the cloud.</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>Everything from Ctrl+K</h3><p>Search note titles, note contents and every command from one box, then press Enter to run it. <kbd>Ctrl+Alt+M</kbd> saves your clipboard straight to a new note.</p></div>
       </div>
     </div>
   </section>
 
-  <section class="alt" id="capture">
+  <section class="alt" id="sync">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Your own security wallet, on every PC</h2>
+        <p>Keep the vault folder in OneDrive, Dropbox, Google Drive or a shared folder. Your PCs at home and at work share the same notes, and a note you write on one shows up on the others as soon as it syncs. Only encrypted files reach the cloud, so the provider can't read them.</p>
+      </div>
+      <figure class="sync-art">
+        <img src="../assets/img/sync-en.webp" alt="Hushpad on a desktop and a laptop sharing the same notes through a locked cloud folder" width="1280" height="720" loading="lazy" decoding="async">
+      </figure>
+      <ul class="sync-points">
+        <li><svg><use href="#i-folder"/></svg><div><b>The cloud you already use</b><span>No new account or server. OneDrive, Dropbox, Google Drive or a shared folder (NAS) all work.</span></div></li>
+        <li><svg><use href="#i-lock"/></svg><div><b>A new PC needs only the folder and passphrase</b><span>Pick the same vault folder and enter your passphrase once. Windows and Mac can share it.</span></div></li>
+        <li><svg><use href="#i-sync"/></svg><div><b>Nothing lost when two PCs edit at once</b><span>If the same note is changed on two PCs at the same time, one version is kept as a conflict copy.</span></div></li>
+      </ul>
+      <p class="sync-note">Hushpad checks the vault folder every 3 seconds; how fast a note arrives from another PC depends on your cloud's sync speed. Since the files live in the cloud, use a long passphrase of several words.</p>
+    </div>
+  </section>
+
+  <section id="capture">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -148,7 +167,7 @@
     </div>
   </section>
 
-  <section id="security">
+  <section class="alt" id="security">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -178,7 +197,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section class="alt" id="keys">
+  <section id="keys">
     <div class="wrap">
       <div class="sec-head"><h2>Shortcuts that become second nature</h2><p>Some shortcuts work even while the window is closed to the tray (the menu bar on a Mac). On a Mac, press ⌃⌥ (Control+Option) instead of Ctrl+Alt, and ⌘ instead of Ctrl inside the app.</p></div>
       <div class="keys">
@@ -194,7 +213,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section id="faq">
+  <section class="alt" id="faq">
     <div class="wrap">
       <div class="sec-head"><h2>Frequently asked questions</h2></div>
       <div class="faq">
@@ -203,7 +222,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <details><summary>Can I bring over the tabs I have open in Windows Notepad?</summary><p>Yes. On Windows, Menu › File › Import Windows Notepad tabs copies them over, unsaved tabs included, and leaves Windows Notepad untouched.</p></details>
         <details><summary>What if I forget my password?</summary><p>There's no way to recover it. Hushpad is built so that no one, not even its developer, can open your notes without the password. Write it down somewhere safe when you first set it.</p></details>
         <details><summary>Are my notes still there after a restart?</summary><p>Yes. Notes are encrypted and written to disk as you type, so they're there when your computer comes back on. After the first run, Hushpad starts in the tray when Windows starts (on a Mac, in the menu bar when you log in). If you'd rather it didn't, turn this off from the tray icon's menu or the Security menu.</p></details>
-        <details><summary>How do I use it on more than one PC?</summary><p>Keep your vault folder inside a synced folder such as Dropbox or OneDrive, then choose the same folder on your other PC and enter the same password. Changes made on another PC show up within seconds, and if both sides edit at the same time, one version is kept separately as a “conflict copy.”</p></details>
+        <details><summary>How do I use it on more than one PC?</summary><p>Keep the vault folder in OneDrive, Dropbox, Google Drive or a shared folder (NAS), then on the other PC choose the same folder and enter the same passphrase. Hushpad checks the folder every 3 seconds, so notes written elsewhere appear as soon as they sync. If both PCs edit the same note at once, one version is kept as a separate “conflict copy.”</p></details>
         <details><summary>Can I add images or videos?</summary><p>You can paste or drag images into rich-text notes, and screenshots and short screen recordings (up to 3 minutes) go straight in. Videos play inside the app and are stored encrypted.</p></details>
         <details><summary>Does it send anything over the internet?</summary><p>No. Your notes, settings and usage are never sent. The zip version checks GitHub for a new version once a day and downloads it only when you choose to update (you can turn this off in the menu). The Microsoft Store version is updated by the Store.</p></details>
         <details><summary>Is it hidden from capture on a Mac, too?</summary><p>On macOS, Hushpad turns off sharing for its window. On macOS 15 and later, though, some capture and screen-sharing apps that use ScreenCaptureKit ignore that setting and can still capture the window. On a Mac, check for yourself before you share your screen.</p></details>
@@ -243,6 +262,6 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </div>
 </footer>
-<script src="../assets/js/site.js?v=5" defer></script>
+<script src="../assets/js/site.js?v=6" defer></script>
 </body>
 </html>

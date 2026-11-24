@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<link rel="stylesheet" href="assets/css/site.css?v=5">
-<script src="assets/js/lang.js?v=5"></script>
+<link rel="stylesheet" href="assets/css/site.css?v=6">
+<script src="assets/js/lang.js?v=6"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -56,6 +56,7 @@
     <a class="brand" href="./"><img src="assets/img/icon-64.png" alt="" width="28" height="28">Hushpad</a>
     <nav aria-label="주 메뉴">
       <a href="#features" class="hide-sm">기능</a>
+      <a href="#sync" class="hide-sm">여러 PC</a>
       <a href="#security" class="hide-sm">보안</a>
       <a href="#faq" class="hide-sm">자주 묻는 질문</a>
       <a href="download.html">다운로드</a>
@@ -121,13 +122,31 @@
         <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>HTML·JSON 급할 때</h3><p>코드 메모에는 줄 번호·색 구분·자동 들여쓰기가 있고, JSON도 한 번에 정리됩니다. <code>KEY=값</code> 줄에서는 값만 복사할 수 있어요.</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>스크린샷·짧은 녹화</h3><p>다른 프로그램을 쓰다가도 <kbd>Ctrl+Alt+S</kbd>로 영역을 캡처하고 <kbd>Ctrl+Alt+R</kbd>로 화면을 녹화합니다. 찍은 결과는 바로 메모에 들어가고, 동영상도 암호화돼요.</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>분류·합치기·휴지통</h3><p>메모를 끌어다 분류하고, 여러 메모를 하나로 합치고, 지운 메모는 휴지통에서 되살립니다. 오래 안 본 메모만 모아서 정리할 수도 있어요.</p></div>
-        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>내 PC 여러 대에서</h3><p>보관 폴더를 Dropbox·OneDrive 안에 두면 같은 암호로 다른 PC에서도 열려요. 메모 하나가 파일 하나여서 충돌이 잘 나지 않습니다.</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>내 PC 여러 대에서</h3><p>보관 폴더를 OneDrive·Dropbox·Google Drive나 공유 폴더에 두면 여러 PC가 같은 메모를 함께 써요. 클라우드에는 암호화된 파일만 올라갑니다.</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>Ctrl+K 하나로</h3><p>메모 제목과 내용, 모든 기능을 입력칸 하나에서 찾고 Enter로 바로 실행합니다. 클립보드 내용을 곧장 메모로 저장하는 <kbd>Ctrl+Alt+M</kbd>도 있어요.</p></div>
       </div>
     </div>
   </section>
 
-  <section class="alt" id="capture">
+  <section class="alt" id="sync">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>어느 PC에서든 꺼내 쓰는 나만의 보안 지갑</h2>
+        <p>보관 폴더를 OneDrive·Dropbox·Google Drive나 회사 공유 폴더에 두세요. 집과 회사의 여러 PC가 같은 메모를 함께 쓰고, 한 PC에서 쓴 메모는 동기화되는 대로 다른 PC에 바로 나타나요. 클라우드에는 암호화된 파일만 올라가서 클라우드 회사도 내용을 읽을 수 없어요.</p>
+      </div>
+      <figure class="sync-art">
+        <img src="assets/img/sync.webp" alt="가운데 잠긴 클라우드 폴더를 두고 데스크톱과 노트북의 Hushpad가 같은 메모를 함께 쓰는 그림" width="1280" height="720" loading="lazy" decoding="async">
+      </figure>
+      <ul class="sync-points">
+        <li><svg><use href="#i-folder"/></svg><div><b>쓰던 클라우드 그대로</b><span>따로 가입할 서버가 없어요. OneDrive·Dropbox·Google Drive·공유 폴더(NAS) 어디든 됩니다.</span></div></li>
+        <li><svg><use href="#i-lock"/></svg><div><b>새 PC는 폴더와 암호만</b><span>같은 보관 폴더를 고르고 암호를 한 번 넣으면 끝이에요. Windows와 Mac을 함께 써도 됩니다.</span></div></li>
+        <li><svg><use href="#i-sync"/></svg><div><b>동시에 고쳐도 사라지지 않게</b><span>두 PC에서 같은 메모를 동시에 고치면 한쪽을 충돌 사본으로 남겨요.</span></div></li>
+      </ul>
+      <p class="sync-note">Hushpad는 보관 폴더를 3초마다 확인합니다. 다른 PC의 메모가 도착하는 속도는 클라우드 동기화 속도를 따릅니다. 클라우드에 두는 만큼 여러 단어로 된 긴 암호를 쓰세요.</p>
+    </div>
+  </section>
+
+  <section id="capture">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -150,7 +169,7 @@
     </div>
   </section>
 
-  <section id="security">
+  <section class="alt" id="security">
     <div class="wrap split">
       <div>
         <div class="sec-head" style="text-align:left;margin:0 0 22px">
@@ -180,7 +199,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section class="alt" id="keys">
+  <section id="keys">
     <div class="wrap">
       <div class="sec-head"><h2>손에 익는 단축키</h2><p>창을 닫아 트레이(Mac은 메뉴 막대)에 있을 때도 동작하는 단축키가 있어요. Mac에서는 Ctrl+Alt 대신 ⌃⌥(Control+Option)를, 앱 안에서는 Ctrl 대신 ⌘를 누릅니다.</p></div>
       <div class="keys">
@@ -196,7 +215,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </section>
 
-  <section id="faq">
+  <section class="alt" id="faq">
     <div class="wrap">
       <div class="sec-head"><h2>자주 묻는 질문</h2></div>
       <div class="faq">
@@ -205,7 +224,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <details><summary>Windows 메모장에 열어 둔 탭을 옮길 수 있나요?</summary><p>네. Windows에서 메뉴 › 파일 › “Windows 메모장 탭 가져오기”로 저장하지 않은 탭까지 복사해 옵니다. Windows 메모장 쪽은 건드리지 않아요.</p></details>
         <details><summary>암호를 잊으면 어떻게 되나요?</summary><p>되살릴 방법이 없습니다. 암호 없이는 누구도, 만든 사람조차 열 수 없게 만들었기 때문입니다. 처음 암호를 정할 때 안전한 곳에 적어 두세요.</p></details>
         <details><summary>컴퓨터를 다시 켜도 메모가 남아 있나요?</summary><p>네. 메모는 쓰는 즉시 암호화해서 디스크에 저장하므로 다시 켜도 그대로 있어요. 처음 실행한 뒤부터는 Windows를 켤 때(Mac은 로그인할 때) Hushpad가 트레이(Mac은 메뉴 막대)에서 자동으로 실행됩니다. 원하지 않으면 트레이 아이콘 메뉴나 보안 메뉴에서 끄면 돼요.</p></details>
-        <details><summary>여러 PC에서 함께 쓰려면?</summary><p>보관 폴더를 Dropbox·OneDrive 같은 동기화 폴더 안에 두고, 다른 PC에서 같은 폴더를 고른 뒤 같은 암호를 넣으면 됩니다. 다른 PC에서 고친 내용은 몇 초 안에 반영되고, 양쪽에서 동시에 고치면 한쪽을 “충돌 사본”으로 따로 남겨요.</p></details>
+        <details><summary>여러 PC에서 함께 쓰려면?</summary><p>보관 폴더를 OneDrive·Dropbox·Google Drive나 공유 폴더(NAS) 안에 두고, 다른 PC에서 같은 폴더를 고른 뒤 같은 암호를 넣으면 됩니다. Hushpad가 폴더를 3초마다 확인해서 다른 PC에서 쓴 메모가 동기화되는 대로 나타나고, 양쪽에서 동시에 고치면 한쪽을 “충돌 사본”으로 따로 남겨요.</p></details>
         <details><summary>이미지나 동영상도 넣을 수 있나요?</summary><p>서식 메모에는 이미지를 붙여 넣거나 끌어다 놓을 수 있고, 스크린샷과 짧은 화면 녹화(최대 3분)도 바로 들어갑니다. 동영상은 앱 안에서 재생되고 암호화되어 저장돼요.</p></details>
         <details><summary>인터넷에 무언가를 보내나요?</summary><p>아니요. 메모·설정·사용 기록은 보내지 않아요. zip판은 새 버전이 있는지 하루 한 번 GitHub에서 확인하고, 업데이트를 고를 때만 새 파일을 받아요(메뉴에서 끌 수 있어요). Microsoft Store판은 Store가 업데이트해요.</p></details>
         <details><summary>Mac에서도 캡처에 안 보이나요?</summary><p>macOS에서는 창 공유 끔 설정으로 숨깁니다. 다만 macOS 15 이상에서 ScreenCaptureKit을 쓰는 일부 캡처·화면 공유 프로그램은 이 설정을 무시하고 창을 찍을 수 있어요. Mac에서는 화면을 공유하기 전에 직접 확인해 보세요.</p></details>
@@ -245,6 +264,6 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
     </div>
   </div>
 </footer>
-<script src="assets/js/site.js?v=5" defer></script>
+<script src="assets/js/site.js?v=6" defer></script>
 </body>
 </html>
