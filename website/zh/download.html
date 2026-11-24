@@ -63,7 +63,7 @@
       <div class="dl-card">
         <img src="../assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
         <h1 style="margin:0;font-size:30px">下载 Hushpad</h1>
-        <div class="ver">版本 <span data-cfg="version">1.0.2</span> · <span data-cfg="releaseDate">即将发布</span> · 免费 · GPL-3.0-or-later</div>
+        <div class="ver">版本 <span data-cfg="version">1.0.3</span> · <span data-cfg="releaseDate">即将发布</span> · 免费 · GPL-3.0-or-later</div>
 
         <div class="os-grid">
           <div class="os" data-os-card="win">
@@ -73,9 +73,13 @@
             <div class="when-public">
               <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">从 Microsoft Store 获取</a>
               <p class="os-note">推荐。安装时不会出现 SmartScreen 警告，并会自动更新。</p>
-              <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ 下载 zip（免安装）</a>
-              <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">⬇ 下载安装程序</a>
+              <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
               <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-setup" data-dl-sha="setup">发布时显示</code>
+              <button class="btn small" type="button" data-copy="sha-setup" data-copied="已复制" hidden>复制</button>
+              <div class="file"><a data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">便携版 zip（免安装）</a> · <span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <div class="sum-label">SHA-256 (zip)</div>
               <code class="sum" id="sha-win" data-dl-sha="win">发布时显示</code>
               <button class="btn small" type="button" data-copy="sha-win" data-copied="已复制" hidden>复制</button>
             </div>
@@ -105,8 +109,8 @@
       <div class="req">
         <div class="box" data-os-box="win">
           <h3>在 Windows 上首次运行</h3>
-          <p>如果是从 Microsoft Store 安装的，在开始菜单中打开 Hushpad 后只需完成第 4 步。第 1–3 步适用于 zip 版。</p>
-          <ol><li>下载 zip 文件，解压到任意位置（例如“文档”文件夹），无需安装。</li><li>打开解压出的 <code>Hushpad</code> 文件夹，运行 <code>Hushpad.exe</code>。</li><li>如果出现“Windows 已保护你的电脑”，请点击“更多信息 › 仍要运行”。Hushpad 尚未进行代码签名，SmartScreen 可能会发出警告。如不放心，可先按下方方法核对 SHA-256 值。</li><li>选择存放笔记的文件夹并设置密码。如需在多台电脑上使用，请选择 Dropbox 或 OneDrive 中的文件夹。</li></ol>
+          <p>如果是从 Microsoft Store 安装的，在开始菜单中打开 Hushpad 后只需完成第 4 步。便携版 zip 解压到任意位置后运行 <code>Hushpad.exe</code> 即可。</p>
+          <ol><li>下载并运行 <code>Hushpad-win64-setup.exe</code>。无需管理员权限，会安装到你的用户文件夹。</li><li>如果出现“Windows 已保护你的电脑”，请点击“更多信息 › 仍要运行”。这是未进行代码签名的新程序，SmartScreen 可能会发出警告。如需确认，可先按下方方法核对 SHA-256。</li><li>安装完成后 Hushpad 会自动打开，之后可从开始菜单打开。有新版本时 Hushpad 会提示并自动更新。</li><li>选择保存笔记的文件夹并设置密码。如果要在多台电脑上使用，请选择 Dropbox 或 OneDrive 中的文件夹。</li></ol>
         </div>
         <div class="box" data-os-box="mac">
           <h3>在 Mac 上首次打开</h3>
@@ -126,7 +130,7 @@
         </div>
         <div class="box">
           <h3>卸载</h3>
-          <p>如果开启了自动运行，请先在托盘（菜单栏）图标中关闭，再删除程序文件夹（Mac 上为 Hushpad.app）。笔记仍保留在存储文件夹中（保持加密）。如需一并删除笔记，请同时删除存储文件夹。 如果是从 Microsoft Store 安装的，请在 Windows 设置 › 应用 中卸载。设置和记住的密钥会一并删除，仓库文件夹中的笔记会保留。</p>
+          <p>如果是用安装程序或 Microsoft Store 安装的，请在 Windows 设置 › 应用 中卸载 Hushpad。便携版 zip 请先在托盘图标菜单中关闭开机启动，再删除文件夹（Mac 为 Hushpad.app）。无论哪种方式，笔记都会以加密状态保留在仓库文件夹中。如需同时删除笔记，请一并删除仓库文件夹。</p>
         </div>
       </div>
     </div>

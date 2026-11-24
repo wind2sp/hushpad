@@ -1,22 +1,28 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "releaseDate": "2026-11-24",
   "public": true,
   "repoUrl": "https://github.com/wind2sp/hushpad",
   "releaseUrl": "https://github.com/wind2sp/hushpad/releases/latest",
   "copyright": "© 2026 NINEROW partners Co., Ltd. (나인로우파트너스(주)) and Hushpad contributors · wind2sp@9rowpar.com",
   "downloads": {
+    "setup": {
+      "url": "https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe",
+      "fileName": "Hushpad-win64-setup.exe",
+      "size": "33.3 MB",
+      "sha256": "7d923322bc882e7051146b3cea7e24f0f8b59f8aef456bc78c7cafbb46466c9d"
+    },
     "win": {
       "url": "https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip",
       "fileName": "Hushpad-win64.zip",
       "size": "45.8 MB",
-      "sha256": "681ddec2dd56386a5dd9e44a5bf1c3c83cc56b63fb9fddd283ebdc012fa25fdb"
+      "sha256": "27902647bef51ea4d931253af6b12f81d4145098f81b4768325aacb45a0939dd"
     },
     "mac": {
       "url": "https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip",
       "fileName": "Hushpad-macos-arm64.zip",
       "size": "45.2 MB",
-      "sha256": "f470cd2e1b36a6595bdc0750ac39bdfc027571c23f3eddeb1314748dbb5e942e"
+      "sha256": "f3ba3d2d8fe4e9bb068b1fad1a5c3bc44f57aa75c34089882a36ac0b125f3af5"
     }
   }
 }

@@ -63,7 +63,7 @@
       <div class="dl-card">
         <img src="assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
         <h1 style="margin:0;font-size:30px">Hushpad 다운로드</h1>
-        <div class="ver">버전 <span data-cfg="version">1.0.2</span> · <span data-cfg="releaseDate">공개 준비 중</span> · 무료 · GPL-3.0-or-later</div>
+        <div class="ver">버전 <span data-cfg="version">1.0.3</span> · <span data-cfg="releaseDate">공개 준비 중</span> · 무료 · GPL-3.0-or-later</div>
 
         <div class="os-grid">
           <div class="os" data-os-card="win">
@@ -73,9 +73,13 @@
             <div class="when-public">
               <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">Microsoft Store에서 받기</a>
               <p class="os-note">권장 · 경고 창 없이 설치되고, 업데이트도 자동이에요.</p>
-              <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ zip으로 받기 (설치 없이 실행)</a>
-              <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">⬇ 설치 프로그램 받기</a>
+              <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
               <div class="sum-label">SHA-256</div>
+              <code class="sum" id="sha-setup" data-dl-sha="setup">공개될 때 표시됩니다</code>
+              <button class="btn small" type="button" data-copy="sha-setup" data-copied="복사됨" hidden>값 복사</button>
+              <div class="file"><a data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">포터블 zip (설치 없이 실행)</a> · <span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+              <div class="sum-label">SHA-256 (zip)</div>
               <code class="sum" id="sha-win" data-dl-sha="win">공개될 때 표시됩니다</code>
               <button class="btn small" type="button" data-copy="sha-win" data-copied="복사됨" hidden>값 복사</button>
             </div>
@@ -105,8 +109,8 @@
       <div class="req">
         <div class="box" data-os-box="win">
           <h3>Windows에서 처음 실행하기</h3>
-          <p>Microsoft Store로 받았다면 시작 메뉴에서 Hushpad를 열고 4번만 하면 돼요. 1~3번은 zip으로 받았을 때예요.</p>
-          <ol><li>zip 파일을 받아 원하는 곳(예: 문서 폴더)에 풉니다. 설치 과정은 없어요.</li><li>풀린 <code>Hushpad</code> 폴더에서 <code>Hushpad.exe</code>를 실행합니다.</li><li>“Windows의 PC 보호” 창이 뜨면 “추가 정보 › 실행”을 누르세요. 코드 서명을 하지 않은 새 프로그램이라 SmartScreen이 경고할 수 있어요. 걱정되면 먼저 아래 방법으로 SHA-256 값을 확인하세요.</li><li>메모를 보관할 폴더와 암호를 정합니다. 여러 PC에서 쓰려면 Dropbox·OneDrive 안의 폴더를 고르세요.</li></ol>
+          <p>Microsoft Store로 받았다면 시작 메뉴에서 Hushpad를 열고 4번만 하면 돼요. 포터블 zip은 원하는 곳에 풀고 <code>Hushpad.exe</code>를 실행하면 됩니다.</p>
+          <ol><li><code>Hushpad-win64-setup.exe</code>를 받아 실행합니다. 관리자 권한은 필요 없고, 내 계정 폴더에 설치돼요.</li><li>“Windows의 PC 보호” 창이 뜨면 “추가 정보 › 실행”을 누르세요. 코드 서명을 하지 않은 새 프로그램이라 SmartScreen이 경고할 수 있어요. 걱정되면 먼저 아래 방법으로 SHA-256 값을 확인하세요.</li><li>설치가 끝나면 Hushpad가 켜져요. 다음부터는 시작 메뉴에서 열면 됩니다. 새 버전이 나오면 Hushpad가 알려 주고 알아서 업데이트해요.</li><li>메모를 보관할 폴더와 암호를 정합니다. 여러 PC에서 쓰려면 Dropbox·OneDrive 안의 폴더를 고르세요.</li></ol>
         </div>
         <div class="box" data-os-box="mac">
           <h3>Mac에서 처음 열기</h3>
@@ -126,7 +130,7 @@
         </div>
         <div class="box">
           <h3>지울 때</h3>
-          <p>자동 실행을 켜 두었다면 먼저 트레이(메뉴 막대) 아이콘 메뉴에서 끈 뒤, 프로그램 폴더(Mac은 Hushpad.app)를 지우면 됩니다. 메모는 암호화된 채로 보관 폴더에 남아 있어요. 메모까지 지우려면 보관 폴더도 함께 지우세요. Microsoft Store로 설치했다면 Windows 설정 › 앱에서 제거하세요. 설정과 기억한 암호는 함께 지워지고, 보관 폴더의 메모는 남아요.</p>
+          <p>설치 프로그램이나 Microsoft Store로 설치했다면 Windows 설정 › 앱에서 Hushpad를 제거하세요. 포터블 zip은 자동 실행을 트레이 아이콘 메뉴에서 끈 뒤 폴더를 지우면 됩니다(Mac은 Hushpad.app). 어느 경우든 메모는 암호화된 채로 보관 폴더에 남아 있어요. 메모까지 지우려면 보관 폴더도 함께 지우세요.</p>
         </div>
       </div>
     </div>
