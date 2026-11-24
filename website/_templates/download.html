@@ -19,25 +19,39 @@
       <div class="dl-card">
         <img src="{{_root}}assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
         <h1 style="margin:0;font-size:30px">{{dl.h1}}</h1>
-        <div class="ver">{{dl.version}} <span data-cfg="version">1.0.3</span> · <span data-cfg="releaseDate">{{dl.releasePending}}</span> · {{dl.license}}</div>
+        <div class="ver">{{dl.version}} <span data-cfg="version">1.0.4</span> · <span data-cfg="releaseDate">{{dl.releasePending}}</span> · {{dl.license}}</div>
 
         <div class="os-grid">
           <div class="os" data-os-card="win">
             <span class="you">{{dl.yourOs}}</span>
             <h2>Windows</h2>
             <p class="os-req">{{dl.win.req}}</p>
-            <div class="when-public">
-              <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">{{dl.win.store}}</a>
-              <p class="os-note">{{dl.win.storeNote}}</p>
-              <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">{{dl.win.setup}}</a>
-              <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
-              <div class="sum-label">SHA-256</div>
-              <code class="sum" id="sha-setup" data-dl-sha="setup">{{dl.hash.pending}}</code>
-              <button class="btn small" type="button" data-copy="sha-setup" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
-              <div class="file"><a data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">{{dl.win.zip}}</a> · <span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
-              <div class="sum-label">SHA-256 (zip)</div>
-              <code class="sum" id="sha-win" data-dl-sha="win">{{dl.hash.pending}}</code>
-              <button class="btn small" type="button" data-copy="sha-win" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+            <div class="when-public choices">
+              <div class="choice rec">
+                <div class="choice-t"><h3>{{dl.win.storeH}}</h3><span class="tag">{{dl.win.storeTag}}</span></div>
+                <p>{{dl.win.storeD}}</p>
+                <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">{{dl.win.store}}</a>
+              </div>
+              <div class="choice">
+                <div class="choice-t"><h3>{{dl.win.setupH}}</h3></div>
+                <p>{{dl.win.setupD}}</p>
+                <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">{{dl.win.setup}}</a>
+                <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
+                <details class="sha"><summary>SHA-256</summary>
+                  <code class="sum" id="sha-setup" data-dl-sha="setup">{{dl.hash.pending}}</code>
+                  <button class="btn small" type="button" data-copy="sha-setup" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+                </details>
+              </div>
+              <div class="choice">
+                <div class="choice-t"><h3>{{dl.win.zipH}}</h3></div>
+                <p>{{dl.win.zipD}}</p>
+                <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">{{dl.win.zipGet}}</a>
+                <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+                <details class="sha"><summary>SHA-256</summary>
+                  <code class="sum" id="sha-win" data-dl-sha="win">{{dl.hash.pending}}</code>
+                  <button class="btn small" type="button" data-copy="sha-win" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+                </details>
+              </div>
             </div>
             <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">{{dl.soon}}</a></div>
           </div>
@@ -45,12 +59,17 @@
             <span class="you">{{dl.yourOs}}</span>
             <h2>macOS</h2>
             <p class="os-req">{{dl.mac.req}}</p>
-            <div class="when-public">
-              <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ {{dl.mac.get}}</a>
-              <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
-              <div class="sum-label">SHA-256</div>
-              <code class="sum" id="sha-mac" data-dl-sha="mac">{{dl.hash.pending}}</code>
-              <button class="btn small" type="button" data-copy="sha-mac" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+            <div class="when-public choices">
+              <div class="choice">
+                <div class="choice-t"><h3>{{dl.mac.zipH}}</h3></div>
+                <p>{{dl.mac.zipD}}</p>
+                <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ {{dl.mac.get}}</a>
+                <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
+                <details class="sha"><summary>SHA-256</summary>
+                  <code class="sum" id="sha-mac" data-dl-sha="mac">{{dl.hash.pending}}</code>
+                  <button class="btn small" type="button" data-copy="sha-mac" data-copied="{{dl.hash.copied|a}}" hidden>{{dl.hash.copy}}</button>
+                </details>
+              </div>
             </div>
             <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">{{dl.soon}}</a></div>
             <p class="os-note">{{dl.mac.note}}</p>

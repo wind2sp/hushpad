@@ -223,7 +223,15 @@
       "storeNote": "Recommended. Installs without the SmartScreen warning and updates itself.",
       "zip": "Portable zip (no install)",
       "storeFirst": "Installed from the Microsoft Store? Open Hushpad from the Start menu and do step 4 only. For the portable zip, extract it anywhere and run <code>Hushpad.exe</code>.",
-      "setup": "⬇ Download the installer"
+      "setup": "⬇ Download the installer",
+      "storeH": "Microsoft Store",
+      "storeTag": "Recommended",
+      "storeD": "Installs without the SmartScreen warning, and the Store keeps it up to date.",
+      "setupH": "Installer",
+      "setupD": "Installs into your user folder (no administrator rights needed), adds Hushpad to the Start menu and can be removed in Settings › Apps. Hushpad updates itself when a new version is out.",
+      "zipH": "Portable (zip)",
+      "zipD": "No install: extract it to any folder and run <code>Hushpad.exe</code>. Hushpad updates itself when a new version is out.",
+      "zipGet": "⬇ Download the portable zip"
     },
     "mac": {
       "req": "Macs with Apple silicon (M1 or later)",
@@ -235,7 +243,9 @@
         "The first time, right-click (or Control-click) Hushpad.app in Finder, choose “Open,” then click “Open” again in the warning. The app isn't signed or notarized by Apple, so double-clicking won't open it. If you don't see an Open button, go to System Settings › Privacy & Security and click “Open Anyway.”",
         "The first time you take a screenshot or record your screen, macOS asks for Screen Recording permission. Turn on Hushpad under System Settings › Privacy & Security › Screen & System Audio Recording (Screen Recording on macOS 14 and earlier), then restart the app.",
         "Choose a folder for your notes and set a password. The system-wide shortcuts are ⌃⌥N (new note), ⌃⌥M (clipboard to note), ⌃⌥S (screenshot) and ⌃⌥R (screen recording)."
-      ]
+      ],
+      "zipH": "Apple silicon (zip)",
+      "zipD": "Unzip it and move <code>Hushpad.app</code> to your Applications folder."
     },
     "auto": {
       "h": "Starts automatically",

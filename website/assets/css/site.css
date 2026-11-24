@@ -234,3 +234,19 @@ footer a { color: var(--text2); }
   .os-grid { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* 다운로드: 받는 방식별 선택지(Store·설치 프로그램·포터블·Mac) — OS 카드는 한 줄에 하나 */
+.os-grid { grid-template-columns: 1fr; }
+.choices { display: grid; gap: 10px; }
+.choice { display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--card); }
+.choice.rec { border-color: var(--accent); }
+.choice-t { display: flex; align-items: center; gap: 8px; }
+.choice h3 { margin: 0; font-size: 16px; }
+.choice p { margin: 0; font-size: 14px; color: var(--text2); }
+.choice .tag { font-size: 12px; font-weight: 600; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 2px 9px; }
+.choice .btn { align-self: flex-start; }
+.choice .file { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.choice details.sha summary { cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--text2); }
+.choice details.sha[open] summary { margin-bottom: 6px; }
+.choice details.sha .btn.small { margin-top: 6px; }
+@media (max-width: 560px) { .choice .btn { align-self: stretch; } }

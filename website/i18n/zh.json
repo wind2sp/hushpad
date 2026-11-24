@@ -223,7 +223,15 @@
       "storeNote": "推荐。安装时不会出现 SmartScreen 警告，并会自动更新。",
       "zip": "便携版 zip（免安装）",
       "storeFirst": "如果是从 Microsoft Store 安装的，在开始菜单中打开 Hushpad 后只需完成第 4 步。便携版 zip 解压到任意位置后运行 <code>Hushpad.exe</code> 即可。",
-      "setup": "⬇ 下载安装程序"
+      "setup": "⬇ 下载安装程序",
+      "storeH": "Microsoft Store",
+      "storeTag": "推荐",
+      "storeD": "安装时不会出现警告窗口，并由 Store 自动更新。",
+      "setupH": "安装程序",
+      "setupD": "安装到你的用户文件夹（无需管理员权限），会加入开始菜单，可在“设置 › 应用”中卸载。有新版本时 Hushpad 会自动更新。",
+      "zipH": "便携版 (zip)",
+      "zipD": "无需安装：解压到任意文件夹后运行 <code>Hushpad.exe</code>。有新版本时 Hushpad 会自动更新。",
+      "zipGet": "⬇ 下载便携版 zip"
     },
     "mac": {
       "req": "搭载 Apple 芯片的 Mac（M1 及更新）",
@@ -235,7 +243,9 @@
         "第一次打开时，请在访达中右键点按（或按住 Control 键点按）Hushpad.app，选择“打开”，再在警告窗口中点击“打开”。该应用未经 Apple 签名和公证，直接双击无法打开。如果没有“打开”按钮，请前往“系统设置 › 隐私与安全性”，点击“仍要打开”。",
         "第一次截图或录屏时，macOS 会请求屏幕录制权限。请在“系统设置 › 隐私与安全性”的屏幕录制设置中打开 Hushpad，然后重新启动应用。",
         "选择存放笔记的文件夹并设置密码。全局快捷键为 ⌃⌥N（新建笔记）、⌃⌥M（剪贴板存为笔记）、⌃⌥S（截图）和 ⌃⌥R（录屏）。"
-      ]
+      ],
+      "zipH": "Apple 芯片 (zip)",
+      "zipD": "解压后将 <code>Hushpad.app</code> 移到“应用程序”文件夹即可使用。"
     },
     "auto": {
       "h": "开机自动运行",

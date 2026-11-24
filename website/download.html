@@ -31,8 +31,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<link rel="stylesheet" href="assets/css/site.css?v=4">
-<script src="assets/js/lang.js?v=4"></script>
+<link rel="stylesheet" href="assets/css/site.css?v=5">
+<script src="assets/js/lang.js?v=5"></script>
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -63,25 +63,39 @@
       <div class="dl-card">
         <img src="assets/img/icon-256.png" alt="" width="80" height="80" style="margin:0 auto 14px">
         <h1 style="margin:0;font-size:30px">Hushpad 다운로드</h1>
-        <div class="ver">버전 <span data-cfg="version">1.0.3</span> · <span data-cfg="releaseDate">공개 준비 중</span> · 무료 · GPL-3.0-or-later</div>
+        <div class="ver">버전 <span data-cfg="version">1.0.4</span> · <span data-cfg="releaseDate">공개 준비 중</span> · 무료 · GPL-3.0-or-later</div>
 
         <div class="os-grid">
           <div class="os" data-os-card="win">
             <span class="you">지금 쓰는 컴퓨터</span>
             <h2>Windows</h2>
             <p class="os-req">Windows 10(2004 이상)·11, 64비트</p>
-            <div class="when-public">
-              <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">Microsoft Store에서 받기</a>
-              <p class="os-note">권장 · 경고 창 없이 설치되고, 업데이트도 자동이에요.</p>
-              <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">⬇ 설치 프로그램 받기</a>
-              <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
-              <div class="sum-label">SHA-256</div>
-              <code class="sum" id="sha-setup" data-dl-sha="setup">공개될 때 표시됩니다</code>
-              <button class="btn small" type="button" data-copy="sha-setup" data-copied="복사됨" hidden>값 복사</button>
-              <div class="file"><a data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">포터블 zip (설치 없이 실행)</a> · <span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
-              <div class="sum-label">SHA-256 (zip)</div>
-              <code class="sum" id="sha-win" data-dl-sha="win">공개될 때 표시됩니다</code>
-              <button class="btn small" type="button" data-copy="sha-win" data-copied="복사됨" hidden>값 복사</button>
+            <div class="when-public choices">
+              <div class="choice rec">
+                <div class="choice-t"><h3>Microsoft Store</h3><span class="tag">권장</span></div>
+                <p>경고 창 없이 설치되고, 업데이트는 Store가 알아서 합니다.</p>
+                <a class="btn primary" href="https://apps.microsoft.com/detail/9P73RW8W1FQV" rel="noopener">Microsoft Store에서 받기</a>
+              </div>
+              <div class="choice">
+                <div class="choice-t"><h3>설치 프로그램</h3></div>
+                <p>내 계정 폴더에 설치합니다(관리자 권한 필요 없음). 시작 메뉴에 등록되고, 설정 › 앱에서 제거할 수 있어요. 새 버전은 Hushpad가 알아서 업데이트합니다.</p>
+                <a class="btn" data-dl="setup" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64-setup.exe">⬇ 설치 프로그램 받기</a>
+                <div class="file"><span data-dl-name="setup">Hushpad-win64-setup.exe</span><span data-dl-size="setup"></span></div>
+                <details class="sha"><summary>SHA-256</summary>
+                  <code class="sum" id="sha-setup" data-dl-sha="setup">공개될 때 표시됩니다</code>
+                  <button class="btn small" type="button" data-copy="sha-setup" data-copied="복사됨" hidden>값 복사</button>
+                </details>
+              </div>
+              <div class="choice">
+                <div class="choice-t"><h3>포터블 (zip)</h3></div>
+                <p>설치하지 않고, 원하는 폴더에 풀어서 <code>Hushpad.exe</code>를 실행합니다. 새 버전은 Hushpad가 알아서 업데이트합니다.</p>
+                <a class="btn" data-dl="win" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-win64.zip">⬇ 포터블 zip 받기</a>
+                <div class="file"><span data-dl-name="win">Hushpad-win64.zip</span><span data-dl-size="win"></span></div>
+                <details class="sha"><summary>SHA-256</summary>
+                  <code class="sum" id="sha-win" data-dl-sha="win">공개될 때 표시됩니다</code>
+                  <button class="btn small" type="button" data-copy="sha-win" data-copied="복사됨" hidden>값 복사</button>
+                </details>
+              </div>
             </div>
             <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">곧 공개됩니다</a></div>
           </div>
@@ -89,12 +103,17 @@
             <span class="you">지금 쓰는 컴퓨터</span>
             <h2>macOS</h2>
             <p class="os-req">Apple Silicon(M1 이후) Mac</p>
-            <div class="when-public">
-              <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ Mac용 받기</a>
-              <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
-              <div class="sum-label">SHA-256</div>
-              <code class="sum" id="sha-mac" data-dl-sha="mac">공개될 때 표시됩니다</code>
-              <button class="btn small" type="button" data-copy="sha-mac" data-copied="복사됨" hidden>값 복사</button>
+            <div class="when-public choices">
+              <div class="choice">
+                <div class="choice-t"><h3>Apple Silicon (zip)</h3></div>
+                <p>zip을 풀고 <code>Hushpad.app</code>을 응용 프로그램 폴더로 옮겨 씁니다.</p>
+                <a class="btn primary" data-dl="mac" href="https://github.com/wind2sp/hushpad/releases/latest/download/Hushpad-macos-arm64.zip">⬇ Mac용 받기</a>
+                <div class="file"><span data-dl-name="mac">Hushpad-macos-arm64.zip</span><span data-dl-size="mac"></span></div>
+                <details class="sha"><summary>SHA-256</summary>
+                  <code class="sum" id="sha-mac" data-dl-sha="mac">공개될 때 표시됩니다</code>
+                  <button class="btn small" type="button" data-copy="sha-mac" data-copied="복사됨" hidden>값 복사</button>
+                </details>
+              </div>
             </div>
             <div class="when-private"><a class="btn primary" aria-disabled="true" href="#">곧 공개됩니다</a></div>
             <p class="os-note">Intel Mac은 지원하지 않습니다.</p>
@@ -167,6 +186,6 @@
     </div>
   </div>
 </footer>
-<script src="assets/js/site.js?v=4" defer></script>
+<script src="assets/js/site.js?v=5" defer></script>
 </body>
 </html>
