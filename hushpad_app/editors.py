@@ -168,24 +168,45 @@ class RichEdit(_CopyMixin, QTextEdit):
 
     # ------------------------------------------------ 복사
     def createMimeDataFromSelection(self) -> QMimeData:
-        md = super().createMimeDataFromSelection()
+        # Qt가 주는 QTextEditMimeData는 나중에 덧붙인 형식(그림·클립보드 보호 표시)을 클립보드로 넘기지 않는다.
+        # 그래서 내용을 새 QMimeData에 옮겨 담는다.
+        src = super().createMimeDataFromSelection()
         c = self.textCursor()
-        if abs(c.selectionEnd() - c.selectionStart()) == 1:
-            f = self._fmt_in_selection(c)
-            if f is not None:
-                img = data_url_to_image(f.name())
-                if img is not None:
-                    md.setImageData(img)
+        imgs = self._images_in_selection(c)
+        text = src.text().replace("￼", "")
+        md = QMimeData()
+        if imgs and not text.strip():
+            # 그림만 골랐으면 그림으로만 복사한다. 글자 칸이 있으면 메신저·메일이 빈 글자를 붙여 넣는다.
+            md.setImageData(imgs[0])
+            if len(imgs) > 1:
+                md.setHtml(src.html())
+        else:
+            md.setHtml(src.html())
+            md.setText(text)
         if self.host.cfg["clip_private"]:
             mark_private(md)
         return md
 
-    @staticmethod
-    def _fmt_in_selection(c: QTextCursor):
-        cc = QTextCursor(c)
-        cc.setPosition(max(c.selectionStart(), c.selectionEnd()))
-        f = cc.charFormat()
-        return f.toImageFormat() if f.isImageFormat() else None
+    def _images_in_selection(self, c: QTextCursor) -> list:
+        """선택 안의 그림(동영상 미리보기 포함)을 차례대로."""
+        out = []
+        if not c.hasSelection():
+            return out
+        start, end = c.selectionStart(), c.selectionEnd()
+        block = self.document().findBlock(start)
+        while block.isValid() and block.position() <= end:
+            it = block.begin()
+            while not it.atEnd():
+                frag = it.fragment()
+                if frag.position() + frag.length() > start and frag.position() < end:
+                    f = frag.charFormat()
+                    if f.isImageFormat():
+                        img = data_url_to_image(f.toImageFormat().name())
+                        if img is not None:
+                            out.extend([img] * min(frag.length(), end - max(start, frag.position())))
+                it += 1
+            block = block.next()
+        return out
 
     def image_at(self, pos) -> QTextImageFormat | None:
         c = self.cursorForPosition(pos)
@@ -204,6 +225,32 @@ class RichEdit(_CopyMixin, QTextEdit):
         if self._copy_keys(e):
             return
         super().keyPressEvent(e)
+
+    def mousePressEvent(self, e):
+        """그림을 한 번 누르면 그 그림을 고른다 (Ctrl+C로 바로 복사할 수 있게)."""
+        super().mousePressEvent(e)
+        if e.button() == Qt.LeftButton and not e.modifiers():
+            c = self._image_cursor(e.position().toPoint())
+            if c is not None:
+                self.setTextCursor(c)
+
+    def _image_cursor(self, pos) -> QTextCursor | None:
+        """pos 위치의 그림 한 칸을 고른 커서. 그림이 아니면 None."""
+        base = self.cursorForPosition(pos).position()
+        for p in (base, base - 1):
+            if p < 0:
+                continue
+            c = QTextCursor(self.document())
+            c.setPosition(p)
+            left = self.cursorRect(c).left()            # 그림 왼쪽 끝
+            if not c.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor):
+                continue
+            f = c.charFormat()
+            if f.isImageFormat():
+                w = f.toImageFormat().width() or 0
+                if left - 2 <= pos.x() <= left + w + 2:   # 그림 위를 눌렀을 때만 (옆 빈 곳 제외)
+                    return c
+        return None
 
     def mouseDoubleClickEvent(self, e):
         f = self.image_at(e.position().toPoint())

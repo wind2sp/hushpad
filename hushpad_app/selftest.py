@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 def run() -> int:
+    from PySide6.QtGui import QImage
     os.environ["HUSHPAD_NO_AUTOSTART"] = "1"   # 점검이 시작 프로그램(레지스트리·LaunchAgent)을 건드리지 않게
     out = Path(tempfile.gettempdir()) / "hushpad_selftest.txt"
     lines, ok = [], True
@@ -283,6 +284,46 @@ def run() -> int:
             w.close()
         return f"supported here={saved}"
     check("capture hide fallback", capture_hide_fallback)
+
+    def image_copy():
+        """서식 메모에서 그림만 골라 복사하면 클립보드에 그림으로 들어간다 (글자 자리표 없이)."""
+        from .window import MainWindow
+        from PySide6.QtGui import QIcon, QColor, QTextCursor
+        cfg = Config()
+        cfg["open_tabs"] = []
+        cfg.save = lambda: None
+        w = MainWindow(st, cfg, QIcon())
+        try:
+            n = st.create(kind="rich", text="<p>x</p>")
+            w.open_note(n.id)
+            ed = w._cur_tab().edit
+            ed.clear()
+            ed.insertPlainText("a ")
+            img = QImage(40, 30, QImage.Format_RGB32)
+            img.fill(QColor("#22aa66"))
+            ed.insert_image(img)
+            ed.insertPlainText(" b")
+            doc = ed.document()
+            pos = next(i for i in range(doc.characterCount())
+                       if (lambda c: (c.setPosition(i), c.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor),
+                                      c.charFormat().isImageFormat())[-1])(QTextCursor(doc)))
+            c = QTextCursor(doc)
+            c.setPosition(pos)
+            c.setPosition(pos + 2, QTextCursor.KeepAnchor)       # 그림 + 뒤 줄바꿈까지 끌어 고른 경우
+            ed.setTextCursor(c)
+            md = ed.createMimeDataFromSelection()
+            assert md.hasImage() and not md.text().strip(), "image selection not copied as an image"
+            c.setPosition(0)
+            c.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
+            ed.setTextCursor(c)
+            md = ed.createMimeDataFromSelection()
+            assert "￼" not in md.text() and "a" in md.text() and md.hasHtml(), "mixed selection text wrong"
+            if plat.CLIPBOARD_PRIVATE_SUPPORTED and cfg["clip_private"]:
+                assert any("CanIncludeInClipboardHistory" in f for f in md.formats()), "privacy mark lost"
+        finally:
+            w.close()
+        return "image only -> picture, mixed -> html+text"
+    check("image copy", image_copy)
 
     def autostart_untouched():
         try:
