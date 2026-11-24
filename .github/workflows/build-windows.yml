@@ -1,7 +1,7 @@
 # Windows 앱 빌드 — 손으로 실행 (Actions › build-windows › Run workflow).
 # 공개 저장소라 GitHub에서 무료로 돈다. 코드 서명(SignPath Foundation)은 이 빌드 결과에만 붙일 수 있어서
 # 배포용 Windows zip은 이 워크플로에서 만든다.
-# 결과: Hushpad-win64.zip (+ 같은 내용의 Actions 결과물 "Hushpad-win64-unsigned") → 초안 릴리스 "win-build"
+# 결과: Hushpad-win64-setup.exe(설치 프로그램, NSIS) + Hushpad-win64.zip(포터블) → 초안 릴리스 "win-build"
 name: build-windows
 
 on:
@@ -39,11 +39,21 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: python build.py
 
+      - name: Install NSIS
+        shell: pwsh
+        run: |
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue) -and -not (Test-Path "${env:ProgramFiles(x86)}\NSIS\makensis.exe")) {
+            choco install nsis -y --no-progress
+          }
+
+      - name: Make the installer (NSIS)
+        run: python packaging/installer/make_installer.py
+
       - name: Show result
         shell: bash
         run: |
           ls -la dist
-          cat dist/Hushpad-win64.zip.sha256
+          cat dist/Hushpad-win64.zip.sha256 dist/Hushpad-win64-setup.exe.sha256
 
       # SignPath Foundation 승인 후: 아래 결과물을 SignPath에 보내 서명받고, 서명된 파일로 zip을 다시 만든다.
       # (signpath/github-action-submit-signing-request 단계는 승인 뒤 프로젝트 정보를 받아 추가)
@@ -65,4 +75,5 @@ jobs:
               --title "Windows 테스트 빌드 (비공개 초안)" \
               --notes "build-windows 워크플로가 자동으로 올리는 Windows 빌드입니다. 공개 릴리스가 아닙니다."
           fi
-          gh release upload "$TAG" dist/Hushpad-win64.zip dist/Hushpad-win64.zip.sha256 --clobber
+          gh release upload "$TAG" dist/Hushpad-win64.zip dist/Hushpad-win64.zip.sha256 \
+            dist/Hushpad-win64-setup.exe dist/Hushpad-win64-setup.exe.sha256 --clobber

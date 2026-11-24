@@ -6,6 +6,8 @@ GitHub 릴리스의 version.json(최신 릴리스에 함께 올린 파일)을 �
 같은 경로이므로 Windows 시작 프로그램(Run 키)·바로가기·설정이 그대로 이어진다. 메모(보관 폴더)는 건드리지 않는다.
 
 - Microsoft Store판(패키지)은 Store가 업데이트하므로 쓰지 않는다. macOS판·개발용 파이썬 실행도 쓰지 않는다.
+- 설치판(설치 프로그램으로 깐 것, 폴더에 'Uninstall Hushpad.exe'가 있음)은 zip 대신 새 설치 프로그램을 받아
+  SHA-256을 확인한 뒤 `/S /WAITPID=<pid> /RELAUNCH`로 조용히 실행하고 끝난다 (packaging/installer/hushpad.nsi).
 - 연결하는 곳은 GitHub(버전 파일·zip 내려받기)뿐이다. 메모·설정·사용 기록을 보내지 않는다. 설정에서 자동 확인을 끌 수 있다.
 - 릴리스를 낼 때 zip과 함께 version.json을 올린다 (tools/make_version_json.py).
 - 시험: HUSHPAD_UPDATE_URL로 version.json 주소를 바꿀 수 있다(127.0.0.1만 http 허용).
@@ -14,7 +16,8 @@ version.json
 { "version": "1.0.2", "date": "2026-11-24", "important": false,
   "notes": {"ko": ["…"], "en": ["…"], "ja": ["…"], "zh": ["…"]},
   "files": {"win": {"name": "Hushpad-win64.zip", "url": "https://github.com/…/v1.0.2/Hushpad-win64.zip",
-                    "size": 45761102, "sha256": "…"}} }
+                    "size": 45761102, "sha256": "…"},
+            "setup": {"name": "Hushpad-win64-setup.exe", "url": "…", "size": …, "sha256": "…"}} }
 """
 from __future__ import annotations
 
@@ -37,6 +40,7 @@ from .common import LOCAL_DIR
 VERSION_URL = "https://github.com/wind2sp/hushpad/releases/latest/download/version.json"
 DOWNLOAD_PAGE = "https://github.com/wind2sp/hushpad/releases/latest"
 EXE_NAME = "Hushpad.exe"
+UNINSTALLER = "Uninstall Hushpad.exe"
 UPDATE_DIR = LOCAL_DIR / "update"
 NOWIN = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 USER_AGENT = f"Hushpad/{__version__} (update check)"
@@ -93,10 +97,25 @@ def fetch_info(timeout: float = 10) -> dict:
         raise
     except Exception as e:
         raise UpdateError(str(e)) from e
-    f = (info.get("files") or {}).get("win") or {}
-    if not info.get("version") or not f.get("url") or not f.get("sha256") or not f.get("size"):
+    files = info.get("files") or {}
+    ok = [k for k in ("win", "setup") if all((files.get(k) or {}).get(x) for x in ("url", "sha256", "size"))]
+    if not info.get("version") or not ok:
         raise UpdateError("version.json is missing fields")
     return info
+
+
+def installed() -> bool:
+    """설치 프로그램으로 깐 Hushpad인가 (아니면 zip 포터블판)."""
+    return (app_dir() / UNINSTALLER).is_file()
+
+
+def file_kind() -> str:
+    return "setup" if installed() else "win"
+
+
+def has_file(info: dict, kind: str) -> bool:
+    f = (info.get("files") or {}).get(kind) or {}
+    return bool(f.get("url") and f.get("sha256") and f.get("size"))
 
 
 def notes_for(info: dict, lang: str) -> list:
@@ -125,11 +144,11 @@ def can_replace(target: Path) -> bool:
 
 
 # ------------------------------------------------------------------ 받기·확인
-def download(info: dict, progress=None, cancelled=None) -> Path:
-    """새 zip을 받아 크기·SHA-256을 확인하고 경로를 돌려준다. progress(done, total), cancelled() -> bool."""
-    f = info["files"]["win"]
+def download(info: dict, progress=None, cancelled=None, kind: str = "win") -> Path:
+    """새 zip(kind='win') 또는 설치 프로그램(kind='setup')을 받아 크기·SHA-256을 확인하고 경로를 돌려준다."""
+    f = info["files"][kind]
     UPDATE_DIR.mkdir(parents=True, exist_ok=True)
-    dest = UPDATE_DIR / f"Hushpad-{info['version']}-win64.zip"
+    dest = UPDATE_DIR / (f"Hushpad-{info['version']}-setup.exe" if kind == "setup" else f"Hushpad-{info['version']}-win64.zip")
     part = dest.with_suffix(".part")
     total = int(f["size"])
     h = hashlib.sha256()
@@ -201,6 +220,13 @@ def launch_finish(new_dir: Path, target: Path) -> None:
     flags = NOWIN | getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
     subprocess.Popen([str(exe), "--finish-update", str(target), str(os.getpid())],
                      cwd=str(new_dir), creationflags=flags, close_fds=True)
+
+
+def launch_setup(setup: Path) -> None:
+    """설치판: 새 설치 프로그램을 조용히 실행. 이 앱이 끝나기를 기다렸다가 덮어쓰고 Hushpad를 다시 켠다."""
+    flags = getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+    subprocess.Popen([str(setup), "/S", f"/WAITPID={os.getpid()}", "/RELAUNCH"],
+                     cwd=str(setup.parent), creationflags=flags, close_fds=True)
 
 
 # ------------------------------------------------------------------ 바꿔치기 (새 exe 안에서)

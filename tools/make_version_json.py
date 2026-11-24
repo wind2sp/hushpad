@@ -1,6 +1,6 @@
 """GitHub 릴리스에 함께 올릴 version.json 만들기 (zip판 자동 업데이트가 읽는 파일).
 
-python tools/make_version_json.py <Hushpad-win64.zip> --notes notes.json [--important] [-o version.json]
+python tools/make_version_json.py <Hushpad-win64.zip> [--setup <Hushpad-win64-setup.exe>] --notes notes.json [--important] [-o version.json]
 notes.json = {"ko": ["…"], "en": ["…"], "ja": ["…"], "zh": ["…"]}
 버전은 hushpad_app.__version__, zip 주소는 releases/download/v<버전>/<파일 이름>.
 릴리스에는 zip을 먼저, version.json을 마지막에 올린다.
@@ -22,6 +22,7 @@ REPO = "wind2sp/hushpad"
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("zip")
+    ap.add_argument("--setup", help="설치 프로그램 (설치판 자동 업데이트)")
     ap.add_argument("--notes", required=True)
     ap.add_argument("--important", action="store_true")
     ap.add_argument("-o", "--out", default="version.json")
@@ -43,6 +44,12 @@ def main() -> int:
                           "url": f"https://github.com/{REPO}/releases/download/v{__version__}/{z.name}",
                           "size": len(data), "sha256": hashlib.sha256(data).hexdigest()}},
     }
+    if a.setup:
+        sp = Path(a.setup)
+        sd = sp.read_bytes()
+        info["files"]["setup"] = {"name": sp.name,
+                                  "url": f"https://github.com/{REPO}/releases/download/v{__version__}/{sp.name}",
+                                  "size": len(sd), "sha256": hashlib.sha256(sd).hexdigest()}
     Path(a.out).write_text(json.dumps(info, ensure_ascii=False, indent=2) + "\n", "utf-8")
     print(f"{a.out}: {__version__} {len(data)} bytes {info['files']['win']['sha256']}")
     return 0

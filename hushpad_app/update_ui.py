@@ -22,7 +22,7 @@ class _Bridge(QObject):
     checked = Signal(object, object, bool)       # info|None, error|None, manual
     progress = Signal(int, int)
     stage = Signal(str)
-    finished = Signal(object, object)            # new_dir|None, error|None
+    finished = Signal(object, object)            # (kind, path)|None, error|None
 
 
 class UpdateDialog(QDialog):
@@ -152,8 +152,12 @@ class UpdateController(QObject):
             self.install(info)
 
     def install(self, info: dict):
+        kind = updater.file_kind()
+        if not updater.has_file(info, kind):
+            self._fail(tr("upd.fail", err="no file for this edition"))
+            return
         target = updater.app_dir()
-        if not updater.can_replace(target):
+        if kind == "win" and not updater.can_replace(target):
             self._fail(tr("upd.readonly", path=str(target)))
             return
         self._busy = True
@@ -171,11 +175,14 @@ class UpdateController(QObject):
         def work():
             try:
                 z = updater.download(info, progress=lambda d, t: self.b.progress.emit(d, t),
-                                     cancelled=lambda: self._cancel)
+                                     cancelled=lambda: self._cancel, kind=kind)
+                if kind == "setup":                  # 설치판: 받은 설치 프로그램을 그대로 실행
+                    self.b.finished.emit(("setup", z), None)
+                    return
                 self.b.stage.emit("verify")
                 new_dir = updater.extract(z, info["version"])
                 updater.selftest(new_dir)
-                self.b.finished.emit(new_dir, None)
+                self.b.finished.emit(("win", new_dir), None)
             except Exception as e:
                 self.b.finished.emit(None, e)
         threading.Thread(target=work, daemon=True).start()
@@ -194,7 +201,7 @@ class UpdateController(QObject):
             self._prog.setLabelText(tr("upd.verifying"))
             self._prog.setCancelButton(None)
 
-    def _on_finished(self, new_dir, err):
+    def _on_finished(self, result, err):
         self._busy = False
         if self._prog:
             self._prog.close()
@@ -208,7 +215,11 @@ class UpdateController(QObject):
         try:
             self.win.save_all()
             self.win.save_state()
-            updater.launch_finish(new_dir, updater.app_dir())
+            kind, path = result
+            if kind == "setup":
+                updater.launch_setup(path)
+            else:
+                updater.launch_finish(path, updater.app_dir())
         except Exception as e:
             self._fail(tr("upd.fail", err=str(e)))
             return
