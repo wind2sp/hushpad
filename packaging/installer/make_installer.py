@@ -1,4 +1,4 @@
-"""Windows 설치 프로그램 만들기 (NSIS).
+r"""Windows 설치 프로그램 만들기 (NSIS).
 
 먼저:   python build.py                      → dist\Hushpad\ (zip판과 같은 앱 폴더)
 그다음: python packaging\installer\make_installer.py
