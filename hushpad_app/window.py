@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QFile
                                QSizePolicy, QStackedWidget, QSystemTrayIcon, QTabWidget, QToolBar, QToolButton, QTreeWidget, QTreeWidgetItem,
                                QVBoxLayout, QWidget)
 
-from . import capture, crypto, i18n, icons, notepad_import, plat, theme
+from . import __version__, capture, crypto, i18n, icons, notepad_import, plat, theme, updater
 from .widgets import CommandPalette, CountDelegate, EmptyState, NoteList, rel_time
 from .common import (APP_NAME, LOCAL_DIR, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
                      set_clipboard, text_mime)
@@ -292,6 +292,7 @@ class MainWindow(QMainWindow):
         self._setup_tray()
         self._init_autostart()
         self._clean_temp_recordings()
+        self._init_updates()
         self.idle_timer = QTimer(self, interval=20000, timeout=self._idle_check)
         self.idle_timer.start()
         self.apply_theme()
@@ -589,12 +590,17 @@ class MainWindow(QMainWindow):
         elif plat.AUTOSTART_SUPPORTED:
             self.a_autostart = self._act(m, tr("act.autostart"), self._toggle_autostart, checkable=True,
                                          checked=self._autostart_on())
+        if updater.supported():
+            self._act(m, tr("act.auto_update"), self._toggle_update_check, checkable=True,
+                      checked=self.cfg.get("update_check", True))
         m.addSeparator()
         self.a_clear = self._act(m, tr("act.secret_clear"), self._toggle_secret_clear,
                                  checkable=True, checked=self.cfg["secret_clear_sec"] > 0)
         m.addSeparator()
         self._act(m, tr("act.forget"), self.forget_here)
         mb.addSeparator()
+        if updater.supported():
+            self.a_update = self._act(mb, tr("act.check_update"), self.check_update)
         self._act(mb, tr("act.about"), self.show_about)
 
         tb = QToolBar(tr("tb.name"), objectName="TopBar")
@@ -785,6 +791,8 @@ class MainWindow(QMainWindow):
             self.tray_autostart.setCheckable(True)
             self.tray_autostart.setChecked(self._autostart_on())
             self.tray_autostart.toggled.connect(self._toggle_autostart)
+        if updater.supported():
+            self.tray_update = m.addAction(tr("act.check_update"), self.check_update)
         m.addAction(tr("act.about"), self.show_about)
         m.addSeparator()
         m.addAction(tr("act.lock"), self.lock)
@@ -831,6 +839,40 @@ class MainWindow(QMainWindow):
             return
         self.list_timer.start()
         self._notify(tr("clip.saved", what=what))
+
+    # ------------------------------------------------------------ 자동 업데이트 (zip판, update_ui.py)
+    def _init_updates(self):
+        self.updates = None
+        if not updater.supported():
+            return
+        from .update_ui import UpdateController
+        self.updates = UpdateController(self)
+        last = self.cfg.get("last_version", "")
+        if last and last != __version__:
+            QTimer.singleShot(2500, lambda: self._notify(tr("upd.done", ver=__version__)))
+        if last != __version__:
+            self.cfg["last_version"] = __version__
+            self.cfg.save()
+
+    def check_update(self):
+        if self.updates is None:
+            return
+        if self.updates.pending is not None:
+            self.updates.ask()
+        else:
+            self.updates.check(manual=True)
+
+    def update_found(self, ver: str):
+        """새 버전을 찾았을 때 메뉴 글자를 '업데이트 설치 (1.0.3)'로."""
+        label = tr("act.install_update", ver=ver)
+        for a in (getattr(self, "a_update", None), getattr(self, "tray_update", None)):
+            if a is not None:
+                a.setText(label)
+
+    def _toggle_update_check(self, on):
+        self.cfg["update_check"] = on
+        self.cfg.save()
+        self.status(tr("upd.auto_on") if on else tr("upd.auto_off"))
 
     def _notify(self, msg):
         if self.isVisible() and self.isActiveWindow():

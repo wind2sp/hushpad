@@ -56,6 +56,9 @@ DEFAULTS = {
     "video_fps": 12,
     "video_max_sec": 180,
     "language": "system",       # system = 운영체제 언어(지원하지 않으면 영어) / ko / en / ja / zh
+    "update_check": True,       # zip판: GitHub 릴리스에서 새 버전 자동 확인 (Store판·macOS판은 쓰지 않음)
+    "skip_version": "",         # '이 버전 건너뛰기'를 고른 버전
+    "last_version": "",         # 지난번에 켠 버전 (업데이트 뒤 알림용)
 }
 
 

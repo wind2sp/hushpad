@@ -47,6 +47,13 @@ def _log_crash(exc_type, exc, tb):
 
 
 def main() -> int:
+    if "--finish-update" in sys.argv:       # 자동 업데이트: 새 exe가 예전 앱 폴더를 바꿔치기 (hushpad_app/updater.py)
+        i = sys.argv.index("--finish-update")
+        from hushpad_app import updater
+        try:
+            return updater.finish_update(sys.argv[i + 1], sys.argv[i + 2])
+        except IndexError:
+            return 2
     if "--selftest" in sys.argv:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
         from hushpad_app.selftest import run
@@ -81,6 +88,9 @@ def main() -> int:
 
     # 하나만 실행: 이미 떠 있으면 그 창을 앞으로
     server_name = f"Hushpad-{getpass.getuser()}"
+    if os.environ.get("HUSHPAD_PROFILE"):        # 시험용 프로필은 평소 Hushpad와 따로 켜진다
+        import hashlib
+        server_name += "-" + hashlib.sha1(os.environ["HUSHPAD_PROFILE"].encode()).hexdigest()[:8]
     sock = QLocalSocket()
     sock.connectToServer(server_name)
     if sock.waitForConnected(300):

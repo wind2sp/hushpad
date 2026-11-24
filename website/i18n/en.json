@@ -128,7 +128,7 @@
       "s3": "Hushpad remembers the key through your Windows account (DPAPI) or your macOS login keychain. On another account or another computer, you'll need the password again.",
       "b4": "A quiet clipboard, too",
       "s4": "Copied text is flagged to stay out of Windows clipboard history and cloud clipboard sync.",
-      "b5": "No account, no tracking, no internet",
+      "b5": "No account, no tracking, and your notes never leave your PC",
       "s5": "Neither the app nor this website uses analytics or ad scripts.",
       "vaultAria": "Example vault folder layout",
       "vKey": "— key wrapped by your password",
@@ -181,7 +181,7 @@
         },
         {
           "q": "Does it send anything over the internet?",
-          "a": "No. Hushpad has no account and no server, and it doesn't connect to the internet while it runs."
+          "a": "No. Your notes, settings and usage are never sent. The zip version checks GitHub for a new version once a day and downloads it only when you choose to update (you can turn this off in the menu). The Microsoft Store version is updated by the Store."
         },
         {
           "q": "Is it hidden from capture on a Mac, too?",
