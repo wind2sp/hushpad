@@ -318,7 +318,7 @@ def run() -> int:
             ed.setTextCursor(c)
             md = ed.createMimeDataFromSelection()
             assert "￼" not in md.text() and "a" in md.text() and md.hasHtml(), "mixed selection text wrong"
-            if plat.CLIPBOARD_PRIVATE_SUPPORTED and cfg["clip_private"]:
+            if plat.IS_WIN and cfg["clip_private"]:        # Windows 형식 이름으로 확인 (macOS는 표시 이름이 다름)
                 assert any("CanIncludeInClipboardHistory" in f for f in md.formats()), "privacy mark lost"
         finally:
             w.close()
