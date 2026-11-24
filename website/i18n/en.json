@@ -89,7 +89,7 @@
       },
       "shot": {
         "h": "Screenshots & short recordings",
-        "p": "From anywhere, press <kbd>Ctrl+Alt+S</kbd> to capture an area or <kbd>Ctrl+Alt+R</kbd> to record the screen. Results land straight in a note, and videos are encrypted too."
+        "p": "From anywhere, press <kbd>Ctrl+Alt+S</kbd> to capture an area or <kbd>Ctrl+Alt+R</kbd> to record the screen. Results land straight in a note, and videos are encrypted too. Drag a picture out of a note onto a web chat or mail attachment area, or into Explorer, and it arrives as a PNG file."
       },
       "folder": {
         "h": "Folders, merge, trash",
@@ -112,7 +112,7 @@
       "b2": "Recording controls stay out of the shot",
       "s2": "The recording frame and the ⏸ ⏹ bar appear only on your screen.",
       "b3": "Turn it off when you need to",
-      "s3": "When you do want to show a note on a screen share, one click in the menu turns it off.",
+      "s3": "When you do want to show a note on a screen share, one click in the menu turns it off. If the window is a black box over remote access, right-click the tray icon › “Show for remote viewing…” and enter your passphrase to show it for 15 minutes to 2 hours.",
       "mine": "Your monitor",
       "ghost": "Hushpad window",
       "theirs": "Screenshot / screen share",
@@ -187,6 +187,10 @@
         {
           "q": "Is it hidden from capture on a Mac, too?",
           "a": "On macOS, Hushpad turns off sharing for its window. On macOS 15 and later, though, some capture and screen-sharing apps that use ScreenCaptureKit ignore that setting and can still capture the window. On a Mac, check for yourself before you share your screen."
+        },
+        {
+          "q": "Hushpad is a black box when I connect remotely",
+          "a": "The same protection that hides Hushpad from capture and screen sharing also hides it from remote access (Chrome Remote Desktop, AnyDesk, TeamViewer…). Right-click the tray icon › <b>Show for remote viewing…</b> and enter your passphrase to show it for 15 minutes to 2 hours. It hides again when the time is up or when you lock Hushpad."
         },
         {
           "q": "Can I change the app's language?",

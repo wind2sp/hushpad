@@ -84,7 +84,7 @@
         <a class="btn primary" href="download.html">免费下载</a>
         <a class="btn" href="#features">有何不同</a>
       </div>
-      <div class="meta">版本 <span data-cfg="version">1.0.4</span> · 免费开源（GPL-3.0-or-later）</div>
+      <div class="meta">版本 <span data-cfg="version">1.0.5</span> · 免费开源（GPL-3.0-or-later）</div>
       <div class="meta">Windows 10 / 11 · 搭载 Apple 芯片的 Mac · 无需账户 · 无服务器 · 无广告 · 离线运行</div>
       <div class="shot">
         <img class="light" src="../assets/img/app-light-zh.png" alt="Hushpad 界面 — 左侧是笔记列表和分类，右侧以标签页打开笔记" width="1280" height="760">
@@ -119,7 +119,7 @@
         <div class="feat"><div class="ic"><svg><use href="#i-eye-off"/></svg></div><h3>截图拍不到的窗口</h3><p>截图、录屏和视频会议的屏幕共享都拍不到 Hushpad 窗口，只有你自己看得见。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-copy"/></svg></div><h3>保留格式，或只要文字</h3><p>从网页复制的内容连格式一起粘贴，要贴到别处时按 <kbd>Ctrl+Shift+C</kbd> 就只复制纯文本。富文本笔记始终附带一份纯文本版本。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>HTML、JSON 随手处理</h3><p>代码笔记带行号、语法着色和自动缩进，JSON 也能马上格式化。在 <code>KEY=值</code> 这样的行上，还能只复制值。</p></div>
-        <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>截图与短录屏</h3><p>随时随地按 <kbd>Ctrl+Alt+S</kbd> 区域截图，按 <kbd>Ctrl+Alt+R</kbd> 录制屏幕。结果直接放进笔记，视频同样加密。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>截图与短录屏</h3><p>随时随地按 <kbd>Ctrl+Alt+S</kbd> 区域截图，按 <kbd>Ctrl+Alt+R</kbd> 录制屏幕。结果直接放进笔记，视频同样加密。把笔记里的图片拖到网页聊天、邮件的附件区或资源管理器，就会直接作为 PNG 文件附上。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>分类、合并、回收站</h3><p>拖动即可分类，多条笔记可合并为一条，删除的笔记能从回收站恢复。还能把很久没看的笔记集中整理。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>在你的多台电脑上</h3><p>把保管文件夹放在 OneDrive、Dropbox、Google Drive 或共享文件夹里，多台电脑就能使用同一套笔记。云端只保存加密后的文件。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>一个 Ctrl+K 全搞定</h3><p>在一个输入框里搜索笔记标题、内容和所有功能，按 Enter 即可执行。按 <kbd>Ctrl+Alt+M</kbd> 还能直接把剪贴板内容存为笔记。</p></div>
@@ -155,7 +155,7 @@
         <ul class="checks">
           <li><svg><use href="#i-check"/></svg><div><b>截图与录屏工具、视频会议共享</b><span>在 Windows 上使用系统自带的捕获排除功能（Windows 10 版本 2004 及以上），在 macOS 上关闭窗口共享。</span></div></li>
           <li><svg><use href="#i-check"/></svg><div><b>录制时的按钮也不会被录进去</b><span>录制区域的边框和 ⏸ ⏹ 控制条只显示在你的屏幕上。</span></div></li>
-          <li><svg><use href="#i-check"/></svg><div><b>需要时可以关闭</b><span>想特意共享笔记画面时，在菜单里点一下就能关闭。</span></div></li>
+          <li><svg><use href="#i-check"/></svg><div><b>需要时可以关闭</b><span>想特意共享笔记画面时，在菜单里点一下就能关闭。远程连接时窗口显示为黑色，可右键托盘图标 › “远程查看时暂时显示…”，输入密码后显示 15 分钟到 2 小时。</span></div></li>
         </ul>
       </div>
       <div class="capture-demo" aria-hidden="true">
@@ -226,6 +226,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <details><summary>可以放入图片或视频吗？</summary><p>富文本笔记可以粘贴或拖入图片，截图和短录屏（最长 3 分钟）也会直接放进去。视频在应用内播放，并加密保存。</p></details>
         <details><summary>会向网络发送任何数据吗？</summary><p>不会。笔记、设置和使用情况都不会发送。zip 版每天在 GitHub 上检查一次新版本，只有在你选择更新时才下载新文件（可在菜单中关闭）。Microsoft Store 版由 Store 负责更新。</p></details>
         <details><summary>在 Mac 上也不会被截图拍到吗？</summary><p>在 macOS 上，Hushpad 通过关闭窗口共享来隐藏窗口。不过在 macOS 15 及以上版本中，部分使用 ScreenCaptureKit 的截图和屏幕共享应用会忽略这一设置，仍可能拍到窗口。在 Mac 上共享屏幕前，请先自行确认。</p></details>
+        <details><summary>远程连接时 Hushpad 窗口是黑的</summary><p>防截图、防屏幕共享的功能同样会让远程连接（Chrome 远程桌面、AnyDesk、TeamViewer 等）看到黑色窗口。右键任务栏托盘图标 › <b>远程查看时暂时显示…</b>，输入密码即可显示 15 分钟到 2 小时。时间到了或锁定 Hushpad 后会再次隐藏。</p></details>
         <details><summary>可以更改应用的界面语言吗？</summary><p>支持简体中文、英语、日语和韩语，首次启动时跟随系统语言。可随时在“菜单（⋯）› 视图 › 语言”中切换。</p></details>
       </div>
     </div>
