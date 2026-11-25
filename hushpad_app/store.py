@@ -6,6 +6,7 @@
   history/<id>/<ts>.owh 메모의 이전 버전 (10분마다 한 번, 최근 40개)
   media/<mid>.owm       동영상 같은 큰 첨부
   categories.own        분류 목록
+  catcolors.own         분류 색 (1.0.7~, 예전 버전은 이 파일을 모르고 지나감)
 
 메모 하나가 파일 하나라서 Dropbox 같은 동기화 폴더에 두어도 충돌이 메모 단위로만 생긴다.
 저장은 임시 파일에 쓰고 fsync 후 교체(os.replace)하므로 저장 도중 꺼져도 이전 내용이 남는다.
@@ -37,6 +38,7 @@ class Note:
     title: str = ""             # 비어 있으면 자동 제목
     category: str = ""
     pinned: bool = False
+    starred: bool = False       # ★ 별표 (즐겨찾기)
     secret: bool = False        # 목록에서 첫 줄 숨김 + 복사 후 클립보드 자동 지움
     created: float = field(default_factory=time.time)
     updated: float = field(default_factory=time.time)
@@ -130,6 +132,7 @@ class Store:
         self.hist_dir = self.folder / "history"
         self.media_dir = self.folder / "media"
         self.cat_file = self.folder / "categories.own"
+        self.color_file = self.folder / "catcolors.own"
         for d in (self.notes_dir, self.hist_dir, self.media_dir):
             d.mkdir(parents=True, exist_ok=True)
         self.notes: dict[str, Note] = {}
@@ -137,6 +140,7 @@ class Store:
         self._last_snap: dict[str, float] = {}
         self.broken: list[str] = []
         self.categories: list[str] = []
+        self.cat_colors: dict[str, str] = {}
 
     # ------------------------------------------------------------ 읽기
     def _path(self, nid: str) -> Path:
@@ -306,6 +310,21 @@ class Store:
             self.categories = json.loads(crypto.unseal(self.key, self.cat_file.read_bytes(), b"cats"))
         except Exception:
             self.categories = []
+        try:
+            self.cat_colors = json.loads(crypto.unseal(self.key, self.color_file.read_bytes(), b"catcolors"))
+        except Exception:
+            self.cat_colors = {}
+
+    def save_cat_colors(self) -> None:
+        _write_atomic(self.color_file, crypto.seal(self.key, json.dumps(self.cat_colors, ensure_ascii=False)
+                                                   .encode("utf-8"), b"catcolors"))
+
+    def set_cat_color(self, name: str, color: str | None) -> None:
+        if color:
+            self.cat_colors[name] = color
+        else:
+            self.cat_colors.pop(name, None)
+        self.save_cat_colors()
 
     def save_categories(self) -> None:
         _write_atomic(self.cat_file, crypto.seal(self.key, json.dumps(self.categories, ensure_ascii=False)
@@ -329,6 +348,9 @@ class Store:
             self.categories.append(new)
         self.categories = list(dict.fromkeys(self.categories))
         self.save_categories()
+        if old in self.cat_colors:
+            self.cat_colors[new] = self.cat_colors.pop(old)
+            self.save_cat_colors()
         for n in list(self.notes.values()):
             if n.category == old:
                 n.category = new
@@ -337,6 +359,8 @@ class Store:
     def remove_category(self, name: str) -> None:
         self.categories = [c for c in self.categories if c != name]
         self.save_categories()
+        if self.cat_colors.pop(name, None):
+            self.save_cat_colors()
         for n in list(self.notes.values()):
             if n.category == name:
                 n.category = ""
@@ -353,7 +377,7 @@ class Store:
         with zipfile.ZipFile(tmp, "w", zipfile.ZIP_STORED) as z:
             for p in self.notes_dir.glob("*.own"):
                 z.write(p, f"notes/{p.name}")
-            for name in ("vault.json", "categories.own"):
+            for name in ("vault.json", "categories.own", "catcolors.own"):
                 if (self.folder / name).exists():
                     z.write(self.folder / name, name)
         os.replace(tmp, target)

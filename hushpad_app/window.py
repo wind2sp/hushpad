@@ -24,6 +24,10 @@ from .common import (APP_NAME, DEFAULTS, LOCAL_DIR, cleanup_share_files, exclude
 from .i18n import tr
 from .dialogs import HistoryDialog, ImportDialog, PassphraseDialog, RemoteViewDialog, SetupDialog
 from .editors import CodeEdit, RichEdit, body_font, mono_font
+
+# 분류 색 (이름은 locales의 color.*)
+CAT_COLORS = (("red", "#e5484d"), ("orange", "#f76b15"), ("yellow", "#e2b600"), ("green", "#30a46c"),
+              ("blue", "#0090ff"), ("purple", "#8e4ec6"), ("pink", "#d6409f"), ("gray", "#8b8d98"))
 from .store import Note, Store
 
 IDS_MIME = "application/x-hushpad-ids"
@@ -215,7 +219,7 @@ class CategoryList(QListWidget):
 
     def dragMoveEvent(self, e):
         it = self.itemAt(e.position().toPoint())
-        if e.mimeData().hasFormat(IDS_MIME) and it and it.data(Qt.UserRole)[0] in ("cat", "none", "trash", "pinned"):
+        if e.mimeData().hasFormat(IDS_MIME) and it and it.data(Qt.UserRole)[0] in ("cat", "none", "trash", "pinned", "starred"):
             self.setCurrentItem(it) if False else None
             e.acceptProposedAction()
         else:
@@ -528,6 +532,7 @@ class MainWindow(QMainWindow):
         self._act(m, tr("act.rename"), lambda: self.rename_note(self._cur_id()), "F2")
         self._act(m, tr("act.set_cat"), lambda: self.pick_category(self.selected_ids() or self._cur_ids()), "Ctrl+M")
         self._act(m, tr("act.pin"), lambda: self.toggle_pin(self.selected_ids() or self._cur_ids()), "Ctrl+P")
+        self._act(m, tr("act.star"), lambda: self.toggle_star(self.selected_ids() or self._cur_ids()), "Ctrl+D")
         self._act(m, tr("act.secret"), lambda: self.toggle_secret(self.selected_ids() or self._cur_ids()))
         self._act(m, tr("act.convert"), self.convert_kind)
         self._act(m, tr("act.history"), lambda: self.show_history(self._cur_id()), "Ctrl+Shift+H")
@@ -1304,16 +1309,20 @@ class MainWindow(QMainWindow):
         trash = sum(1 for n in self.store.notes.values() if n.deleted is not None)
         entries = [("inbox", tr("cat.all"), ("all",), len(live)),
                    ("pin", tr("cat.pinned"), ("pinned",), sum(1 for n in live if n.pinned)),
+                   ("star", tr("cat.starred"), ("starred",), sum(1 for n in live if n.starred)),
                    ("calendar", tr("cat.today"), ("today",), sum(1 for n in live if self._is_today(n))),
                    ("archive", tr("cat.stale"), ("stale",), sum(1 for n in live if self._is_stale(n))),
                    ("folder", tr("cat.none"), ("none",), sum(1 for n in live if not n.category))]
         for c in self.store.all_categories():
             entries.append(("tag", c, ("cat", c), sum(1 for n in live if n.category == c)))
+        colors = self.store.cat_colors
         entries.append(("trash", tr("cat.trash"), ("trash",), trash))
         sel = None
         t = self.t
         for ic, text, key, cnt in entries:
-            it = QListWidgetItem(icons.icon(ic, t["text2"], t["accent_subtle_text"], 16), f"{text}")
+            col = colors.get(key[1]) if key[0] == "cat" else (t["gold"] if key[0] == "starred" else None)
+            it = QListWidgetItem(icons.icon("tag_fill" if key[0] == "cat" and col else ic,
+                                            col or t["text2"], col or t["accent_subtle_text"], 16), f"{text}")
             it.setData(Qt.UserRole, key)
             it.setData(Qt.UserRole + 2, cnt)
             it.setText(text)
@@ -1358,6 +1367,8 @@ class MainWindow(QMainWindow):
                 continue
             if f[0] == "pinned" and not n.pinned:
                 continue
+            if f[0] == "starred" and not n.starred:
+                continue
             if f[0] == "today" and not self._is_today(n):
                 continue
             if f[0] == "stale" and not self._is_stale(n):
@@ -1395,7 +1406,8 @@ class MainWindow(QMainWindow):
             it.setData(Qt.UserRole + 1, {
                 "title": n.display_title(), "snippet": snippet, "category": n.category,
                 "time": rel_time(n.created if key == "created" else n.updated),
-                "pinned": n.pinned, "secret": n.secret, "kind": n.kind, "open": n.id in open_ids})
+                "pinned": n.pinned, "secret": n.secret, "kind": n.kind, "open": n.id in open_ids,
+                "starred": n.starred, "cat_color": self.store.cat_colors.get(n.category)})
             it.setToolTip(tr("list.tip", title=n.display_title(), created=fmt_full(n.created),
                              updated=fmt_full(n.updated)))
             self.tree.addItem(it)
@@ -1454,6 +1466,7 @@ class MainWindow(QMainWindow):
             cm.addAction(tr("lm.new_cat"), lambda: self.pick_category(ids, new=True))
             cm.addAction(tr("cat.none"), lambda: self.set_category(ids, ""))
             m.addAction(tr("act.pin"), lambda: self.toggle_pin(ids))
+            m.addAction(tr("act.star"), lambda: self.toggle_star(ids))
             m.addAction(tr("act.secret"), lambda: self.toggle_secret(ids))
             if len(ids) >= 2:
                 m.addSeparator()
@@ -1474,6 +1487,11 @@ class MainWindow(QMainWindow):
         key = it.data(Qt.UserRole)
         m = QMenu(self)
         if key[0] == "cat":
+            cm = m.addMenu(tr("cm.color"))
+            cm.addAction(RichEdit._color_icon(None), tr("color.none"), lambda: self.set_cat_color(key[1], None))
+            for ck, col in CAT_COLORS:
+                cm.addAction(RichEdit._color_icon(col), tr("color." + ck),
+                             lambda col=col: self.set_cat_color(key[1], col))
             m.addAction(tr("cm.rename"), lambda: self.rename_category(key[1]))
             m.addAction(tr("cm.delete"), lambda: self.delete_category(key[1]))
         elif key[0] == "trash":
@@ -1488,11 +1506,12 @@ class MainWindow(QMainWindow):
             self.set_category(ids, "")
         elif key[0] == "trash":
             self.trash_ids(ids)
-        elif key[0] == "pinned":
+        elif key[0] in ("pinned", "starred"):
+            attr = "pinned" if key[0] == "pinned" else "starred"
             for i in ids:
                 n = self.store.notes.get(i)
-                if n and not n.pinned:
-                    n.pinned = True
+                if n and not getattr(n, attr):
+                    setattr(n, attr, True)
                     self.store.save(n, touch=False, snapshot=False)
             self.list_timer.start()
 
@@ -1591,6 +1610,22 @@ class MainWindow(QMainWindow):
             n.pinned = on
             self.store.save(n, touch=False, snapshot=False)
         self.list_timer.start()
+
+    def toggle_star(self, ids):
+        self._flush(ids)
+        ns = [self.store.notes[i] for i in ids if i in self.store.notes]
+        if not ns:
+            return
+        on = not all(n.starred for n in ns)
+        for n in ns:
+            n.starred = on
+            self.store.save(n, touch=False, snapshot=False)
+        self.status(tr("st.starred" if on else "st.unstarred", n=len(ns)))
+        self.list_timer.start()
+
+    def set_cat_color(self, name, color):
+        self.store.set_cat_color(name, color)
+        self.refresh_list()
 
     def toggle_secret(self, ids):
         self._flush(ids)
@@ -1814,7 +1849,7 @@ class MainWindow(QMainWindow):
     def toggle_bold(self):
         ed = self._cur_editor()
         if isinstance(ed, RichEdit):
-            ed.setFontWeight(QFont.Normal if ed.fontWeight() > QFont.Normal else QFont.Bold)
+            ed.toggle_bold()
 
     # ------------------------------------------------------------ JSON
     def _json_apply(self, compact: bool):
@@ -2244,7 +2279,7 @@ class MainWindow(QMainWindow):
             if r != QMessageBox.Yes:
                 return
             dest.mkdir(parents=True, exist_ok=True)
-            for name in ("vault.json", "categories.own"):
+            for name in ("vault.json", "categories.own", "catcolors.own"):
                 if (self.store.folder / name).exists():
                     shutil.copy2(self.store.folder / name, dest / name)
             for sub in ("notes", "history", "media"):

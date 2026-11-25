@@ -417,6 +417,12 @@ def run() -> int:
             assert len(fmts) == 2 and all(f.hasProperty(QTextFormat.ImageMaxWidth) for f in fmts), "image max width not set"
             assert fmts[1].width() <= 900 * 1000 / 3000 + 1, "tall image not limited"
             assert data_url_to_image(fmts[0].name()).width() == 3000, "image resolution changed"
+            c = QTextCursor(doc)
+            c.setPosition(0)
+            c.setPosition(1, QTextCursor.KeepAnchor)
+            ed.setTextCursor(c)
+            cimg = ed.createMimeDataFromSelection().imageData()
+            assert cimg is not None and cimg.width() == 3000, "copied image not at original size"
             # 저장 후 다시 열어도 줄여 보인다 (예전 메모 포함)
             html = ed.toHtml()
             ed.setHtml(html)
@@ -426,6 +432,63 @@ def run() -> int:
             w.close()
         return "Ctrl+wheel zoom, large images fit, resolution kept"
     check("zoom and image fit", zoom_and_fit)
+
+    def formatting_todo_star():
+        """오른쪽 클릭 서식·할 일 목록, 별표, 분류 색 (예전 버전과 같은 파일 형식 유지)."""
+        from .window import MainWindow
+        from PySide6.QtGui import QIcon, QTextCursor, QKeyEvent, QTextBlockFormat, QTextFormat
+        from PySide6.QtCore import Qt, QEvent
+        from PySide6.QtWidgets import QMenu
+        cfg = Config()
+        cfg["open_tabs"] = []
+        cfg.save = lambda: None
+        w = MainWindow(st, cfg, QIcon())
+        try:
+            n = st.create(kind="rich", text="")
+            w.open_note(n.id)
+            ed = w._cur_tab().edit
+            ed.clear()
+            for ch in "[] a":
+                ed.keyPressEvent(QKeyEvent(QEvent.KeyPress, Qt.Key_Space if ch == " " else 0, Qt.NoModifier, ch))
+            assert ed.list_kind() == "todo" and ed.toPlainText() == "a", "'[] ' did not start a to-do"
+            ed.keyPressEvent(QKeyEvent(QEvent.KeyPress, Qt.Key_Return, Qt.NoModifier, "\r"))
+            assert ed.list_kind() == "todo", "Enter did not continue the to-do list"
+            ed.set_list("todo")
+            assert ed.list_kind() == "", "to-do toggle off failed"
+            ed.insertPlainText("bold me")
+            c = ed.textCursor()
+            c.movePosition(QTextCursor.StartOfBlock)
+            c.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
+            ed.setTextCursor(c)
+            ed.toggle_bold()
+            ed.set_highlight("#fff176")
+            assert ed.fmt_state().fontWeight() > 400 and ed.fmt_state().background().color().name() == "#fff176"
+            ed.set_highlight(None)
+            assert not ed.fmt_state().hasProperty(QTextFormat.BackgroundBrush), "highlight not removed"
+            menu = QMenu()
+            menu.addAction("x")
+            ed.format_actions(menu, menu.actions()[0])
+            assert len(menu.actions()) > 10, "format menu missing"
+            first = QTextCursor(ed.document().firstBlock())
+            assert first.blockFormat().marker() == QTextBlockFormat.MarkerType.Unchecked
+            # 별표·분류 색
+            w.toggle_star([n.id])
+            assert st.notes[n.id].starred
+            st.add_category("work")
+            w.set_cat_color("work", "#e5484d")
+            st2 = Store(st.folder, st.key)
+            st2.load_all()
+            assert st2.notes[n.id].starred and st2.cat_colors.get("work") == "#e5484d", "star/color not saved"
+            assert isinstance(st2.categories, list), "categories.own format changed"
+            w._filter = ("starred",)
+            assert [x.id for x in w.filtered_notes()] == [n.id], "starred filter wrong"
+            w._filter = ("all",)
+            st.remove_category("work")
+            assert "work" not in st.cat_colors
+        finally:
+            w.close()
+        return "to-do/bullets/colors via right-click, star, category colors"
+    check("formatting, to-do, star", formatting_todo_star)
 
     def autostart_untouched():
         try:

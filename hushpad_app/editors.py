@@ -11,8 +11,9 @@ from pathlib import Path
 
 from PySide6.QtCore import QEvent, QMimeData, QRect, QRegularExpression, QSize, Qt, QUrl, Signal
 from PySide6.QtGui import (QColor, QDesktopServices, QDrag, QPixmap, QFont, QFontDatabase, QImage, QKeySequence, QPainter,
-                           QSyntaxHighlighter, QTextCharFormat, QTextCursor, QTextFormat, QTextImageFormat, QTextLength)
-from PySide6.QtWidgets import QApplication, QFileDialog, QPlainTextEdit, QTextEdit, QWidget
+                           QSyntaxHighlighter, QTextCharFormat, QAction, QIcon, QTextBlockFormat, QTextCursor, QTextFormat, QTextImageFormat, QTextLength,
+                           QTextListFormat)
+from PySide6.QtWidgets import QApplication, QFileDialog, QMenu, QPlainTextEdit, QTextEdit, QWidget
 
 from . import plat
 from .common import data_url_to_image, image_to_data_url, mark_private, share_image_files
@@ -53,6 +54,18 @@ def body_font(pt: int) -> QFont:
 
 
 READ_WIDTH = 720
+# 오른쪽 클릭 › 글자 색·형광펜 (이름은 locales의 color.*)
+TEXT_COLORS = (("red", "#d93025"), ("orange", "#e8710a"), ("green", "#188038"),
+               ("blue", "#1a73e8"), ("purple", "#8e24aa"), ("gray", "#80868b"))
+MARK_COLORS = (("yellow", "#fff176"), ("green", "#c8e6c9"), ("blue", "#bbdefb"), ("pink", "#f8bbd0"))
+MARK_TEXT = "#202124"     # 형광펜 위 글자는 어두운 테마에서도 읽히게 진한 색으로
+# 줄 첫머리에 이렇게 쓰고 스페이스를 누르면 목록으로 바뀐다
+AUTO_LIST = {"[]": "todo", "[ ]": "todo", "- [ ]": "todo", "[x]": "done", "- [x]": "done",
+             "-": "bullet", "*": "bullet", "1.": "number"}
+_UNCHECKED = QTextBlockFormat.MarkerType.Unchecked
+_CHECKED = QTextBlockFormat.MarkerType.Checked
+_NOMARK = QTextBlockFormat.MarkerType.NoMarker
+
 DOC_CSS = ("h1 { font-size: 24px; font-weight: 700; } h2 { font-size: 19px; font-weight: 700; } "
            "h3 { font-size: 16px; font-weight: 600; } p, li { margin-top: 2px; margin-bottom: 2px; }")
 _VALUE_RE = re.compile(r"""^\s*(?:export\s+)?["']?[\w.\- ]{1,60}["']?\s*[:=]\s*(.+?)\s*,?\s*$""")
@@ -339,6 +352,24 @@ class RichEdit(_CopyMixin, QTextEdit):
     def keyPressEvent(self, e):
         if self._copy_keys(e):
             return
+        mods = e.modifiers() & (Qt.ControlModifier | Qt.ShiftModifier | Qt.AltModifier | Qt.MetaModifier)
+        if mods == Qt.ControlModifier and e.key() in (Qt.Key_I, Qt.Key_U):
+            (self.toggle_italic if e.key() == Qt.Key_I else self.toggle_underline)()
+            return
+        if mods == (Qt.ControlModifier | Qt.ShiftModifier) and e.key() == Qt.Key_L:
+            self.set_list("todo")
+            return
+        if e.key() == Qt.Key_Space and not mods and self._auto_list():
+            return
+        if e.key() in (Qt.Key_Return, Qt.Key_Enter) and not mods:
+            super().keyPressEvent(e)
+            # 체크한 할 일 다음에 새로 생긴 줄은 빈 칸으로 시작
+            k = self.textCursor()
+            if k.block().blockFormat().marker() == _CHECKED and not k.block().text():
+                bf = k.blockFormat()
+                bf.setMarker(_UNCHECKED)
+                k.setBlockFormat(bf)
+            return
         super().keyPressEvent(e)
 
     def mousePressEvent(self, e):
@@ -410,8 +441,15 @@ class RichEdit(_CopyMixin, QTextEdit):
         super().mouseReleaseEvent(e)
 
     def contextMenuEvent(self, e):
+        # 고른 글 밖을 누르면 누른 자리로 커서를 옮긴다 (그 자리에 서식을 주려고)
+        c = self.textCursor()
+        hit = self.cursorForPosition(e.pos()).position()
+        if not c.hasSelection() or not (c.selectionStart() <= hit <= c.selectionEnd()):
+            self.setTextCursor(self.cursorForPosition(e.pos()))
         menu = self.createStandardContextMenu(e.pos())
         f = self.image_at(e.pos())
+        if f is None and not self.isReadOnly() and menu.actions():
+            self.format_actions(menu, menu.actions()[0])
         if f is not None:
             menu.addSeparator()
             href = f.anchorHref()
@@ -426,8 +464,228 @@ class RichEdit(_CopyMixin, QTextEdit):
         menu.addSeparator()
         menu.addAction(tr("ed.copy_plain") + "\t" + plat.key_label("Ctrl+Shift+C"), lambda: self.host.copy_selection(self, plain=True))
         menu.addAction(tr("act.paste_plain") + "\t" + plat.key_label("Ctrl+Shift+V"), self.host.paste_plain)
-        menu.addAction(tr("act.clear_fmt"), self.host.clear_format)
+        if f is not None:
+            menu.addAction(tr("act.clear_fmt"), self.host.clear_format)
         menu.exec(e.globalPos())
+
+    # ------------------------------------------------ 서식 (오른쪽 클릭·단축키)
+    def _fmt_target(self) -> QTextCursor:
+        """서식을 바꿀 곳: 고른 글, 없으면 커서가 들어 있는 낱말. 낱말 밖이면 선택 없는 커서(다음에 쓸 글)."""
+        c = self.textCursor()
+        if not c.hasSelection():
+            w = QTextCursor(c)
+            w.select(QTextCursor.WordUnderCursor)
+            if w.hasSelection() and w.selectionStart() < c.position() < w.selectionEnd():
+                return w
+        return c
+
+    def merge_fmt(self, fmt: QTextCharFormat) -> None:
+        c = self._fmt_target()
+        if c.hasSelection():
+            c.mergeCharFormat(fmt)
+        else:
+            self.mergeCurrentCharFormat(fmt)
+
+    def fmt_state(self) -> QTextCharFormat:
+        c = self._fmt_target()
+        if c.hasSelection():
+            k = QTextCursor(c)
+            k.setPosition(c.selectionStart())
+            k.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor)
+            return k.charFormat()
+        return self.currentCharFormat()
+
+    def toggle_bold(self):
+        f = QTextCharFormat()
+        f.setFontWeight(QFont.Normal if self.fmt_state().fontWeight() > QFont.Normal else QFont.Bold)
+        self.merge_fmt(f)
+
+    def toggle_italic(self):
+        f = QTextCharFormat()
+        f.setFontItalic(not self.fmt_state().fontItalic())
+        self.merge_fmt(f)
+
+    def toggle_underline(self):
+        f = QTextCharFormat()
+        f.setFontUnderline(not self.fmt_state().fontUnderline())
+        self.merge_fmt(f)
+
+    def toggle_strike(self):
+        f = QTextCharFormat()
+        f.setFontStrikeOut(not self.fmt_state().fontStrikeOut())
+        self.merge_fmt(f)
+
+    def set_text_color(self, color):
+        """None이면 기본 색(테마를 따름)."""
+        if color is None:
+            self._clear_char_prop(self._fmt_target(), QTextFormat.ForegroundBrush)
+            return
+        f = QTextCharFormat()
+        f.setForeground(QColor(color))
+        self.merge_fmt(f)
+
+    def set_highlight(self, color):
+        if color is None:
+            self._clear_char_prop(self._fmt_target(), QTextFormat.BackgroundBrush, drop_mark_text=True)
+            return
+        f = QTextCharFormat()
+        f.setBackground(QColor(color))
+        if not self.fmt_state().hasProperty(QTextFormat.ForegroundBrush):
+            f.setForeground(QColor(MARK_TEXT))
+        self.merge_fmt(f)
+
+    def _clear_char_prop(self, c: QTextCursor, prop, drop_mark_text=False):
+        """선택 안의 글자마다 서식 하나를 지운다 (mergeCharFormat으로는 지울 수 없어서)."""
+        def strip(f: QTextCharFormat) -> QTextCharFormat:
+            if drop_mark_text and f.foreground().color().name() == MARK_TEXT:
+                f.clearForeground()
+            f.clearProperty(prop)
+            return f
+        if not c.hasSelection():
+            self.setCurrentCharFormat(strip(self.currentCharFormat()))
+            return
+        start, end = c.selectionStart(), c.selectionEnd()
+        c.beginEditBlock()
+        for pos in range(start, end):
+            k = QTextCursor(self.document())
+            k.setPosition(pos)
+            k.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor)
+            if not k.charFormat().isImageFormat():
+                k.setCharFormat(strip(k.charFormat()))
+        c.endEditBlock()
+
+    @staticmethod
+    def _kind_of(blk) -> str:
+        """그 줄의 목록 종류: todo / done / bullet / number / ''."""
+        m = blk.blockFormat().marker()
+        if m == _UNCHECKED:
+            return "todo"
+        if m == _CHECKED:
+            return "done"
+        lst = blk.textList()
+        if lst is None:
+            return ""
+        return "number" if lst.format().style() == QTextListFormat.ListDecimal else "bullet"
+
+    def list_kind(self) -> str:
+        return self._kind_of(self.textCursor().block())
+
+    def set_list(self, kind: str):
+        """고른 줄들(없으면 지금 줄)을 할 일·글머리 기호·번호 목록으로. 이미 그 목록이면 목록을 푼다."""
+        c = self.textCursor()
+        cur = self.list_kind()
+        undo = cur == kind or (kind == "todo" and cur == "done")
+        start, end = c.selectionStart(), c.selectionEnd()
+        blocks = []
+        b = self.document().findBlock(start)
+        while b.isValid() and b.position() <= end:
+            blocks.append(b)
+            b = b.next()
+        c.beginEditBlock()
+        for blk in blocks:
+            lst = blk.textList()
+            if undo:
+                if lst is not None:
+                    lst.remove(blk)
+                k = QTextCursor(blk)
+                bf = k.blockFormat()
+                bf.setMarker(_NOMARK)
+                bf.setIndent(0)
+                k.setBlockFormat(bf)
+                continue
+            want_num = kind == "number"
+            if lst is not None and (lst.format().style() == QTextListFormat.ListDecimal) != want_num:
+                lst.remove(blk)
+                lst = None
+            if lst is None:
+                prev = blk.previous()
+                plst = prev.textList() if prev.isValid() else None
+                same_kind = {"todo": ("todo", "done"), "done": ("todo", "done")}.get(kind, (kind,))
+                if plst is not None and self._kind_of(prev) in same_kind:
+                    plst.add(blk)                       # 바로 위 목록에 이어 붙인다
+                else:
+                    lf = QTextListFormat()
+                    lf.setStyle(QTextListFormat.ListDecimal if want_num else QTextListFormat.ListDisc)
+                    QTextCursor(blk).createList(lf)
+            k = QTextCursor(blk)
+            bf = k.blockFormat()
+            bf.setMarker(_UNCHECKED if kind == "todo" else _CHECKED if kind == "done" else _NOMARK)
+            bf.setLineHeight(150, 1)                  # 본문과 같은 줄 간격 (comfy)
+            k.setBlockFormat(bf)
+        c.endEditBlock()
+
+    def _auto_list(self) -> bool:
+        """줄 첫머리의 '[] '·'- '·'1. ' 같은 글을 목록으로 바꾼다 (스페이스를 누른 순간)."""
+        c = self.textCursor()
+        if c.hasSelection() or c.block().textList() is not None:
+            return False
+        kind = AUTO_LIST.get(c.block().text()[:c.positionInBlock()])
+        if kind is None:
+            return False
+        c.beginEditBlock()
+        c.movePosition(QTextCursor.StartOfBlock, QTextCursor.KeepAnchor)
+        c.removeSelectedText()
+        c.endEditBlock()
+        self.setTextCursor(c)
+        self.set_list(kind)
+        return True
+
+    @staticmethod
+    def _color_icon(color) -> QIcon:
+        pm = QPixmap(14, 14)
+        pm.fill(Qt.transparent)
+        p = QPainter(pm)
+        p.setRenderHint(QPainter.Antialiasing)
+        p.setPen(QColor("#9aa0a6"))
+        if color:
+            p.setBrush(QColor(color))
+        p.drawRoundedRect(1, 1, 12, 12, 3, 3)
+        if not color:
+            p.drawLine(3, 11, 11, 3)
+        p.end()
+        return QIcon(pm)
+
+    def format_actions(self, menu: QMenu, before) -> None:
+        """오른쪽 클릭 메뉴 맨 위에 서식 항목들을 넣는다."""
+        st = self.fmt_state()
+        items = []
+
+        def act(text, slot, keys="", checked=None):
+            a = QAction(text + ("\t" + plat.key_label(keys) if keys else ""), menu)
+            a.triggered.connect(slot)
+            if checked is not None:
+                a.setCheckable(True)
+                a.setChecked(bool(checked))
+            items.append(a)
+
+        def sep():
+            a = QAction(menu)
+            a.setSeparator(True)
+            items.append(a)
+
+        kind = self.list_kind()
+        act(tr("fmt.todo"), lambda: self.set_list("todo"), "Ctrl+Shift+L", kind in ("todo", "done"))
+        act(tr("fmt.bullets"), lambda: self.set_list("bullet"), "", kind == "bullet")
+        act(tr("fmt.numbers"), lambda: self.set_list("number"), "", kind == "number")
+        sep()
+        act(tr("act.bold"), self.toggle_bold, "Ctrl+B", st.fontWeight() > QFont.Normal)
+        act(tr("fmt.italic"), self.toggle_italic, "Ctrl+I", st.fontItalic())
+        act(tr("fmt.underline"), self.toggle_underline, "Ctrl+U", st.fontUnderline())
+        act(tr("fmt.strike"), self.toggle_strike, "", st.fontStrikeOut())
+        cm = QMenu(tr("fmt.color"), menu)
+        cm.addAction(self._color_icon(None), tr("color.default"), lambda: self.set_text_color(None))
+        for key, col in TEXT_COLORS:
+            cm.addAction(self._color_icon(col), tr("color." + key), lambda col=col: self.set_text_color(col))
+        hm = QMenu(tr("fmt.highlight"), menu)
+        hm.addAction(self._color_icon(None), tr("color.none"), lambda: self.set_highlight(None))
+        for key, col in MARK_COLORS:
+            hm.addAction(self._color_icon(col), tr("color." + key), lambda col=col: self.set_highlight(col))
+        items.append(cm.menuAction())
+        items.append(hm.menuAction())
+        act(tr("act.clear_fmt"), self.host.clear_format)
+        sep()
+        for a in items:
+            menu.insertAction(before, a)
 
     def _save_image(self, img: QImage):
         fn, _ = QFileDialog.getSaveFileName(self, tr("ed.save_image_title"), "image.png", "PNG (*.png);;JPEG (*.jpg)")

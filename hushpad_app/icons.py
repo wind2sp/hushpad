@@ -21,6 +21,7 @@ P = {
     "history": '<path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3.5 4v4h4"/><path d="M12 8v4.5l3 2"/>',
     "search": '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
     "inbox": '<path d="M4 13l2.5-7.5h11L20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13h4.5l1.5 2.5h4l1.5-2.5H20"/>',
+    "star": '<path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
     "pin": '<path d="M9 3.5h6M10 3.5v6l-3.5 4h11L14 9.5v-6M12 13.5V21"/>',
     "folder": '<path d="M3.5 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>',
     "tag": '<path d="M3.5 4.5v6.3l9.2 9.2a1.5 1.5 0 0 0 2.1 0l5.2-5.2a1.5 1.5 0 0 0 0-2.1L10.8 3.5H4.5z"/><circle cx="8" cy="8" r="1.3"/>',
@@ -43,7 +44,10 @@ P = {
 
 
 def svg(name: str, color: str, stroke: float = 1.75) -> bytes:
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{color}" '
+    fill = "none"
+    if name.endswith("_fill"):              # 'star_fill' = 속이 칠해진 별
+        name, fill = name[:-5], color
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="{fill}" stroke="{color}" '
             f'stroke-width="{stroke}" stroke-linecap="round" stroke-linejoin="round">{P[name]}</svg>').encode()
 
 

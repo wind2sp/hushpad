@@ -76,6 +76,10 @@ class NoteDelegate(QStyledItemDelegate):
         p.setPen(QColor(t["muted"]))
         tw = fm2.horizontalAdvance(tm)
         p.drawText(QRectF(right - tw, y1, tw + 2, fm1.height()), Qt.AlignRight | Qt.AlignVCenter, tm)
+        if m.get("starred"):        # ★ 별표: 시간 왼쪽
+            tw += 18
+            p.drawPixmap(QRect(int(right - tw), int(y1 + (fm1.height() - 14) / 2), 14, 14),
+                         icons.pixmap("star_fill", t["gold"], 14))
         # 앞쪽 고정 칸: 가장 중요한 상태 아이콘 하나 (자물쇠 > 고정 > 코드)
         slot = r.left() + 14
         name, col = None, None
@@ -107,9 +111,15 @@ class NoteDelegate(QStyledItemDelegate):
             chip = QRectF(x2, y2 + 1, cw, fm3.height() + 2)
             cp = QPainterPath()
             cp.addRoundedRect(chip, 4, 4)
-            cc = QColor(t["accent"])
-            cc.setAlpha(30)
-            p.fillPath(cp, cc if sel else QColor(t["border_subtle"]))
+            ccol = m.get("cat_color")
+            if ccol:                  # 분류 색: 옅게 칠한 칩 + 왼쪽 점
+                cc = QColor(ccol)
+                cc.setAlpha(60 if t.get("dark") else 38)
+                p.fillPath(cp, cc)
+            else:
+                cc = QColor(t["accent"])
+                cc.setAlpha(30)
+                p.fillPath(cp, cc if sel else QColor(t["border_subtle"]))
             p.setPen(QColor(t["text2"]))
             p.drawText(chip, Qt.AlignCenter, cat)
             x2 += cw + 6
