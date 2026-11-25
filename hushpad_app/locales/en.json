@@ -184,6 +184,7 @@
  "act.wrap": "Word wrap",
  "act.zoom_in": "Larger text",
  "act.zoom_out": "Smaller text",
+ "act.zoom_reset": "Default text size",
  "act.toggle_list": "Show/hide list",
  "act.topmost": "Keep on top",
  "theme.auto": "Follow system",

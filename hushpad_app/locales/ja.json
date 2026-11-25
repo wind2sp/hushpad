@@ -175,6 +175,7 @@
  "act.wrap": "自動折り返し",
  "act.zoom_in": "文字を大きく",
  "act.zoom_out": "文字を小さく",
+ "act.zoom_reset": "文字を標準の大きさに",
  "act.toggle_list": "一覧の表示／非表示",
  "act.topmost": "常に手前に表示",
  "theme.auto": "システムに合わせる",

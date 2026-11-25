@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QComboBox, QDial
 
 from . import __version__, capture, crypto, i18n, icons, notepad_import, plat, theme, updater
 from .widgets import CommandPalette, CountDelegate, EmptyState, NoteList, rel_time
-from .common import (APP_NAME, LOCAL_DIR, cleanup_share_files, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
+from .common import (APP_NAME, DEFAULTS, LOCAL_DIR, cleanup_share_files, exclude_from_capture, fmt_full, fmt_stamp, fmt_time, resource,
                      set_clipboard, text_mime)
 from .i18n import tr
 from .dialogs import HistoryDialog, ImportDialog, PassphraseDialog, RemoteViewDialog, SetupDialog
@@ -88,6 +88,7 @@ class NoteTab(QWidget):
                 self.edit.setPlainText(self.note.text)
             if self.note.kind == "rich":
                 self.edit.comfy()
+                self.edit.fit_images()
             self.edit.document().setModified(False)
         finally:
             self.loading = False
@@ -553,6 +554,7 @@ class MainWindow(QMainWindow):
         self._act(m, tr("act.wrap"), self._toggle_wrap, "Alt+Z", checkable=True, checked=self.cfg["wrap"])
         self._act(m, tr("act.zoom_in"), lambda: self._zoom(1), "Ctrl+=")
         self._act(m, tr("act.zoom_out"), lambda: self._zoom(-1), "Ctrl+-")
+        self._act(m, tr("act.zoom_reset"), lambda: self._zoom(0), "Ctrl+0")
         self._act(m, tr("act.toggle_list"), self._toggle_list, "Ctrl+\\")
         self._act(m, tr("act.topmost"), self._toggle_topmost, "Ctrl+Alt+T", checkable=True)
         m.addSeparator()
@@ -1904,14 +1906,24 @@ class MainWindow(QMainWindow):
             ed = self.tabs.widget(i).edit
             ed.setLineWrapMode(ed.LineWrapMode.WidgetWidth if on else ed.LineWrapMode.NoWrap)
 
+    def zoom(self, d):
+        """편집기의 Ctrl+휠·터치패드 확대/축소."""
+        self._zoom(d)
+
     def _zoom(self, d):
-        self.cfg["font_pt"] = max(7, min(32, self.cfg["font_pt"] + d))
+        """글자 크기 d만큼 (0이면 기본 크기로)."""
+        base = DEFAULTS["font_pt"] if d == 0 else self.cfg["font_pt"] + d
+        new = max(7, min(32, base))
+        if new == self.cfg["font_pt"] and d:
+            return
+        self.cfg["font_pt"] = new
         for i in range(self.tabs.count()):
             ed = self.tabs.widget(i).edit
             if isinstance(ed, RichEdit):
                 ed.document().setDefaultFont(body_font(self.cfg["font_pt"]))
             else:
                 ed.setFont(mono_font(self.cfg["font_pt"]))
+            self.tabs.widget(i).plain_view.setFont(mono_font(self.cfg["font_pt"]))
         self.status(tr("st.font_size", n=self.cfg["font_pt"]))
 
     def _toggle_list(self):

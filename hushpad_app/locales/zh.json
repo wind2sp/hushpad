@@ -175,6 +175,7 @@
  "act.wrap": "自动换行",
  "act.zoom_in": "放大文字",
  "act.zoom_out": "缩小文字",
+ "act.zoom_reset": "默认文字大小",
  "act.toggle_list": "显示/隐藏列表",
  "act.topmost": "窗口置顶",
  "theme.auto": "跟随系统",

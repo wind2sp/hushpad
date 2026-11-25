@@ -374,6 +374,59 @@ def run() -> int:
         return "image only -> picture (drag: png file), mixed -> html+text"
     check("image copy", image_copy)
 
+    def zoom_and_fit():
+        """Ctrl+휠로 글자 확대·축소, 큰 그림은 메모 폭·높이 안으로 줄여 보이고 원본 해상도는 그대로."""
+        from .window import MainWindow
+        from PySide6.QtGui import QIcon, QColor, QWheelEvent, QTextCursor
+        from PySide6.QtCore import QPoint, QPointF, Qt
+        from PySide6.QtGui import QTextFormat
+        from .common import DEFAULTS, data_url_to_image
+        cfg = Config()
+        cfg["open_tabs"] = []
+        cfg.save = lambda: None
+        w = MainWindow(st, cfg, QIcon())
+        try:
+            w.resize(900, 700)
+            n = st.create(kind="rich", text="")
+            w.open_note(n.id)
+            ed = w._cur_tab().edit
+            pt = cfg["font_pt"]
+            ev = QWheelEvent(QPointF(10, 10), QPointF(10, 10), QPoint(), QPoint(0, 120),
+                             Qt.NoButton, Qt.ControlModifier, Qt.NoScrollPhase, False)
+            ed.wheelEvent(ev)
+            assert cfg["font_pt"] == pt + 1, "Ctrl+wheel did not zoom in"
+            w._zoom(0)
+            assert cfg["font_pt"] == DEFAULTS["font_pt"], "zoom reset failed"
+            ed.clear()
+            for size in ((3000, 1000), (1000, 3000)):
+                img = QImage(*size, QImage.Format_RGB32)
+                img.fill(QColor("#3366cc"))
+                ed.insert_image(img)
+            doc = ed.document()
+            doc.setTextWidth(ed.viewport().width())
+            fmts = []
+            b = doc.begin()
+            while b.isValid():
+                it = b.begin()
+                while not it.atEnd():
+                    f = it.fragment().charFormat()
+                    if f.isImageFormat():
+                        fmts.append(f.toImageFormat())
+                    it += 1
+                b = b.next()
+            assert len(fmts) == 2 and all(f.hasProperty(QTextFormat.ImageMaxWidth) for f in fmts), "image max width not set"
+            assert fmts[1].width() <= 900 * 1000 / 3000 + 1, "tall image not limited"
+            assert data_url_to_image(fmts[0].name()).width() == 3000, "image resolution changed"
+            # 저장 후 다시 열어도 줄여 보인다 (예전 메모 포함)
+            html = ed.toHtml()
+            ed.setHtml(html)
+            assert ed.fit_images() in (0, 2), "fit on reload failed"
+            assert ed.fit_images() == 0, "fit not idempotent"
+        finally:
+            w.close()
+        return "Ctrl+wheel zoom, large images fit, resolution kept"
+    check("zoom and image fit", zoom_and_fit)
+
     def autostart_untouched():
         try:
             now = _plat.autostart_enabled()

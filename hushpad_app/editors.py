@@ -9,9 +9,9 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from PySide6.QtCore import QMimeData, QRect, QRegularExpression, QSize, Qt, QUrl, Signal
+from PySide6.QtCore import QEvent, QMimeData, QRect, QRegularExpression, QSize, Qt, QUrl, Signal
 from PySide6.QtGui import (QColor, QDesktopServices, QDrag, QPixmap, QFont, QFontDatabase, QImage, QKeySequence, QPainter,
-                           QSyntaxHighlighter, QTextCharFormat, QTextCursor, QTextFormat, QTextImageFormat)
+                           QSyntaxHighlighter, QTextCharFormat, QTextCursor, QTextFormat, QTextImageFormat, QTextLength)
 from PySide6.QtWidgets import QApplication, QFileDialog, QPlainTextEdit, QTextEdit, QWidget
 
 from . import plat
@@ -32,6 +32,7 @@ def _dropped_images(src: QMimeData) -> list | None:
     return None
 _REMOTE_IMG = re.compile(r"<img\b[^>]*\bsrc\s*=\s*[\"']?(?:https?:|file:|//)[^>]*>", re.I)
 MAX_DISPLAY_W = 900
+MAX_DISPLAY_H = 900   # 세로로 긴 그림(휴대폰 화면 캡처 등)은 이 높이 안으로 줄여 보인다 (원본 해상도는 그대로)
 
 
 def mono_font(pt: int) -> QFont:
@@ -69,8 +70,34 @@ def line_value(line: str) -> str:
 
 
 class _CopyMixin:
-    """Ctrl+C / Ctrl+X 를 창(host)의 복사 함수로 보내 클립보드 보호 옵션을 적용."""
+    """Ctrl+C / Ctrl+X 를 창(host)의 복사 함수로 보내 클립보드 보호 옵션을 적용.
+    Ctrl+휠·터치패드 두 손가락 벌리기/모으기로 글자 크기 확대·축소."""
     host = None
+    _wheel_acc = 0
+    _pinch_acc = 0.0
+
+    def wheelEvent(self, e):
+        # Windows 정밀 터치패드의 두 손가락 확대·축소도 Ctrl+휠로 들어온다
+        if e.modifiers() & Qt.ControlModifier:
+            self._wheel_acc += e.angleDelta().y()
+            while abs(self._wheel_acc) >= 120:
+                step = 1 if self._wheel_acc > 0 else -1
+                self._wheel_acc -= 120 * step
+                self.host.zoom(step)
+            e.accept()
+            return
+        super().wheelEvent(e)
+
+    def event(self, e):
+        # macOS 트랙패드 핀치
+        if e.type() == QEvent.NativeGesture and e.gestureType() == Qt.ZoomNativeGesture:
+            self._pinch_acc += e.value()
+            while abs(self._pinch_acc) >= 0.08:
+                step = 1 if self._pinch_acc > 0 else -1
+                self._pinch_acc -= 0.08 * step
+                self.host.zoom(step)
+            return True
+        return super().event(e)
 
     def _copy_keys(self, e) -> bool:
         if e.matches(QKeySequence.Copy):
@@ -156,8 +183,76 @@ class RichEdit(_CopyMixin, QTextEdit):
             if src.hasText():
                 md.setText(src.text())
             super().insertFromMimeData(md)
+            if "<img" in md.html().lower():
+                c = self.textCursor()
+                c.joinPreviousEditBlock()    # 붙여넣기와 한 번에 되돌리기
+                self.fit_images()
+                c.endEditBlock()
             return
         super().insertFromMimeData(src)
+
+    @staticmethod
+    @staticmethod
+    def fit_format(fmt: QTextImageFormat) -> bool:
+        """큰 그림이 메모 폭을 넘거나 너무 길면 줄여 보이게 한다 (보이는 크기만, 그림 데이터는 원본 그대로).
+        폭은 메모 칸 안(최대 100%), 세로로 긴 그림은 높이 MAX_DISPLAY_H 안. 바꿀 것이 있으면 True."""
+        w, h = fmt.width(), fmt.height()
+        if not (w > 0 and h > 0):
+            img = data_url_to_image(fmt.name())
+            if img is None or img.isNull():
+                return False
+            dpr = img.devicePixelRatio() or 1
+            iw, ih = img.width() / dpr, img.height() / dpr
+            w = w if w > 0 else min(iw, MAX_DISPLAY_W)
+            h = w * ih / iw if iw else ih
+        want_w = round(min(w, w * MAX_DISPLAY_H / h), 1) if h > MAX_DISPLAY_H else round(w, 1)
+        want_max = QTextLength(QTextLength.PercentageLength, 100)
+        if (fmt.hasProperty(QTextFormat.ImageMaxWidth) and fmt.maximumWidth() == want_max
+                and not fmt.hasProperty(QTextFormat.ImageHeight) and abs(fmt.width() - want_w) < 0.5):
+            return False
+        fmt.setWidth(want_w)
+        fmt.setMaximumWidth(want_max)
+        # 높이를 정해 두면 폭만 줄고 높이는 그대로라 그림이 찌그러진다. 폭만 두면 Qt가 비율대로 높이를 맞춘다.
+        fmt.clearProperty(QTextFormat.ImageHeight)
+        return True
+
+    @staticmethod
+    def _tight_image_line(block) -> bool:
+        """그림만 있는 줄은 줄 간격 100% (150%면 큰 그림 아래에 그림 높이 절반만큼 빈칸이 생긴다)."""
+        t = block.text()
+        if not t or t.strip("￼"):
+            return False
+        bf = block.blockFormat()
+        if bf.lineHeightType() == 1 and bf.lineHeight() == 100:
+            return False
+        from PySide6.QtGui import QTextBlockFormat
+        nf = QTextBlockFormat()
+        nf.setLineHeight(100, 1)   # ProportionalHeight
+        QTextCursor(block).mergeBlockFormat(nf)
+        return True
+
+    def fit_images(self) -> int:
+        """문서 안 모든 그림에 fit_format 적용. 바꾼 개수."""
+        doc = self.document()
+        n = 0
+        block = doc.begin()
+        while block.isValid():
+            self._tight_image_line(block)
+            it = block.begin()
+            while not it.atEnd():
+                frag = it.fragment()
+                f = frag.charFormat()
+                if f.isImageFormat():
+                    fmt = f.toImageFormat()
+                    if self.fit_format(fmt):
+                        c = QTextCursor(doc)
+                        c.setPosition(frag.position())
+                        c.setPosition(frag.position() + frag.length(), QTextCursor.KeepAnchor)
+                        c.setCharFormat(fmt)
+                        n += 1
+                it += 1
+            block = block.next()
+        return n
 
     def insert_plain(self, text: str) -> None:
         c = self.textCursor()
@@ -176,9 +271,12 @@ class RichEdit(_CopyMixin, QTextEdit):
             fmt.setAnchor(True)
             fmt.setAnchorHref(href)
             fmt.setToolTip(tr("ed.play_tip"))
+        self.fit_format(fmt)
         c = self.textCursor()
+        line_fmt = c.blockFormat()                 # 그림 다음 줄은 원래 줄 간격으로
         c.insertImage(fmt)
-        c.insertBlock()
+        self._tight_image_line(c.block())
+        c.insertBlock(line_fmt)
         self.setTextCursor(c)
         self.ensureCursorVisible()
 
@@ -289,8 +387,10 @@ class RichEdit(_CopyMixin, QTextEdit):
                 continue
             f = c.charFormat()
             if f.isImageFormat():
-                w = f.toImageFormat().width() or 0
-                if left - 2 <= pos.x() <= left + w + 2:   # 그림 위를 눌렀을 때만 (옆 빈 곳 제외)
+                right = self.cursorRect(c).left()       # 그림 오른쪽 끝 (줄여 보인 크기)
+                if right <= left:
+                    right = left + (f.toImageFormat().width() or 0)
+                if left - 2 <= pos.x() <= right + 2:   # 그림 위를 눌렀을 때만 (옆 빈 곳 제외)
                     return c
         return None
 

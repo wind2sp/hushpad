@@ -175,6 +175,7 @@
  "act.wrap": "자동 줄 바꿈",
  "act.zoom_in": "글자 크게",
  "act.zoom_out": "글자 작게",
+ "act.zoom_reset": "글자 기본 크기",
  "act.toggle_list": "목록 보이기/숨기기",
  "act.topmost": "항상 위에 두기",
  "theme.auto": "시스템 따라가기",
