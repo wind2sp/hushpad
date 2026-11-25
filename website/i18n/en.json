@@ -81,7 +81,7 @@
       },
       "copy": {
         "h": "Rich text or plain text",
-        "p": "Paste formatted text from the web as is, then copy it out as plain text with <kbd>Ctrl+Shift+C</kbd>. Rich notes always keep a plain-text version alongside."
+        "p": "Paste formatted text from the web as is, then copy it out as plain text with <kbd>Ctrl+Shift+C</kbd>. Rich notes always keep a plain-text version alongside. Zoom the text with <kbd>Ctrl</kbd>+wheel or a two-finger pinch on the touchpad."
       },
       "code": {
         "h": "HTML & JSON in a hurry",
@@ -89,7 +89,7 @@
       },
       "shot": {
         "h": "Screenshots & short recordings",
-        "p": "From anywhere, press <kbd>Ctrl+Alt+S</kbd> to capture an area or <kbd>Ctrl+Alt+R</kbd> to record the screen. Results land straight in a note, and videos are encrypted too. Drag a picture out of a note onto a web chat or mail attachment area, or into Explorer, and it arrives as a PNG file."
+        "p": "From anywhere, press <kbd>Ctrl+Alt+S</kbd> to capture an area or <kbd>Ctrl+Alt+R</kbd> to record the screen. Results land straight in a note, and videos are encrypted too. Drag a picture out of a note onto a web chat or mail attachment area, or into Explorer, and it arrives as a PNG file. Large pictures shrink to fit the note but leave at full size."
       },
       "folder": {
         "h": "Folders, merge, trash",
@@ -102,6 +102,18 @@
       "search": {
         "h": "Everything from Ctrl+K",
         "p": "Search note titles, note contents and every command from one box, then press Enter to run it. <kbd>Ctrl+Alt+M</kbd> saves your clipboard straight to a new note."
+      },
+      "format": {
+        "h": "Formatting on right-click",
+        "p": "Select text and right-click for bold, italic, underline and strikethrough, text color and highlight, to-do lists, bullets and numbered lists."
+      },
+      "todo": {
+        "h": "Checklists as you type",
+        "p": "Start a line with <code>[] </code> for a checkbox, and Enter continues the list. <code>- </code> starts bullets and <code>1. </code> a numbered list."
+      },
+      "star": {
+        "h": "Stars and category colors",
+        "p": "Star the notes you keep coming back to with <kbd>Ctrl+D</kbd> and find them together under Starred. Give each category its own color to tell them apart at a glance."
       }
     },
     "capture": {
@@ -178,7 +190,7 @@
         },
         {
           "q": "Can I add images or videos?",
-          "a": "You can paste or drag images into rich-text notes, and screenshots and short screen recordings (up to 3 minutes) go straight in. Videos play inside the app and are stored encrypted."
+          "a": "You can paste or drag images into rich-text notes, and screenshots and short screen recordings (up to 3 minutes) go straight in. Videos play inside the app and are stored encrypted. Large pictures and tall ones like phone screenshots shrink to fit the note, while copying, dragging out or saving still gives the full-size original."
         },
         {
           "q": "Does it send anything over the internet?",

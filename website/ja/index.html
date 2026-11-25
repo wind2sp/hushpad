@@ -47,6 +47,9 @@
     <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/></symbol>
+    <symbol id="i-format" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16L11 4h2l5 12M8 11.5h8"/><path d="M4 20h16"/></symbol>
+    <symbol id="i-todo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="6" height="6" rx="1.2"/><path d="M5 7l1.2 1.2L8.4 5.8"/><rect x="3.5" y="14" width="6" height="6" rx="1.2"/><path d="M13 7h7.5M13 17h7.5"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
   </defs>
 </svg>
 
@@ -84,7 +87,7 @@
         <a class="btn primary" href="download.html">無料でダウンロード</a>
         <a class="btn" href="#features">ほかのメモ帳との違い</a>
       </div>
-      <div class="meta">バージョン <span data-cfg="version">1.0.5</span> · 無料・オープンソース（GPL-3.0-or-later）</div>
+      <div class="meta">バージョン <span data-cfg="version">1.0.7</span> · 無料・オープンソース（GPL-3.0-or-later）</div>
       <div class="meta">Windows 10・11 · Apple シリコン搭載 Mac · アカウント・サーバー・広告なし · オフラインで動作</div>
       <div class="shot">
         <img class="light" src="../assets/img/app-light-ja.png" alt="Hushpad の画面 — 左にメモ一覧と分類、右にタブで開いたメモ" width="1280" height="760">
@@ -117,10 +120,13 @@
         <div class="feat"><div class="ic"><svg><use href="#i-save"/></svg></div><h3>保存ボタンはありません</h3><p>書いた瞬間に自動保存。名前を付けなくても作成日時で整理され、すべてのメモがひとつのフォルダーに集まります。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-lock"/></svg></div><h3>すべてのメモを暗号化</h3><p>ファイルを開いても中身は読めません。ほかのアプリや検索インデックス、クラウドも内容を読み取れません。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-eye-off"/></svg></div><h3>キャプチャに映らないウィンドウ</h3><p>スクリーンショット、画面録画、ビデオ会議の画面共有に Hushpad のウィンドウは映りません。見えるのは自分の画面だけです。</p></div>
-        <div class="feat"><div class="ic"><svg><use href="#i-copy"/></svg></div><h3>書式そのまま、または文字だけ</h3><p>Web からコピーした文章は書式ごと貼り付け、ほかの場所へ移すときは <kbd>Ctrl+Shift+C</kbd> で文字だけをコピー。書式付きメモは、文字だけの版もいつも一緒に保存しています。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-copy"/></svg></div><h3>書式そのまま、または文字だけ</h3><p>Web からコピーした文章は書式ごと貼り付け、ほかの場所へ移すときは <kbd>Ctrl+Shift+C</kbd> で文字だけをコピー。書式付きメモは、文字だけの版もいつも一緒に保存しています。文字の大きさは <kbd>Ctrl</kbd>+ホイールやタッチパッドの 2 本指ピンチですぐに変えられます。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-format"/></svg></div><h3>右クリックで書式</h3><p>文字を選んで右クリックすると、太字・斜体・下線・取り消し線、文字色と蛍光ペン、ToDo リスト・箇条書き・番号付きリストをすぐに付けられます。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-todo"/></svg></div><h3>ToDo のチェック欄</h3><p>行頭に <code>[] </code> と書くとチェック欄になり、Enter で次の行も続けて作られます。<code>- </code> は箇条書き、<code>1. </code> は番号付きリストになります。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-code"/></svg></div><h3>HTML・JSON もさっと</h3><p>コードメモには行番号・色分け・自動インデントがあり、JSON もすぐに整形できます。<code>KEY=値</code> の行から値だけをコピーすることもできます。</p></div>
-        <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>スクリーンショット・短い録画</h3><p>どこからでも <kbd>Ctrl+Alt+S</kbd> で範囲キャプチャ、<kbd>Ctrl+Alt+R</kbd> で画面録画。結果はそのままメモに入り、動画も暗号化されます。メモ内の画像は、Web チャットやメールの添付欄、エクスプローラーにドラッグするだけで PNG ファイルとして添付できます。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-camera"/></svg></div><h3>スクリーンショット・短い録画</h3><p>どこからでも <kbd>Ctrl+Alt+S</kbd> で範囲キャプチャ、<kbd>Ctrl+Alt+R</kbd> で画面録画。結果はそのままメモに入り、動画も暗号化されます。メモ内の画像は、Web チャットやメールの添付欄、エクスプローラーにドラッグするだけで PNG ファイルとして添付できます。大きな画像はメモに合わせて縮小表示し、書き出すときは元のサイズのままです。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-folder"/></svg></div><h3>分類・結合・ごみ箱</h3><p>ドラッグで分類し、複数のメモをひとつに結合。削除したメモはごみ箱から元に戻せます。しばらく開いていないメモだけを集めて整理することもできます。</p></div>
+        <div class="feat"><div class="ic"><svg><use href="#i-star"/></svg></div><h3>スターと分類の色</h3><p>よく見るメモは <kbd>Ctrl+D</kbd> で ★ スターを付けて「スター」にまとめて表示。分類ごとに色を決めて、一覧でひと目で見分けられます。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>自分の複数の PC で</h3><p>保管フォルダーを OneDrive・Dropbox・Google Drive や共有フォルダーに置けば、複数の PC で同じメモを使えます。クラウドには暗号化されたファイルだけが置かれます。</p></div>
         <div class="feat"><div class="ic"><svg><use href="#i-search"/></svg></div><h3>Ctrl+K ひとつで</h3><p>メモのタイトル・本文とすべての機能を、ひとつの入力欄から探して Enter で実行。クリップボードをそのままメモとして保存する <kbd>Ctrl+Alt+M</kbd> もあります。</p></div>
       </div>
@@ -223,7 +229,7 @@ OWN1 ▒▓░▒█▓░▒▓▒░█▓▒░▓█▒░▒▓█░▒▓
         <details><summary>パスワードを忘れたらどうなりますか？</summary><p>復元する方法はありません。パスワードを知らなければ誰にも（開発者にも）開けないように作られているためです。最初に設定するときに、安全な場所に書き留めておいてください。</p></details>
         <details><summary>PC を再起動してもメモは残りますか？</summary><p>はい。メモは書いたそばから暗号化してディスクに保存するので、再起動してもそのまま残ります。初回起動のあとは、Windows の起動時（Mac ではログイン時）に Hushpad がトレイ（Mac ではメニューバー）で自動的に起動します。不要なら、トレイのアイコンのメニューか［セキュリティ］メニューでオフにできます。</p></details>
         <details><summary>複数の PC で使うには？</summary><p>保管フォルダーを OneDrive・Dropbox・Google Drive や共有フォルダー(NAS)に置き、別の PC で同じフォルダーを選んで同じパスワードを入力してください。Hushpad がフォルダーを 3 秒ごとに確認するので、別の PC で書いたメモは同期されしだい表示されます。両方で同時に編集すると、片方を「競合コピー」として別に残します。</p></details>
-        <details><summary>画像や動画も入れられますか？</summary><p>書式付きメモには画像を貼り付けたりドラッグ＆ドロップしたりでき、スクリーンショットや短い画面録画（最大 3 分）もそのまま入ります。動画はアプリ内で再生でき、暗号化して保存されます。</p></details>
+        <details><summary>画像や動画も入れられますか？</summary><p>書式付きメモには画像を貼り付けたりドラッグ＆ドロップしたりでき、スクリーンショットや短い画面録画（最大 3 分）もそのまま入ります。動画はアプリ内で再生でき、暗号化して保存されます。解像度の大きい画像や、スマホのスクリーンショットのような縦長の画像はメモに合わせて縮小表示し、コピー・ドラッグ・保存では元のサイズのまま出せます。</p></details>
         <details><summary>インターネットに何か送信しますか？</summary><p>いいえ。メモ・設定・利用状況は送信しません。zip 版は 1 日 1 回 GitHub で新しいバージョンを確認し、アップデートを選んだときだけファイルをダウンロードします（メニューでオフにできます）。Microsoft Store 版は Store が更新します。</p></details>
         <details><summary>Mac でもキャプチャに映りませんか？</summary><p>macOS では、ウィンドウの共有をオフにする設定で隠します。ただし macOS 15 以降では、ScreenCaptureKit を使う一部のキャプチャ・画面共有アプリがこの設定を無視し、ウィンドウを撮影できる場合があります。Mac では、画面を共有する前に一度確かめてください。</p></details>
         <details><summary>リモート接続すると Hushpad の画面が黒くなります</summary><p>キャプチャや画面共有から隠す機能のため、リモート接続(Chrome リモート デスクトップ・AnyDesk・TeamViewer など)でも黒く表示されます。タスクバーのトレイアイコンを右クリック › <b>リモートで見るときに一時表示…</b> を選んでパスワードを入力すると、15 分〜2 時間表示されます。時間が過ぎるか Hushpad をロックすると、再び隠れます。</p></details>
